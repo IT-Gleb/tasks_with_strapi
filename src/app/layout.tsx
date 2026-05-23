@@ -51,7 +51,11 @@ export default function RootLayout({
   return (
     <html lang="ru" className={` h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <TanstaqProvider>{children}</TanstaqProvider>
+        <TanstaqProvider>
+          <header className="layout_header">ddddd</header>
+          <main>{children}</main>
+          <footer className="layout_footer">ddd</footer>
+        </TanstaqProvider>
       </body>
     </html>
   );
