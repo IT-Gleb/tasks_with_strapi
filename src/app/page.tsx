@@ -10,6 +10,10 @@ import {
   MainPageSEOPath,
   MainPageSeo_Prefix,
 } from "@/shared/utils/consts";
+import {
+  CheckIsTimeZoneString,
+  FormatDateTime,
+} from "@/shared/utils/functions";
 
 export default async function Home() {
   const queryClient = new QueryClient();
@@ -22,7 +26,22 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="w-fit p-2 mx-auto text-xl">{result?.data.author}</div>
+      {result && (
+        <div className="w-fit p-2 mx-auto text-xl grid grid-cols-2 items-center">
+          <div className=" col-span-2 p-2 text-center">
+            {result?.data.title}
+          </div>
+          <div className=" col-span-2 p-2">{result?.data.description}</div>
+          <div className="p-2 text-lg">{result?.data.author}</div>
+          <div className="p-2 text-sm"> {result?.data.creator}</div>
+          <div></div>
+          <div className="text-xs p-2">
+            {FormatDateTime(
+              CheckIsTimeZoneString(result?.data.publishedAt as string),
+            )}
+          </div>
+        </div>
+      )}
     </HydrationBoundary>
   );
 }
