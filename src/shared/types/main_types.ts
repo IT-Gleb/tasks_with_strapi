@@ -14,4 +14,6 @@ export type TPageSeo = {
 };
 
 export type TDateTimeISOString =
-  `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
+  `${number}-${number | string}-${number | string}T${number}:${number}:${number}.${number}Z`;
+
+export type TDateISOString = `${number}-${number | string}-${number | string}`;

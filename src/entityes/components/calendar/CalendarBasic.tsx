@@ -1,44 +1,61 @@
 "use client";
 
+import type { DateValue } from "@internationalized/date";
+
 import { Calendar } from "@heroui/react";
 import { FC, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
-interface CalendarBasicProps {
-  calendar: { identifier: string };
-  day: number;
-  era: string;
-  month: number;
-  year: number;
-}
+import {
+  getLocalTimeZone,
+  // parseDate,
+  // startOfMonth,
+  //  startOfWeek,
+  today,
+} from "@internationalized/date";
+import { makeDateISOStringFromObject } from "@/shared/utils/functions";
+import { TDateISOString } from "@/shared/types/main_types";
 
-type TCalendarProps = CalendarBasicProps;
+const CalendarBasic: FC = () => {
+  const [focusedDate, setFocusedDate] = useState<DateValue>(
+    today(getLocalTimeZone()),
+  );
+  const [value, setValue] = useState<DateValue | null>(null);
+  const router = useRouter();
 
-const CalendarBasic: FC = ({ param }: { param?: TCalendarProps }) => {
-  const dateValue: CalendarBasicProps = {
-    calendar: {
-      identifier: "gregory",
-    },
-    day: 25,
-    era: "AD",
-    month: 5,
-    year: 2026,
-  };
-  const [value, setValue] = useState<any | null>(null);
-  const [focusedDate, setFocusedDate] = useState<any>(value);
-
-  const val = useMemo(() => {
-    console.log(value);
-    return value;
+  let currentDate: TDateISOString | string = useMemo(() => {
+    //console.log(value);
+    if (value === null) {
+      return "";
+    }
+    return makeDateISOStringFromObject({
+      year: value?.year as number,
+      month: value?.month as number,
+      day: value?.day as number,
+    });
   }, [value]);
+
+  useEffect(() => {
+    let tmp: boolean = true;
+
+    if (tmp && currentDate !== "") {
+      router.push(`/todos/${currentDate}`);
+    }
+
+    return () => {
+      tmp = false;
+    };
+  }, [currentDate]);
 
   return (
     <Calendar
       aria-label="Event date"
-      className={" p-2 border border0slate-400/35"}
-      focusedValue={focusedDate}
+      className={" p-2 border border-slate-400/35 rounded-sm"}
+      //focusedValue={focusedDate}
       value={value}
       onChange={setValue}
-      onFocusChange={setFocusedDate}
+      //onFocusChange={setFocusedDate}
+      defaultValue={focusedDate}
     >
       <Calendar.Header>
         <Calendar.Heading />
@@ -50,7 +67,12 @@ const CalendarBasic: FC = ({ param }: { param?: TCalendarProps }) => {
           {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
         </Calendar.GridHeader>
         <Calendar.GridBody>
-          {(date) => <Calendar.Cell date={date} />}
+          {(date) => (
+            <Calendar.Cell
+              date={date}
+              className={`hover:text-accent-foreground hover:bg-accent-hover active:bg-red-400 `}
+            />
+          )}
         </Calendar.GridBody>
       </Calendar.Grid>
     </Calendar>
