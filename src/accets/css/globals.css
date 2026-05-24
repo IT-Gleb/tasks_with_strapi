@@ -49,7 +49,7 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden text-sm xl:text-lg bg-background-secondary text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
+    @apply overflow-x-hidden text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
 
     main {
       @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235  xl:max-w-235 has-[.fromcenter]:place-content-center has-[.fromstart]:place-content-start;

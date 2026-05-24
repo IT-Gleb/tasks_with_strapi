@@ -1,10 +1,34 @@
+"use server";
+
 import NoTodo from "@/entityes/components/noTodo/NoTodo";
 import type { TDateISOString, TTodosData } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
+import { makeDateISOString } from "@/shared/utils/functions";
 import { QueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import type { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+
+type Props = {
+  params: Promise<{ date: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { date } = await params;
+  let dt = date !== undefined ? new Date(date) : Date.now();
+  //console.log(date, dt);
+
+  return {
+    title:
+      "Задачи на: " +
+      Intl.DateTimeFormat("ru-RU", { dateStyle: "medium" }).format(dt),
+  };
+}
 
 export default async function TodoOnDate({
   params,
