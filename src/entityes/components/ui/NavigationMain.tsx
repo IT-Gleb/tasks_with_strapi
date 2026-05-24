@@ -4,7 +4,7 @@ import BreadCrambs from "./BreadCrambs";
 
 export default function NavigationMain() {
   return (
-    <nav className="w-full xl:w-250 mx-auto p-1 flex flex-col gap-4 items-start">
+    <nav className="w-full xl:w-250 mx-auto flex flex-col gap-2 items-start">
       <div className="flex gap-1 items-end">
         <Link href="/" className="dark:text-stone-200">
           <ListCheck size={38} color="currentColor" strokeWidth={2} />

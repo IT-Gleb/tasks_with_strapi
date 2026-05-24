@@ -1,3 +1,11 @@
+type TPageMeta = {
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    pageCount: number;
+  };
+};
 export type TPageSeo = {
   data: {
     id: number;
@@ -10,10 +18,27 @@ export type TPageSeo = {
     updatedAt: number | string;
     publishedAt: number | string;
   };
-  meta: Object;
+  meta: TPageMeta;
 };
 
 export type TDateTimeISOString =
   `${number}-${number | string}-${number | string}T${number}:${number}:${number}.${number}Z`;
 
 export type TDateISOString = `${number}-${number | string}-${number | string}`;
+
+export type TTodo = {
+  id: number;
+  documentId: string;
+  title: string;
+  isCompleted: boolean;
+  updated: number | Date;
+  order: number;
+  createdAt: number | Date;
+  updatedAt: number | Date;
+  publishedAt: number | Date;
+};
+
+export type TTodosData = {
+  data: TTodo[];
+  meta: TPageMeta;
+};

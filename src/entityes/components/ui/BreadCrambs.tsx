@@ -1,9 +1,10 @@
+"use client";
 import { Breadcrumbs, BreadcrumbsItem } from "@heroui/react";
-import { FC, ReactNode, useMemo, useState } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { Check, ChevronLast, Home, List } from "lucide-react";
+import { Check, Home, List, ListEnd } from "lucide-react";
 
-type IBreadCrambsProps = {
+type TBreadCrambsProps = {
   path: string;
   title: string;
   Icon?: ReactNode;
@@ -14,7 +15,7 @@ const BreadCrambs: FC = () => {
 
   // console.log(pathname, pathname.split("/"));
   const Items = useMemo(() => {
-    const tmp: IBreadCrambsProps = [];
+    const tmp: TBreadCrambsProps = [];
     if (pathname === "/") {
       tmp[0] = { path: "/", title: "Главная", Icon: <Home size={14} /> };
       return tmp;
@@ -26,6 +27,13 @@ const BreadCrambs: FC = () => {
           break;
         case "todos":
           tmp.push({ title: "Задачи", path: "", Icon: <List size={14} /> });
+          break;
+        case "newTodo":
+          tmp.push({
+            title: "Новая задача",
+            path: "/todos/newTodo",
+            Icon: <ListEnd size={14} />,
+          });
           break;
         default:
           tmp.push({ title: item, path: `/todos/${item}` });
