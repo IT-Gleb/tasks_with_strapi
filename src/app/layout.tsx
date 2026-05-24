@@ -11,6 +11,8 @@ import {
   MainPageSEOPath,
 } from "@/shared/utils/consts";
 import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
+import HeaderLayout from "@/entityes/components/HeaderLayout";
+import FooterLayout from "@/entityes/components/FooterLayout";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -53,15 +55,14 @@ export default function RootLayout({
     <html
       lang="ru"
       className="light h-full antialiased"
-      data-theme="light"
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <TanstaqProvider>
           <ThisThemeProvider>
-            <header className="layout_header">ddddd</header>
+            <HeaderLayout />
             <main>{children}</main>
-            <footer className="layout_footer">ddd</footer>
+            <FooterLayout />
           </ThisThemeProvider>
         </TanstaqProvider>
       </body>

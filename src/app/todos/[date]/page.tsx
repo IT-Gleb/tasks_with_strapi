@@ -6,5 +6,5 @@ export default async function TodoOnDate({
   params: Promise<{ date: TDateISOString }>;
 }) {
   const { date } = await params;
-  return <div>{date}</div>;
+  return <div className="fromstart">{date}</div>;
 }

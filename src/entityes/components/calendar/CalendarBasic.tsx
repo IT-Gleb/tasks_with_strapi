@@ -50,7 +50,7 @@ const CalendarBasic: FC = () => {
   return (
     <Calendar
       aria-label="Event date"
-      className={" p-2 border border-slate-400/35 rounded-sm"}
+      className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
       //focusedValue={focusedDate}
       value={value}
       onChange={setValue}
@@ -70,7 +70,7 @@ const CalendarBasic: FC = () => {
           {(date) => (
             <Calendar.Cell
               date={date}
-              className={`hover:text-accent-foreground hover:bg-accent-hover active:bg-red-400 `}
+              className={`text-soft-foreground hover:bg-accent-soft-foreground hover:text-white dark:hover:bg-default-foreground/40 active:bg-red-400 data-[today="true"]:bg-accent/75 data-[today="true"]:text-accent-foreground`}
             />
           )}
         </Calendar.GridBody>
