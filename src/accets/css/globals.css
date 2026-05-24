@@ -2,30 +2,39 @@
 @import "@heroui/styles";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --background: #ffffff;
+  --foreground: #171717; */
   --headerH: 8;
   --footerH: 10;
   --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1vh);
   --minHeaderH: calc(var(--headerH) * 1vh);
   --minFooterH: calc(var(--footerH) * 1vh);
+  --chocolate: #e97451;
+  --chocolate-dark: #7b3f00;
+  --chocolate-dark2: #814141;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --chocolate-dark: oklch(from var(--chocolate-dark) 0.25 0.85 105);
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-chocolate: var(--chocolate);
+  --color-chocolate-dark: var(--chocolate-dark);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 @layer base {
   html,
@@ -40,16 +49,16 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden text-sm bg-background-secondary text-default-foreground dark:bg-slate-900 dark:text-default-foreground transition-colors duration-200;
+    @apply overflow-x-hidden text-sm bg-background-secondary text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
 
     main {
       @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235  xl:max-w-235 has-[.fromcenter]:place-content-center has-[.fromstart]:place-content-start;
     }
   }
   .layout_header {
-    @apply min-h-(--minHeaderH) bg-slate-200 dark:bg-slate-950;
+    @apply min-h-(--minHeaderH) border-b border-b-stone-400/50;
   }
   .layout_footer {
-    @apply min-h-(--minFooterH) bg-slate-400 dark:bg-slate-950;
+    @apply min-h-(--minFooterH) border-t border-t-stone-400/50;
   }
 }

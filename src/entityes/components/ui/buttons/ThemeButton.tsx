@@ -20,7 +20,7 @@ const ThemeButton = () => {
       isSelected={isToggle}
       onChange={setIsToggle}
       onClick={callBackTheme}
-      className="transition-colors duration-100 dark:text-default-foreground"
+      className="transition-colors duration-100 bg-segment dark:text-default-foreground dark:bg-default-hover"
     >
       {isToggle ? (
         <Sun size={20} color="currentColor" />
