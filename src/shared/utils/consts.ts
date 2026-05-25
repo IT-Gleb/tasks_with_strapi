@@ -7,5 +7,5 @@ export const NewDateTodo = "/todos/%1/newTodo";
 export const TodosMax =
   "todos?fields[0]=order&sort[0]=order:desc&pagination[limit]=1";
 export const TodosMax_prefix = "todosMax";
-export const TodoDaysPath =
-  "todos?fields[0]=updated&filters[updated][$containsi]=2026-05&pagination[limit]=100";
+export const TodoDatesPath =
+  "todos?fields[0]=updated&filters[updated][$containsi]=%1&sort[0]=updated:desc&pagination[limit]=100";

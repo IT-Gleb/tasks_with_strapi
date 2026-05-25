@@ -3,7 +3,7 @@
 import type { CalendarDate, DateValue } from "@internationalized/date";
 
 import { Calendar } from "@heroui/react";
-import { FC, useState } from "react";
+import { FC, Suspense, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -11,9 +11,14 @@ import {
   // parseDate,
   // startOfMonth,
   //  startOfWeek,
+  isToday,
   today,
 } from "@internationalized/date";
 import { makeDateISOStringFromObject } from "@/shared/utils/functions";
+import useGetData from "@/shared/hooks/tanstack/useGetData";
+import { TTodosDates } from "@/shared/types/main_types";
+import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
+import { Loader2 } from "lucide-react";
 
 const CalendarBasic: FC = () => {
   const [focusedDate, setFocusedDate] = useState<DateValue>(
@@ -21,6 +26,45 @@ const CalendarBasic: FC = () => {
   );
 
   const router = useRouter();
+  const dateFromFocusedDate = useMemo(() => {
+    let month = focusedDate.month;
+    return `${focusedDate.year}-${month < 10 ? "0" + month : month}`;
+  }, [focusedDate]);
+
+  //console.log(dateFromFocusedDate);
+
+  const url: string = `${API_URL}/${TodoDatesPath.replace("%1", dateFromFocusedDate)}`;
+
+  const { data, isLoading } = useGetData<TTodosDates>({
+    dataKey: "todosDates-" + dateFromFocusedDate,
+    paramUrl: url,
+  });
+
+  //console.log(url, data?.data);
+
+  let daysWithTask = useMemo(() => {
+    let days: number[] = [];
+    if (!!data && data.data.length > 0) {
+      days = data.data.reduce((acc: number[], value) => {
+        if (!!value) {
+          const date = new Date(value.updated);
+          const day = date.getDate();
+          if (!acc.includes(day)) {
+            acc.push(date.getDate());
+          }
+        }
+        return acc;
+      }, []);
+    }
+
+    return days.sort((a, b) => {
+      if (a > b) {
+        return 1;
+      } else return -1;
+    });
+  }, [data]);
+
+  //console.log(daysWithTask);
 
   const handlerDate = (param: CalendarDate) => {
     const currentDate = {
@@ -34,36 +78,56 @@ const CalendarBasic: FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-fit mx-auto p-2">
+        <Loader2 size={38} className=" animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <Calendar
-      aria-label="Event date"
-      className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
-      // focusedValue={focusedDate}
-      // value={value}
-      // onChange={setValue}
-      onFocusChange={setFocusedDate}
-      defaultValue={focusedDate}
-    >
-      <Calendar.Header>
-        <Calendar.Heading />
-        <Calendar.NavButton slot="previous" />
-        <Calendar.NavButton slot="next" />
-      </Calendar.Header>
-      <Calendar.Grid>
-        <Calendar.GridHeader>
-          {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-        </Calendar.GridHeader>
-        <Calendar.GridBody>
-          {(date) => (
-            <Calendar.Cell
-              date={date}
-              className={`text-soft-foreground hover:bg-accent-soft-foreground hover:text-white dark:hover:bg-default-foreground/40 active:bg-red-400 data-[today="true"]:bg-accent/55 data-[today="true"]:text-accent-foreground`}
-              onClick={() => handlerDate(date)}
-            />
-          )}
-        </Calendar.GridBody>
-      </Calendar.Grid>
-    </Calendar>
+    <Suspense fallback={<Loader2 size={38} className=" animate-spin" />}>
+      <Calendar
+        aria-label="Event date"
+        className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
+        // focusedValue={focusedDate}
+        // value={value}
+        // onChange={setValue}
+        onFocusChange={setFocusedDate}
+        defaultValue={focusedDate}
+      >
+        <Calendar.Header>
+          <Calendar.Heading />
+          <Calendar.NavButton slot="previous" />
+          <Calendar.NavButton slot="next" />
+        </Calendar.Header>
+        <Calendar.Grid>
+          <Calendar.GridHeader>
+            {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+          </Calendar.GridHeader>
+          <Calendar.GridBody>
+            {(date) => (
+              <Calendar.Cell
+                date={date}
+                className={`text-soft-foreground hover:bg-accent-soft-foreground hover:text-white dark:hover:bg-default-foreground/40 active:bg-red-400 data-[today="true"]:bg-accent/55 data-[today="true"]:text-accent-foreground`}
+                onClick={() => handlerDate(date)}
+              >
+                {({ formattedDate }) => (
+                  <>
+                    {formattedDate}
+                    {(isToday(date, getLocalTimeZone()) ||
+                      daysWithTask.includes(date.day)) && (
+                      <Calendar.CellIndicator />
+                    )}
+                  </>
+                )}
+              </Calendar.Cell>
+            )}
+          </Calendar.GridBody>
+        </Calendar.Grid>
+      </Calendar>
+    </Suspense>
   );
 };
 

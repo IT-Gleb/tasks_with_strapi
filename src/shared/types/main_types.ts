@@ -1,9 +1,10 @@
 type TPageMeta = {
   pagination: {
-    total: number;
-    page: number;
-    pageSize: number;
-    pageCount: number;
+    total?: number;
+    page?: number;
+    pageSize?: number;
+    pageCount?: number;
+    limit?: number;
   };
 };
 export type TPageSeo = {
@@ -48,6 +49,15 @@ export type TTodosMax = {
     id: number;
     documentId: string;
     order: number;
+  }[];
+  meta: TPageMeta;
+};
+
+export type TTodosDates = {
+  data: {
+    id: number;
+    documentId: string;
+    updated: number | Date;
   }[];
   meta: TPageMeta;
 };
