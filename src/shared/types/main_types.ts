@@ -42,3 +42,12 @@ export type TTodosData = {
   data: TTodo[];
   meta: TPageMeta;
 };
+
+export type TTodosMax = {
+  data: {
+    id: number;
+    documentId: string;
+    order: number;
+  }[];
+  meta: TPageMeta;
+};

@@ -2,7 +2,7 @@
 import { Breadcrumbs, BreadcrumbsItem } from "@heroui/react";
 import { FC, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { Check, Home, List, ListEnd } from "lucide-react";
+import { Check, Home, List, ListCheck, ListEnd } from "lucide-react";
 
 type TBreadCrambsProps = {
   path: string;
@@ -31,12 +31,16 @@ const BreadCrambs: FC = () => {
         case "newTodo":
           tmp.push({
             title: "Новая задача",
-            path: "/todos/newTodo",
+            path: "",
             Icon: <ListEnd size={14} />,
           });
           break;
         default:
-          tmp.push({ title: item, path: `/todos/${item}` });
+          tmp.push({
+            title: item,
+            path: `/todos/${item}`,
+            Icon: <ListCheck size={14} />,
+          });
           break;
       }
     });
@@ -49,10 +53,10 @@ const BreadCrambs: FC = () => {
 
   return (
     <Breadcrumbs>
-      {Items.map((item) => {
+      {Items.map((item, index) => {
         return (
           <BreadcrumbsItem
-            key={item.path}
+            key={index}
             href={item.path}
             className="last:font-bold last:border-b-2 last:border-b-default-foreground flex gap-x-1 items-center"
           >

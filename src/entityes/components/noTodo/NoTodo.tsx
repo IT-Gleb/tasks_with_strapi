@@ -1,13 +1,14 @@
 "use client";
 
+import type { TDateISOString } from "@/shared/types/main_types";
 import { Button, Surface } from "@heroui/react";
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function NoTodo() {
+export default function NoTodo({ paramDate }: { paramDate: TDateISOString }) {
   const router = useRouter();
   const handlerNewTodo = () => {
-    router.push("/todos/newTodo");
+    router.push(`/todos/${paramDate}/newTodo`);
   };
   return (
     <div
