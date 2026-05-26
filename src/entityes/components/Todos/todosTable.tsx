@@ -16,6 +16,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -144,16 +145,7 @@ const ActionsCell = memo(
         >
           <Edit size={20} />
         </Button>
-        <Button
-          variant="ghost"
-          isIconOnly
-          size="md"
-          aria-label="Удалить задачу"
-          className={" w-10 h-6 active:scale-90 text-red-500"}
-          onClick={() => handlerDelete(true)}
-        >
-          <Cross size={20} className=" rotate-45" />
-        </Button>
+        <TodoDeleteDialog handler={handlerDelete} />
       </span>
     );
   },
