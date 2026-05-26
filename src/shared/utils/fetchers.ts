@@ -1,3 +1,6 @@
+import { QueryClient } from "@tanstack/react-query";
+import type { TDateISOString } from "../types/main_types";
+
 export async function fetchGet<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, {
@@ -12,4 +15,29 @@ export async function fetchGet<T>(url: string): Promise<T | null> {
   } catch (err) {
     return null;
   }
+}
+export async function ModifyDataQuery(
+  paramKey: string,
+  paramUrl: string,
+  paramData: object,
+) {
+  const query = new QueryClient();
+  try {
+    await query.fetchQuery({
+      queryKey: [paramKey],
+      queryFn: async () => {
+        return await fetch(paramUrl, {
+          headers: { "Content-Type": "application/json;charset=utf-8" },
+          method: "PUT",
+          signal: AbortSignal.timeout(5000),
+          body: JSON.stringify({ data: paramData }),
+        });
+      },
+    });
+    //console.log(data);
+  } catch (err) {
+    console.log((err as Error).message);
+  }
+
+  //query.invalidateQueries({ queryKey: [paramKey] });
 }

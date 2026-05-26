@@ -1,7 +1,10 @@
 "use client";
 
 import type { TDateISOString, TTodo } from "@/shared/types/main_types";
+import { API_URL, DatePage_Prefix } from "@/shared/utils/consts";
+import { ModifyDataQuery } from "@/shared/utils/fetchers";
 import { Button, cn, Link, SortDescriptor, Table } from "@heroui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowUp,
   Check,
@@ -10,7 +13,9 @@ import {
   Edit,
   ListIndentIncrease,
 } from "lucide-react";
-import { memo, useMemo, useState } from "react";
+
+import { useRouter } from "next/navigation";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -19,7 +24,8 @@ type THeaderData = {
 };
 
 type TSortDirection = "ascending" | "descending";
-const sortedCellIndex = ["title", "isCompleted", "order"];
+
+const sortedCellIndex: string[] = ["title", "isCompleted", "order"];
 
 const NewTodoSection = memo(({ paramDate }: { paramDate: TDateISOString }) => {
   return (
@@ -53,7 +59,7 @@ function SortableColumnHeaderCell({
           size={12}
           className={cn(
             "size-3 transform transition-transform duration-200 ease-out",
-            sortDirection === "descending" ? "rotate-180" : "",
+            sortDirection === "descending" ? "" : "rotate-180",
           )}
         />
       )}
@@ -62,15 +68,17 @@ function SortableColumnHeaderCell({
 }
 
 const TblHeader = memo(({ header }: { header: THeaderData }) => {
-  const head: Record<string, string> = {};
-
-  for (const [key, val] of Object.entries(header)) {
-    head[key] = val;
-  }
+  const headerData = useMemo(() => {
+    const head: Record<string, string> = {};
+    for (const [key, val] of Object.entries(header)) {
+      head[key] = val;
+    }
+    return head;
+  }, [header]);
 
   return (
     <Table.Header className={"text-lg uppercase"}>
-      {Object.keys(head).map((key) => (
+      {Object.keys(headerData).map((key) => (
         <Table.Column
           key={key}
           isRowHeader
@@ -84,17 +92,34 @@ const TblHeader = memo(({ header }: { header: THeaderData }) => {
           {sortedCellIndex.includes(key)
             ? ({ sortDirection }) => (
                 <SortableColumnHeaderCell sortDirection={sortDirection}>
-                  {head[key]}
+                  {headerData[key]}
                 </SortableColumnHeaderCell>
               )
-            : head[key]}
+            : headerData[key]}
         </Table.Column>
       ))}
     </Table.Header>
   );
 });
 
-const ActionsCell = memo(({ todo }: { todo: TTodo }) => {
+const ActionsCell = ({
+  todo,
+  paramDate,
+  handlerCompleted,
+}: {
+  todo: TTodo;
+  paramDate: TDateISOString;
+  handlerCompleted: (param: boolean) => void;
+}) => {
+  const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
+
+  // const handlerIsCompleted = () => {
+  //   handlerCompleted(completed);
+  // };
+  useEffect(() => {
+    completed !== todo.isCompleted ? handlerCompleted(completed) : null;
+  }, [completed]);
+
   return (
     <span className="flex items-center justify-between gap-4">
       <Button
@@ -103,6 +128,9 @@ const ActionsCell = memo(({ todo }: { todo: TTodo }) => {
         size="md"
         aria-label="Изменить статус"
         className={" w-10 h-6 text-green-700 active:scale-90"}
+        onClick={() => {
+          setCompleted((prev) => (prev = !prev));
+        }}
       >
         <Check size={20} strokeWidth={2} />
       </Button>
@@ -126,27 +154,67 @@ const ActionsCell = memo(({ todo }: { todo: TTodo }) => {
       </Button>
     </span>
   );
-});
+};
 
-const TableBodyRow = memo(({ todo, index }: { todo: TTodo; index: number }) => {
+const TableBodyRow = ({
+  todo,
+  index,
+  paramDate,
+}: {
+  todo: TTodo;
+  index: number;
+  paramDate: TDateISOString;
+}) => {
+  const url = `${API_URL}/todos/${todo.documentId}`;
+  const [rowTodo, setRowTodo] = useState<TTodo>(todo);
+
+  const handlerIsCompletedTodo = (param: boolean) => {
+    setRowTodo({ ...rowTodo, isCompleted: param });
+
+    const data = { isCompleted: param };
+    const queryFilter = `todo-${rowTodo.documentId}`;
+
+    ModifyDataQuery(queryFilter, url, data);
+
+    //console.log(rowTodo.isCompleted);
+  };
+
   return (
-    <Table.Row id={todo.id}>
+    <Table.Row id={rowTodo.id}>
       <Table.Cell>{index}</Table.Cell>
       <Table.Cell
-        className={todo.isCompleted ? " line-through text-slate-400" : ""}
+        className={rowTodo.isCompleted ? " line-through text-slate-400" : ""}
       >
         {todo.title}
       </Table.Cell>
-      <Table.Cell className={"w-fit mx-auto"}>
-        {todo.isCompleted ? <CircleCheck size={18} /> : "в работе"}
+      <Table.Cell
+        className={
+          rowTodo.isCompleted ? " text-center text-slate-400" : "text-center"
+        }
+      >
+        {rowTodo.isCompleted ? (
+          <CircleCheck size={18} className="w-fit mx-auto" />
+        ) : (
+          "в работе"
+        )}
       </Table.Cell>
-      <Table.Cell className={"text-center"}>{todo.order}</Table.Cell>
+      <Table.Cell
+        className={
+          rowTodo.isCompleted ? "text-center text-slate-400" : "text-center"
+        }
+      >
+        {rowTodo.order}
+      </Table.Cell>
       <Table.Cell>
-        <ActionsCell todo={todo} />
+        <ActionsCell
+          todo={rowTodo}
+          paramDate={paramDate}
+          handlerCompleted={handlerIsCompletedTodo}
+        />
       </Table.Cell>
     </Table.Row>
   );
-});
+};
 
 export default function TodosTable({
   paramDate,
@@ -202,6 +270,7 @@ export default function TodosTable({
                     key={todo.documentId}
                     todo={todo}
                     index={index + 1}
+                    paramDate={paramDate}
                   />
                 ))}
               </Table.Body>

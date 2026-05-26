@@ -7,9 +7,14 @@ import type { TDateISOString, TTodosData } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
-import { QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { Suspense } from "react";
 
 type Props = {
@@ -40,6 +45,7 @@ export default async function TodoOnDate({
   params: Promise<{ date: string[] }>;
 }) {
   const { date } = await params;
+
   //console.log(date);
   //Новая задача
   const isNewTodo = date.includes("newTodo");
@@ -66,31 +72,32 @@ export default async function TodoOnDate({
       return await fetchGet<TTodosData>(url);
     },
   });
-  //console.log(result);
 
   return (
-    <div className=" fromstart mt-5 flex flex-col gap-2 items-center">
-      <Suspense
-        fallback={
-          <Loader2 size={38} strokeWidth={2} className=" animate-spin" />
-        }
-      >
-        {!!result && result.data.length < 1 && (
-          <NoTodo paramDate={date[0] as TDateISOString} />
-        )}
-      </Suspense>
-      <Suspense
-        fallback={
-          <Loader2 size={38} strokeWidth={2} className=" animate-spin" />
-        }
-      >
-        {!!result && result.data.length > 0 && (
-          <TodosTable
-            paramDate={date[0] as TDateISOString}
-            paramTodos={result.data}
-          />
-        )}
-      </Suspense>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className=" fromstart mt-5 flex flex-col gap-2 items-center">
+        <Suspense
+          fallback={
+            <Loader2 size={38} strokeWidth={2} className=" animate-spin" />
+          }
+        >
+          {!!result && result.data.length < 1 && (
+            <NoTodo paramDate={date[0] as TDateISOString} />
+          )}
+        </Suspense>
+        <Suspense
+          fallback={
+            <Loader2 size={38} strokeWidth={2} className=" animate-spin" />
+          }
+        >
+          {!!result && result.data.length > 0 && (
+            <TodosTable
+              paramDate={date[0] as TDateISOString}
+              paramTodos={result.data}
+            />
+          )}
+        </Suspense>
+      </div>
+    </HydrationBoundary>
   );
 }
