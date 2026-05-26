@@ -2,7 +2,7 @@
 
 import type { TDateISOString, TTodo } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix } from "@/shared/utils/consts";
-import { ModifyDataQuery } from "@/shared/utils/fetchers";
+import { DeleteTodoQuery, ModifyDataQuery } from "@/shared/utils/fetchers";
 import { Button, cn, Link, SortDescriptor, Table } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -102,59 +102,62 @@ const TblHeader = memo(({ header }: { header: THeaderData }) => {
   );
 });
 
-const ActionsCell = ({
-  todo,
-  paramDate,
-  handlerCompleted,
-}: {
-  todo: TTodo;
-  paramDate: TDateISOString;
-  handlerCompleted: (param: boolean) => void;
-}) => {
-  const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
+const ActionsCell = memo(
+  ({
+    todo,
+    handlerCompleted,
+    handlerDelete,
+  }: {
+    todo: TTodo;
+    handlerCompleted: (param: boolean) => void;
+    handlerDelete: (param: boolean) => void;
+  }) => {
+    const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
 
-  // const handlerIsCompleted = () => {
-  //   handlerCompleted(completed);
-  // };
-  useEffect(() => {
-    completed !== todo.isCompleted ? handlerCompleted(completed) : null;
-  }, [completed]);
+    // const handlerIsCompleted = () => {
+    //   handlerCompleted(completed);
+    // };
+    useEffect(() => {
+      completed !== todo.isCompleted ? handlerCompleted(completed) : null;
+    }, [completed]);
 
-  return (
-    <span className="flex items-center justify-between gap-4">
-      <Button
-        variant="ghost"
-        isIconOnly
-        size="md"
-        aria-label="Изменить статус"
-        className={" w-10 h-6 text-green-700 active:scale-90"}
-        onClick={() => {
-          setCompleted((prev) => (prev = !prev));
-        }}
-      >
-        <Check size={20} strokeWidth={2} />
-      </Button>
-      <Button
-        variant="ghost"
-        isIconOnly
-        size="md"
-        aria-label="Изменить задачу"
-        className={"w-10 h-6 active:scale-90"}
-      >
-        <Edit size={20} />
-      </Button>
-      <Button
-        variant="ghost"
-        isIconOnly
-        size="md"
-        aria-label="Удалить задачу"
-        className={" w-10 h-6 active:scale-90 text-red-500"}
-      >
-        <Cross size={20} className=" rotate-45" />
-      </Button>
-    </span>
-  );
-};
+    return (
+      <span className="flex items-center justify-between gap-4">
+        <Button
+          variant="ghost"
+          isIconOnly
+          size="md"
+          aria-label="Изменить статус"
+          className={" w-10 h-6 text-green-700 active:scale-90"}
+          onClick={() => {
+            setCompleted((prev) => (prev = !prev));
+          }}
+        >
+          <Check size={20} strokeWidth={2} />
+        </Button>
+        <Button
+          variant="ghost"
+          isIconOnly
+          size="md"
+          aria-label="Изменить задачу"
+          className={"w-10 h-6 active:scale-90"}
+        >
+          <Edit size={20} />
+        </Button>
+        <Button
+          variant="ghost"
+          isIconOnly
+          size="md"
+          aria-label="Удалить задачу"
+          className={" w-10 h-6 active:scale-90 text-red-500"}
+          onClick={() => handlerDelete(true)}
+        >
+          <Cross size={20} className=" rotate-45" />
+        </Button>
+      </span>
+    );
+  },
+);
 
 const TableBodyRow = ({
   todo,
@@ -166,18 +169,29 @@ const TableBodyRow = ({
   paramDate: TDateISOString;
 }) => {
   const url = `${API_URL}/todos/${todo.documentId}`;
+  const queryFilter = `todo-${todo.documentId}`;
+
   const [rowTodo, setRowTodo] = useState<TTodo>(todo);
+  const [rowDeleted, setRowDeleted] = useState<boolean>(false);
 
   const handlerIsCompletedTodo = (param: boolean) => {
     setRowTodo({ ...rowTodo, isCompleted: param });
 
     const data = { isCompleted: param };
-    const queryFilter = `todo-${rowTodo.documentId}`;
 
     ModifyDataQuery(queryFilter, url, data);
 
     //console.log(rowTodo.isCompleted);
   };
+
+  const handlerIsRowDelete = (param: boolean) => {
+    setRowDeleted(param);
+    DeleteTodoQuery(queryFilter, url);
+  };
+
+  if (rowDeleted) {
+    return null;
+  }
 
   return (
     <Table.Row id={rowTodo.id}>
@@ -208,8 +222,8 @@ const TableBodyRow = ({
       <Table.Cell>
         <ActionsCell
           todo={rowTodo}
-          paramDate={paramDate}
           handlerCompleted={handlerIsCompletedTodo}
+          handlerDelete={handlerIsRowDelete}
         />
       </Table.Cell>
     </Table.Row>
