@@ -5,7 +5,7 @@
   /* --background: #ffffff;
   --foreground: #171717; */
   --headerH: 8;
-  --footerH: 10;
+  --footerH: 4;
   --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1vh);
   --minHeaderH: calc(var(--headerH) * 1vh);
   --minFooterH: calc(var(--footerH) * 1vh);
@@ -49,16 +49,16 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
+    @apply overflow-x-hidden flex flex-col text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
 
     main {
-      @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235  xl:max-w-235 has-[.fromcenter]:place-content-center has-[.fromstart]:place-content-start;
+      @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235  xl:max-w-235 has-[.fromcenter]:place-content-center has-[.fromstart]:place-content-start flex-1;
     }
   }
   .layout_header {
-    @apply min-h-(--minHeaderH) border-b border-b-stone-400/50;
+    @apply min-h-(--minHeaderH);
   }
   .layout_footer {
-    @apply min-h-(--minFooterH) border-t border-t-stone-400/50;
+    @apply min-h-(--minFooterH);
   }
 }
