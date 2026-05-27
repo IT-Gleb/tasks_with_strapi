@@ -17,6 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
+import ToDoTitleEdit from "./TodoTitleEdit";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -108,16 +109,15 @@ const ActionsCell = memo(
     todo,
     handlerCompleted,
     handlerDelete,
+    handlerIsEdit,
   }: {
     todo: TTodo;
     handlerCompleted: (param: boolean) => void;
     handlerDelete: (param: boolean) => void;
+    handlerIsEdit: (param: boolean) => void;
   }) => {
     const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
 
-    // const handlerIsCompleted = () => {
-    //   handlerCompleted(completed);
-    // };
     useEffect(() => {
       completed !== todo.isCompleted ? handlerCompleted(completed) : null;
     }, [completed]);
@@ -142,6 +142,7 @@ const ActionsCell = memo(
           size="md"
           aria-label="Изменить задачу"
           className={"w-10 h-6 active:scale-90"}
+          onClick={() => handlerIsEdit(true)}
         >
           <Edit size={20} />
         </Button>
@@ -165,6 +166,7 @@ const TableBodyRow = ({
 
   const [rowTodo, setRowTodo] = useState<TTodo>(todo);
   const [rowDeleted, setRowDeleted] = useState<boolean>(false);
+  const [isTitileEdit, setIsTitleEdit] = useState<boolean>(false);
 
   const handlerIsCompletedTodo = (param: boolean) => {
     setRowTodo({ ...rowTodo, isCompleted: param });
@@ -174,6 +176,12 @@ const TableBodyRow = ({
     ModifyDataQuery(queryFilter, url, data);
 
     //console.log(rowTodo.isCompleted);
+  };
+
+  const handlerIsTitleTodo = (param: string) => {
+    setRowTodo({ ...rowTodo, title: param });
+    const data = { title: param };
+    ModifyDataQuery(queryFilter, url, data);
   };
 
   const handlerIsRowDelete = (param: boolean) => {
@@ -191,7 +199,15 @@ const TableBodyRow = ({
       <Table.Cell
         className={rowTodo.isCompleted ? " line-through text-slate-400" : ""}
       >
-        {todo.title}
+        {isTitileEdit ? (
+          <ToDoTitleEdit
+            paramTitleTodo={rowTodo.title}
+            handler={setIsTitleEdit}
+            handlerSetData={handlerIsTitleTodo}
+          />
+        ) : (
+          rowTodo.title
+        )}
       </Table.Cell>
       <Table.Cell
         className={
@@ -216,6 +232,7 @@ const TableBodyRow = ({
           todo={rowTodo}
           handlerCompleted={handlerIsCompletedTodo}
           handlerDelete={handlerIsRowDelete}
+          handlerIsEdit={setIsTitleEdit}
         />
       </Table.Cell>
     </Table.Row>
