@@ -6,28 +6,22 @@ import type {
   TTodosData,
 } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
-import {
-  DeleteTodoQuery,
-  fetchGet,
-  ModifyDataQuery,
-} from "@/shared/utils/fetchers";
+import { DeleteTodoQuery, ModifyDataQuery } from "@/shared/utils/fetchers";
 import { Button, cn, Link, SortDescriptor, Table } from "@heroui/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowUp,
   Check,
   CircleCheck,
-  Cross,
   Edit,
   ListIndentIncrease,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
 import ToDoTitleEdit from "./TodoTitleEdit";
-import NoTodo from "../noTodo/NoTodo";
+
 import Loading from "@/app/loading";
+import useGetData from "@/shared/hooks/tanstack/useGetData";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -160,94 +154,96 @@ const ActionsCell = ({
   );
 };
 
-const TableBodyRow = ({
-  todo,
-  index,
-  paramDate,
-}: {
-  todo: TTodo;
-  index: number;
-  paramDate: TDateISOString;
-}) => {
-  const url = `${API_URL}/todos/${todo.documentId}`;
-  const queryFilter = `todo-${todo.documentId}`;
+const TableBodyRow = memo(
+  ({
+    todo,
+    index,
+    paramDate,
+  }: {
+    todo: TTodo;
+    index: number;
+    paramDate: TDateISOString;
+  }) => {
+    const url = `${API_URL}/todos/${todo.documentId}`;
+    const queryFilter = `todo-${todo.documentId}`;
 
-  const [rowTodo, setRowTodo] = useState<TTodo>(todo);
-  const [rowDeleted, setRowDeleted] = useState<boolean>(false);
-  const [isTitileEdit, setIsTitleEdit] = useState<boolean>(false);
+    const [rowTodo, setRowTodo] = useState<TTodo>(todo);
+    const [rowDeleted, setRowDeleted] = useState<boolean>(false);
+    const [isTitileEdit, setIsTitleEdit] = useState<boolean>(false);
 
-  const handlerIsCompletedTodo = async (param: boolean) => {
-    setRowTodo({ ...rowTodo, isCompleted: param });
+    const handlerIsCompletedTodo = async (param: boolean) => {
+      setRowTodo({ ...rowTodo, isCompleted: param });
 
-    const data = { isCompleted: param };
+      const data = { isCompleted: param };
 
-    await ModifyDataQuery(queryFilter, url, data);
+      await ModifyDataQuery(queryFilter, url, data);
 
-    //console.log(rowTodo.isCompleted);
-  };
+      //console.log(rowTodo.isCompleted);
+    };
 
-  const handlerIsTitleTodo = (param: string) => {
-    setRowTodo({ ...rowTodo, title: param });
-    const data = { title: param };
-    ModifyDataQuery(queryFilter, url, data);
-  };
+    const handlerIsTitleTodo = (param: string) => {
+      setRowTodo({ ...rowTodo, title: param });
+      const data = { title: param };
+      ModifyDataQuery(queryFilter, url, data);
+    };
 
-  const handlerIsRowDelete = (param: boolean) => {
-    setRowDeleted(param);
-    DeleteTodoQuery(queryFilter, url);
-  };
+    const handlerIsRowDelete = (param: boolean) => {
+      setRowDeleted(param);
+      DeleteTodoQuery(queryFilter, url);
+    };
 
-  if (rowDeleted) {
-    return null;
-  }
+    if (rowDeleted) {
+      return null;
+    }
 
-  // console.log(rowTodo);
+    // console.log(rowTodo);
 
-  return (
-    <Table.Row id={rowTodo.id}>
-      <Table.Cell>{index}</Table.Cell>
-      <Table.Cell
-        className={rowTodo.isCompleted ? " line-through text-slate-400" : ""}
-      >
-        {isTitileEdit ? (
-          <ToDoTitleEdit
-            paramTitleTodo={rowTodo.title}
-            handler={setIsTitleEdit}
-            handlerSetData={handlerIsTitleTodo}
+    return (
+      <Table.Row id={rowTodo.id}>
+        <Table.Cell>{index}</Table.Cell>
+        <Table.Cell
+          className={rowTodo.isCompleted ? " line-through text-slate-400" : ""}
+        >
+          {isTitileEdit ? (
+            <ToDoTitleEdit
+              paramTitleTodo={rowTodo.title}
+              handler={setIsTitleEdit}
+              handlerSetData={handlerIsTitleTodo}
+            />
+          ) : (
+            rowTodo.title
+          )}
+        </Table.Cell>
+        <Table.Cell
+          className={
+            rowTodo.isCompleted ? " text-center text-slate-400" : "text-center"
+          }
+        >
+          {rowTodo.isCompleted ? (
+            <CircleCheck size={18} className="w-fit mx-auto" />
+          ) : (
+            "в работе"
+          )}
+        </Table.Cell>
+        <Table.Cell
+          className={
+            rowTodo.isCompleted ? "text-center text-slate-400" : "text-center"
+          }
+        >
+          {rowTodo.order}
+        </Table.Cell>
+        <Table.Cell>
+          <ActionsCell
+            todo={rowTodo}
+            handlerCompleted={handlerIsCompletedTodo}
+            handlerDelete={handlerIsRowDelete}
+            handlerIsEdit={setIsTitleEdit}
           />
-        ) : (
-          rowTodo.title
-        )}
-      </Table.Cell>
-      <Table.Cell
-        className={
-          rowTodo.isCompleted ? " text-center text-slate-400" : "text-center"
-        }
-      >
-        {rowTodo.isCompleted ? (
-          <CircleCheck size={18} className="w-fit mx-auto" />
-        ) : (
-          "в работе"
-        )}
-      </Table.Cell>
-      <Table.Cell
-        className={
-          rowTodo.isCompleted ? "text-center text-slate-400" : "text-center"
-        }
-      >
-        {rowTodo.order}
-      </Table.Cell>
-      <Table.Cell>
-        <ActionsCell
-          todo={rowTodo}
-          handlerCompleted={handlerIsCompletedTodo}
-          handlerDelete={handlerIsRowDelete}
-          handlerIsEdit={setIsTitleEdit}
-        />
-      </Table.Cell>
-    </Table.Row>
-  );
-};
+        </Table.Cell>
+      </Table.Row>
+    );
+  },
+);
 
 function TodosTable({
   paramDate,
@@ -321,16 +317,12 @@ export default function TodosTableProvider({
   paramDate: TDateISOString;
 }) {
   const url = `${API_URL}/${DatePagePath.replace("%1", paramDate)}`;
+  const queryKey = DatePage_Prefix.replace("%1", paramDate);
   const {
     data: todos,
     isSuccess,
     isLoading,
-  } = useQuery({
-    queryKey: [DatePage_Prefix.replace("%1", paramDate)],
-    queryFn: async () => {
-      return await fetchGet<TTodosData>(url);
-    },
-  });
+  } = useGetData<TTodosData>({ dataKey: queryKey, paramUrl: url });
 
   if (isLoading) {
     return <Loading />;
