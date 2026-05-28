@@ -1,5 +1,3 @@
-import { QueryClient } from "@tanstack/react-query";
-
 import { TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
