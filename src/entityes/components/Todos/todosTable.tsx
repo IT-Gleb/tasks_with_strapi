@@ -16,7 +16,7 @@ import {
   ListIndentIncrease,
 } from "lucide-react";
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
 import ToDoTitleEdit from "./TodoTitleEdit";
 

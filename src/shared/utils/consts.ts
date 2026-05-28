@@ -9,3 +9,6 @@ export const TodosMax =
 export const TodosMax_prefix = "todosMax";
 export const TodoDatesPath =
   "todos?fields[0]=updated&filters[updated][$containsi]=%1&sort[0]=updated:desc&pagination[limit]=100";
+
+export const TodosLast20_prefix= "todos-last-20";
+export const TodosLast20= "todos?filters[updated][$between][0]=%1&filters[updated][$between][1]=%2&filters[isCompleted][$eq]=0&sort[0]=updated:asc&pagination[limit]=20"

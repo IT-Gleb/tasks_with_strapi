@@ -18,6 +18,7 @@ import CalendarBasic from "@/entityes/components/calendar/CalendarBasic";
 import { Suspense } from "react";
 import Loading from "./loading";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
+import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();
@@ -31,16 +32,19 @@ export default async function Home() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       {result && (
-        <Suspense fallback={<Loading />}>
-          <div className="w-fit p-2 mx-auto text-xl grid grid-cols-2 items-start gap-2">
+        <div className="w-fit p-2 mx-auto text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-2">
+          <Suspense fallback={<Loading />}>
             <CalendarBasic />
-            <div className="text-xs p-2">
+            {/* <div className="text-xs p-2">
               {FormatDateTime(
                 CheckIsTimeZoneString(result?.data.publishedAt as string),
               )}
-            </div>
-          </div>
-        </Suspense>
+            </div> */}
+          </Suspense>
+          <Suspense fallback={<Loading />}>
+            <LastTodos />
+          </Suspense>
+        </div>
       )}
     </HydrationBoundary>
   );
