@@ -1,5 +1,6 @@
 "use client";
 
+import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import type { TDateISOString, TTodosMax } from "@/shared/types/main_types";
 import {
@@ -12,7 +13,14 @@ import { Button, Surface } from "@heroui/react";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Cross, ListIndentIncrease, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, SubmitEvent, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  SubmitEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as z from "zod";
 
 const todoValidate = z
@@ -33,12 +41,13 @@ export default function AddNewTodo({
 }: {
   paramDate: TDateISOString;
 }) {
-  const queryCl = new QueryClient();
+  const queryCl = getCacheQueryClient();
   const router = useRouter();
 
   const [inputValue, setInputValue] = useState<string>("");
   const [errValue, setErrValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [todoOrder, setTodoOrder] = useState<number>(0);
 
   const maxUrl = `${API_URL}/${TodosMax}`;
   const {
@@ -87,9 +96,29 @@ export default function AddNewTodo({
       title: inputValue,
       isCompleted: false,
       updated: paramDate,
-      order: (max?.data[0].order as number) + 1,
+      order: todoOrder,
     };
   }, [inputValue]);
+
+  useEffect(() => {
+    let isWork: boolean = true;
+
+    if (isWork) {
+      if (
+        max === undefined ||
+        max?.data === null ||
+        (max as TTodosMax).data.length < 1
+      )
+        setTodoOrder(1);
+      else {
+        setTodoOrder((max as TTodosMax).data[0].order + 1);
+      }
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [max]);
 
   const handlerInput = (evt: ChangeEvent<HTMLInputElement>) => {
     setInputValue(evt.target.value);
@@ -132,12 +161,7 @@ export default function AddNewTodo({
       </div>
     );
   }
-  if (
-    isError ||
-    max?.data === null ||
-    max?.data === undefined ||
-    max.data?.length < 1
-  ) {
+  if (isError || max?.data === null || max?.data === undefined) {
     return (
       <div className="mt-5 p-2 w-fit mx-auto">
         <p className=" text-red-500 dark:text-red-300">

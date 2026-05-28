@@ -17,9 +17,10 @@ import {
 import CalendarBasic from "@/entityes/components/calendar/CalendarBasic";
 import { Suspense } from "react";
 import Loading from "./loading";
+import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export default async function Home() {
-  const queryClient = new QueryClient();
+  const queryClient = getCacheQueryClient();
   const result = await queryClient.fetchQuery({
     queryKey: [MainPageSeo_Prefix],
     queryFn: async () => {
