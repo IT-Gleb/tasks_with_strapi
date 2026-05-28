@@ -2,7 +2,7 @@
 
 import { Card, Link, ScrollShadow } from "@heroui/react";
 import GradientLine from "../../ui/gradients/GradientLine";
-import { List, ListIndentDecrease, ListOrdered } from "lucide-react";
+import { List, ListOrdered } from "lucide-react";
 import { firstLastMonthDayLastCurrentMonthDay } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosData } from "@/shared/types/main_types";
@@ -20,13 +20,10 @@ export default function LastTodos() {
     dataKey: TodosLast20_prefix,
     paramUrl: url,
   });
-  //   const todos = Array.from({ length: 20 }).map(
-  //     (_, index) => "Lorem todos forever - " + (index + 1),
-  //   );
 
   //console.log(firstLastMonthDayLastCurrentMonthDay(Date.now()));
   if (isError) {
-    return <div className="w-fit mx-auto">Ошибка загрузки данных</div>;
+    return <div className="w-fit mx-auto p-1">Ошибка загрузки данных</div>;
   }
 
   return (
