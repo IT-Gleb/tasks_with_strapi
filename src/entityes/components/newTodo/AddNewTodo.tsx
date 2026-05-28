@@ -119,6 +119,7 @@ export default function AddNewTodo({
       setErrValue(`${test.status}, ${test.statusText}`);
       return;
     }
+
     router.push("/todos/" + paramDate);
 
     //router.push("/todos/" + paramDate);

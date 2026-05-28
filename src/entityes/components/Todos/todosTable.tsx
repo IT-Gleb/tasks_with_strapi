@@ -1,10 +1,18 @@
 "use client";
 
-import type { TDateISOString, TTodo } from "@/shared/types/main_types";
-import { API_URL, DatePage_Prefix } from "@/shared/utils/consts";
-import { DeleteTodoQuery, ModifyDataQuery } from "@/shared/utils/fetchers";
+import type {
+  TDateISOString,
+  TTodo,
+  TTodosData,
+} from "@/shared/types/main_types";
+import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
+import {
+  DeleteTodoQuery,
+  fetchGet,
+  ModifyDataQuery,
+} from "@/shared/utils/fetchers";
 import { Button, cn, Link, SortDescriptor, Table } from "@heroui/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowUp,
   Check,
@@ -18,6 +26,8 @@ import { useRouter } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
 import ToDoTitleEdit from "./TodoTitleEdit";
+import NoTodo from "../noTodo/NoTodo";
+import Loading from "@/app/loading";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -104,53 +114,51 @@ const TblHeader = memo(({ header }: { header: THeaderData }) => {
   );
 });
 
-const ActionsCell = memo(
-  ({
-    todo,
-    handlerCompleted,
-    handlerDelete,
-    handlerIsEdit,
-  }: {
-    todo: TTodo;
-    handlerCompleted: (param: boolean) => void;
-    handlerDelete: (param: boolean) => void;
-    handlerIsEdit: (param: boolean) => void;
-  }) => {
-    const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
+const ActionsCell = ({
+  todo,
+  handlerCompleted,
+  handlerDelete,
+  handlerIsEdit,
+}: {
+  todo: TTodo;
+  handlerCompleted: (param: boolean) => void;
+  handlerDelete: (param: boolean) => void;
+  handlerIsEdit: (param: boolean) => void;
+}) => {
+  const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
 
-    useEffect(() => {
-      completed !== todo.isCompleted ? handlerCompleted(completed) : null;
-    }, [completed]);
+  useEffect(() => {
+    completed !== todo.isCompleted ? handlerCompleted(completed) : null;
+  }, [completed]);
 
-    return (
-      <span className="flex items-center justify-between gap-4">
-        <Button
-          variant="ghost"
-          isIconOnly
-          size="md"
-          aria-label="Изменить статус"
-          className={" w-10 h-6 text-green-700 active:scale-90"}
-          onClick={() => {
-            setCompleted((prev) => (prev = !prev));
-          }}
-        >
-          <Check size={20} strokeWidth={2} />
-        </Button>
-        <Button
-          variant="ghost"
-          isIconOnly
-          size="md"
-          aria-label="Изменить задачу"
-          className={"w-10 h-6 active:scale-90"}
-          onClick={() => handlerIsEdit(true)}
-        >
-          <Edit size={20} />
-        </Button>
-        <TodoDeleteDialog handler={handlerDelete} />
-      </span>
-    );
-  },
-);
+  return (
+    <span className="flex items-center justify-between gap-4">
+      <Button
+        variant="ghost"
+        isIconOnly
+        size="md"
+        aria-label="Изменить статус"
+        className={" w-10 h-6 text-green-700 active:scale-90"}
+        onClick={() => {
+          setCompleted((prev) => (prev = !prev));
+        }}
+      >
+        <Check size={20} strokeWidth={2} />
+      </Button>
+      <Button
+        variant="ghost"
+        isIconOnly
+        size="md"
+        aria-label="Изменить задачу"
+        className={"w-10 h-6 active:scale-90"}
+        onClick={() => handlerIsEdit(true)}
+      >
+        <Edit size={20} />
+      </Button>
+      <TodoDeleteDialog handler={handlerDelete} />
+    </span>
+  );
+};
 
 const TableBodyRow = ({
   todo,
@@ -168,12 +176,12 @@ const TableBodyRow = ({
   const [rowDeleted, setRowDeleted] = useState<boolean>(false);
   const [isTitileEdit, setIsTitleEdit] = useState<boolean>(false);
 
-  const handlerIsCompletedTodo = (param: boolean) => {
+  const handlerIsCompletedTodo = async (param: boolean) => {
     setRowTodo({ ...rowTodo, isCompleted: param });
 
     const data = { isCompleted: param };
 
-    ModifyDataQuery(queryFilter, url, data);
+    await ModifyDataQuery(queryFilter, url, data);
 
     //console.log(rowTodo.isCompleted);
   };
@@ -192,6 +200,8 @@ const TableBodyRow = ({
   if (rowDeleted) {
     return null;
   }
+
+  // console.log(rowTodo);
 
   return (
     <Table.Row id={rowTodo.id}>
@@ -239,7 +249,7 @@ const TableBodyRow = ({
   );
 };
 
-export default function TodosTable({
+function TodosTable({
   paramDate,
   paramTodos,
 }: {
@@ -303,4 +313,30 @@ export default function TodosTable({
       </Table>
     </section>
   );
+}
+
+export default function TodosTableProvider({
+  paramDate,
+}: {
+  paramDate: TDateISOString;
+}) {
+  const url = `${API_URL}/${DatePagePath.replace("%1", paramDate)}`;
+  const {
+    data: todos,
+    isSuccess,
+    isLoading,
+  } = useQuery({
+    queryKey: [DatePage_Prefix.replace("%1", paramDate)],
+    queryFn: async () => {
+      return await fetchGet<TTodosData>(url);
+    },
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  return isSuccess && todos?.data !== undefined ? (
+    <TodosTable paramDate={paramDate} paramTodos={todos?.data as TTodo[]} />
+  ) : null;
 }

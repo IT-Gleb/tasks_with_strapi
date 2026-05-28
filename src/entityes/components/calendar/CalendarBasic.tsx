@@ -31,6 +31,7 @@ const CalendarBasic: FC = () => {
     return `${focusedDate.year}-${month < 10 ? "0" + month : month}`;
   }, [focusedDate]);
 
+  const thisMonth = focusedDate.month;
   //console.log(dateFromFocusedDate);
 
   const url: string = `${API_URL}/${TodoDatesPath.replace("%1", dateFromFocusedDate)}`;
@@ -117,7 +118,8 @@ const CalendarBasic: FC = () => {
                   <>
                     {formattedDate}
                     {(isToday(date, getLocalTimeZone()) ||
-                      daysWithTask.includes(date.day)) && (
+                      (daysWithTask.includes(date.day) &&
+                        thisMonth === date.month)) && (
                       <Calendar.CellIndicator />
                     )}
                   </>

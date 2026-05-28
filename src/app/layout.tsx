@@ -13,6 +13,7 @@ import {
 import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
 import HeaderLayout from "@/entityes/components/HeaderLayout";
 import FooterLayout from "@/entityes/components/FooterLayout";
+import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ import FooterLayout from "@/entityes/components/FooterLayout";
 // };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const query = new QueryClient();
+  const query = getCacheQueryClient();
   const result = await query.fetchQuery({
     queryKey: [MainPageSeo_Prefix],
     queryFn: async () => {

@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
-import type { TDateISOString } from "../types/main_types";
+
 import { TodosMax_prefix } from "./consts";
+import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function fetchGet<T>(url: string): Promise<T | null> {
   try {
@@ -22,7 +23,7 @@ export async function ModifyDataQuery(
   paramUrl: string,
   paramData: object,
 ) {
-  const query = new QueryClient();
+  const query = getCacheQueryClient();
   try {
     await query.fetchQuery({
       queryKey: [paramKey],
@@ -36,15 +37,14 @@ export async function ModifyDataQuery(
       },
     });
     //console.log(data);
+    await query.invalidateQueries({ queryKey: [paramKey] });
   } catch (err) {
     console.log((err as Error).message);
   }
-
-  //query.invalidateQueries({ queryKey: [paramKey] });
 }
 
 export async function DeleteTodoQuery(paramKey: string, paramUrl: string) {
-  const query = new QueryClient();
+  const query = getCacheQueryClient();
   try {
     await query.fetchQuery({
       queryKey: [paramKey],
