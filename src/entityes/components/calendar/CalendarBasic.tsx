@@ -19,6 +19,7 @@ import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosDates } from "@/shared/types/main_types";
 import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
 import { Loader2 } from "lucide-react";
+import Loading from "@/app/loading";
 
 const CalendarBasic: FC = () => {
   const [focusedDate, setFocusedDate] = useState<DateValue>(
@@ -80,11 +81,7 @@ const CalendarBasic: FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="w-fit mx-auto p-2">
-        <Loader2 size={38} className=" animate-spin" />
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

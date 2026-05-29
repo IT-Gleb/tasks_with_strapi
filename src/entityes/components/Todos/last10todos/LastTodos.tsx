@@ -14,6 +14,7 @@ import {
 
 export default function LastTodos() {
   const dates = firstLastMonthDayLastCurrentMonthDay(Date.now());
+  //console.log(dates);
 
   const url = `${API_URL}/${TodosLast20.replace("%1", dates.firstDate).replace("%2", dates.currentDate)}`;
   const { data: todos, isError } = useGetData<TTodosData>({
@@ -55,7 +56,7 @@ export default function LastTodos() {
                   key={item.documentId}
                   href={`/todos/${item.updated}`}
                   className={
-                    "flex gap-x-3 items-center p-1 text-warning-foreground dark:text-red-300"
+                    "flex gap-x-3 items-center p-1 text-warning-foreground dark:text-red-300 hover:font-semibold"
                   }
                 >
                   {index + 1}.
