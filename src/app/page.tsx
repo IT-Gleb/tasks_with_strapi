@@ -49,7 +49,7 @@ export default async function Home() {
           </Suspense>
           <Suspense fallback={<Loading />}>
             <div className="mt-5 lg:col-span-2">
-              <ChartMonthProvider paramDate={makeDateISOStringFromNow()} />
+              <ChartMonthProvider />
             </div>
           </Suspense>
         </div>

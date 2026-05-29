@@ -20,11 +20,15 @@ import { TTodosDates } from "@/shared/types/main_types";
 import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
 import { Loader2 } from "lucide-react";
 import Loading from "@/app/loading";
+import useDateStore from "@/shared/store/dateStore";
 
 const CalendarBasic: FC = () => {
+  //const [value, setValue] = useState<DateValue | null>(null);
   const [focusedDate, setFocusedDate] = useState<DateValue>(
     today(getLocalTimeZone()),
   );
+
+  const setCurrentDate = useDateStore((state) => state.setCurrentDate);
 
   const router = useRouter();
   const dateFromFocusedDate = useMemo(() => {
@@ -75,6 +79,8 @@ const CalendarBasic: FC = () => {
       day: param.day,
     };
     const toGo = makeDateISOStringFromObject(currentDate);
+    setCurrentDate(toGo);
+
     if (!!toGo) {
       router.push(`/todos/${toGo}`);
     }
@@ -84,6 +90,17 @@ const CalendarBasic: FC = () => {
     return <Loading />;
   }
 
+  const handlerFocusChange = (date: CalendarDate) => {
+    const work_Date = {
+      year: date.year,
+      month: date.month,
+      day: date.day,
+    };
+    setCurrentDate(makeDateISOStringFromObject(work_Date));
+    // setValue(focusedDate);
+    setFocusedDate(date);
+  };
+
   return (
     <Suspense fallback={<Loader2 size={38} className=" animate-spin" />}>
       <Calendar
@@ -92,7 +109,7 @@ const CalendarBasic: FC = () => {
         // focusedValue={focusedDate}
         // value={value}
         // onChange={setValue}
-        onFocusChange={setFocusedDate}
+        onFocusChange={handlerFocusChange}
         defaultValue={focusedDate}
       >
         <Calendar.Header>

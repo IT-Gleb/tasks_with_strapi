@@ -2,12 +2,14 @@
 
 import Loading from "@/app/loading";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
+import useDateStore from "@/shared/store/dateStore";
 import { TDateISOString, TTodo, TTodosData } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
 import {
   extractMonthName,
   makeDateISOStringFromDate,
 } from "@/shared/utils/functions";
+import { Surface } from "@heroui/react";
 import { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { useRouter } from "next/navigation";
@@ -92,7 +94,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
       isWork = false;
       (todoChart.current as ChartJS).destroy();
     };
-  }, []);
+  }, [paramData]);
 
   function clickHandler(evt: any) {
     const points = (todoChart.current as ChartJS).getElementsAtEventForMode(
@@ -125,14 +127,15 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   );
 }
 
-export default function ChartMonthProvider({
-  paramDate,
-}: {
-  paramDate: TDateISOString;
-}) {
-  const [year, month] = paramDate.split("-");
+export default function ChartMonthProvider() {
+  const currentDate = useDateStore((state) => state.currentDate);
+  //console.log(currentDate);
+
+  const [year, month] = currentDate.split("-");
   const nowDt = `${year}-${month}`;
   // console.log(paramDate, nowDt);
+
+  //const [chartValue, setChartValue] = useState<TChartData | null>(null);
 
   const url = `${API_URL}/${DatePagePath.replace("%1", nowDt)}`;
   const queryKey = DatePage_Prefix.replace("%1", nowDt);
@@ -141,9 +144,10 @@ export default function ChartMonthProvider({
     paramUrl: url,
   });
 
-  const chartTodos = useMemo(() => {
+  const chartData = useMemo(() => {
     const result: TChartData = [];
     if (todos === undefined || todos?.data === null) {
+      //        setChartValue(result);
       return result;
     }
     const tmp = Object.groupBy(todos?.data as TTodo[], (item) =>
@@ -174,6 +178,7 @@ export default function ChartMonthProvider({
         return -1;
       }
     });
+    console.log(result);
   }, [todos]);
 
   //console.log(chartTodos);
@@ -181,5 +186,12 @@ export default function ChartMonthProvider({
     return <Loading />;
   }
 
-  return <TodosCharts paramData={chartTodos} />;
+  if (chartData === null || chartData.length < 1) {
+    return (
+      <Surface className="p-2 mt-5 w-fit mx-auto text-sm">
+        Нет данных...
+      </Surface>
+    );
+  }
+  return <TodosCharts paramData={chartData} />;
 }
