@@ -13,12 +13,15 @@ import {
 import {
   CheckIsTimeZoneString,
   FormatDateTime,
+  makeDateISOString,
+  makeDateISOStringFromNow,
 } from "@/shared/utils/functions";
 import CalendarBasic from "@/entityes/components/calendar/CalendarBasic";
 import { Suspense } from "react";
 import Loading from "./loading";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
+import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();
@@ -43,6 +46,11 @@ export default async function Home() {
           </Suspense>
           <Suspense fallback={<Loading />}>
             <LastTodos />
+          </Suspense>
+          <Suspense fallback={<Loading />}>
+            <div className="mt-5 lg:col-span-2">
+              <ChartMonthProvider paramDate={makeDateISOStringFromNow()} />
+            </div>
           </Suspense>
         </div>
       )}

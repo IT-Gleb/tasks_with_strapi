@@ -39,6 +39,22 @@ export function makeDateISOStringFromObject(param: {
   );
 }
 
+export function makeDateISOStringFromNow(){
+  const dt= new Date(Date.now());
+  const year= dt.getUTCFullYear();
+  const month= dt.getUTCMonth()+1;
+  const day= dt.getUTCDate();
+  return makeDateISOStringFromObject({year,month,day})
+}
+
+export function makeDateISOStringFromDate(param:Date){
+  const dt= new Date(param);
+  const year= dt.getUTCFullYear();
+  const month= dt.getUTCMonth()+1;
+  const day= dt.getUTCDate();
+  return makeDateISOStringFromObject({year,month,day})
+}
+
 export function firstLastMonthDayLastCurrentMonthDay(param:number|Date){
   let dt= new Date(param);
 
@@ -63,4 +79,25 @@ export function firstLastMonthDayLastCurrentMonthDay(param:number|Date){
     firstDate: firstDate,
     currentDate
   }
+}
+
+export function extractMonthName(param: TDateISOString) {
+  const nmMonths = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+  ];
+  const dt = new Date(param);
+  const month = dt.getUTCMonth();
+
+  return nmMonths[month];
 }

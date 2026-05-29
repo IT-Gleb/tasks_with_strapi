@@ -5,7 +5,9 @@
   "scripts": {
     "dockerup": "rundocker.cmd",
     "dockerdown": "dockerdown.cmd",
+    "predev": "rundocker.cmd",
     "dev": "next dev -p 3001",
+    "postdev": "dockerdown.cmd",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -25,9 +27,11 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.100.13",
+    "@types/chart.js": "^2.9.41",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "chart.js": "^4.5.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
