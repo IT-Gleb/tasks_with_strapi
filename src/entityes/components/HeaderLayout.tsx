@@ -9,7 +9,11 @@ export default function HeaderLayout() {
     <header className="layout_header w-full py-2 pr-1 xl:py-3 flex flex-col gap-1 ">
       <div className="flex items-center gap-4 justify-between ">
         <NavigationMain />
-        <ThemeButton />
+        <div className="h-7 w-10 p-1 rounded-xl bg-stone-200 dark:bg-default-hover flex items-center">
+          <span className="block scale-60">
+            <ThemeButton />
+          </span>
+        </div>
       </div>
       <div className="mt-2">
         <GradientLine />

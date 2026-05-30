@@ -9,7 +9,7 @@ import {
   makeDateISOStringFromDate,
 } from "@/shared/utils/functions";
 import { Surface } from "@heroui/react";
-import { ChartConfiguration, ChartItem } from "chart.js";
+import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useMemo, useRef } from "react";

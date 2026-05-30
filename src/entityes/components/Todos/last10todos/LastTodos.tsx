@@ -40,7 +40,9 @@ export default function LastTodos() {
         <Card.Title className="flex flex-col gap-y-2 overflow-hidden">
           <div className="flex gap-1 items-center flex-1 w-fit mx-auto">
             <List size={18} />
-            <span className="text-sm font-bold">Незавершенные задачи:</span>
+            <span className="text-sm font-bold">
+              Незавершенные задачи (последних 20):
+            </span>
           </div>
           <GradientLine />
         </Card.Title>
