@@ -18,7 +18,6 @@ import { makeDateISOStringFromObject } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosDates } from "@/shared/types/main_types";
 import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
-import { Loader2 } from "lucide-react";
 import Loading from "@/app/loading";
 import useDateStore from "@/shared/store/dateStore";
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import "@/accets/css/globals.css";
 import TanstaqProvider from "@/entityes/providers/TanstackProvider";
-import { QueryClient } from "@tanstack/react-query";
+
 import { fetchGet } from "@/shared/utils/fetchers";
 import { TPageSeo } from "@/shared/types/main_types";
 import {
@@ -32,10 +32,11 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function generateMetadata(): Promise<Metadata> {
   const query = getCacheQueryClient();
+  const api_url = process.env.API_URL ?? "no_api";
   const result = await query.fetchQuery({
     queryKey: [MainPageSeo_Prefix],
     queryFn: async () => {
-      return await fetchGet<TPageSeo>(`${API_URL}/${MainPageSEOPath}`);
+      return await fetchGet<TPageSeo>(`${api_url}/${MainPageSEOPath}`);
     },
   });
 

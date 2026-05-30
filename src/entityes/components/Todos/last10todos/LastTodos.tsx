@@ -41,7 +41,7 @@ export default function LastTodos() {
           <div className="flex gap-1 items-center flex-1 w-fit mx-auto">
             <List size={18} />
             <span className="text-sm font-bold">
-              Незавершенные задачи (последних 20):
+              Незавершенные задачи (последние 20):
             </span>
           </div>
           <GradientLine />

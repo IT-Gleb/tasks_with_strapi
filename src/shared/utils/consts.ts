@@ -1,4 +1,4 @@
-export const API_URL = "http://localhost:1337/api";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const MainPageSeo_Prefix = "MainPageSEO";
 export const MainPageSEOPath = "page-seo";
 export const DatePagePath = "todos?filters[updated][$containsi]=%1&pagination[limit]=100";

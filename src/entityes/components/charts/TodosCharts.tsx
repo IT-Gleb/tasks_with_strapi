@@ -65,8 +65,8 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
           title: {
             display: true,
             font: {
-              style: "initial",
-              size: 16,
+              size: 12,
+              weight: "bold",
             },
             text: `Всего задач: (${paramData.reduce((acc, value) => {
               acc += value.completed + value.nocompleted;
