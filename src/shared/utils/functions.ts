@@ -63,7 +63,7 @@ export function firstLastMonthDayLastCurrentMonthDay(param:number|Date){
   let month= dt.getUTCMonth()+1;
   const first_Date= new Date(year,month-1, 1);
   const last_Date= new Date(year, month+1, 1);
-  //last_Date.setDate(last_Date.getDate()-1);
+  //last_Date.setUTCHours(last_Date.getUTCHours()-1);
   
   year= first_Date.getFullYear();
   month= first_Date.getMonth();

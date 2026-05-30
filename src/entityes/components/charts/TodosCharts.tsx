@@ -1,6 +1,5 @@
 "use client";
 
-import Loading from "@/app/loading";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import useDateStore from "@/shared/store/dateStore";
 import { TDateISOString, TTodo, TTodosData } from "@/shared/types/main_types";
@@ -93,6 +92,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
         todoChart.current = null;
       }
       todoChart.current = new ChartJS(chartRef.current as ChartItem, options);
+      //      todoChart.current.update("resize");
     }
     return () => {
       isWork = false;
@@ -125,7 +125,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   }
 
   return (
-    <div className="w-80 min-h-60 lg:w-full lg:min-h-30 object-cover">
+    <div className="min-h-70 md:min-h-120 w-full h-full object-cover">
       <canvas ref={chartRef} id="chartData" className="w-full h-full"></canvas>
     </div>
   );
@@ -143,7 +143,7 @@ export default function ChartMonthProvider() {
 
   const url = `${API_URL}/${DatePagePath.replace("%1", nowDt)}`;
   const queryKey = DatePage_Prefix.replace("%1", nowDt);
-  const { data: todos, isLoading } = useGetData<TTodosData>({
+  const { data: todos } = useGetData<TTodosData>({
     dataKey: queryKey,
     paramUrl: url,
   });
@@ -186,9 +186,9 @@ export default function ChartMonthProvider() {
   }, [todos]);
 
   //console.log(chartTodos);
-  if (isLoading) {
-    return <Loading />;
-  }
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   if (chartData === null || chartData.length < 1) {
     return (

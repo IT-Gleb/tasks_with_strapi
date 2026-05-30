@@ -35,8 +35,12 @@ export default async function Home() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       {result && (
-        <div className="w-fit p-2 mx-auto text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-2">
-          <Suspense fallback={<Loading />}>
+        <div className="w-full p-2 text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-2">
+          <Suspense
+            fallback={
+              <div className=" bg-stone-400 min-w-60 min-h-40 rounded-2xl"></div>
+            }
+          >
             <CalendarBasic />
             {/* <div className="text-xs p-2">
               {FormatDateTime(
@@ -44,10 +48,18 @@ export default async function Home() {
               )}
             </div> */}
           </Suspense>
-          <Suspense fallback={<Loading />}>
+          <Suspense
+            fallback={
+              <div className=" bg-stone-400 min-w-60 min-h-40 rounded-2xl"></div>
+            }
+          >
             <LastTodos />
           </Suspense>
-          <Suspense fallback={<Loading />}>
+          <Suspense
+            fallback={
+              <div className="w-full lg:col-span-2 bg-stone-400 min-w-80 min-h-50 rounded-2xl"></div>
+            }
+          >
             <div className="mt-5 lg:col-span-2">
               <ChartMonthProvider />
             </div>
