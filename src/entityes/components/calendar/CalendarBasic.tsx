@@ -32,9 +32,12 @@ const CalendarBasic: FC = () => {
 
   const router = useRouter();
   const dateFromFocusedDate = useMemo(() => {
+    let year = focusedDate.year;
     let month = focusedDate.month;
-    return `${focusedDate.year}-${month < 10 ? "0" + month : month}`;
+    return `${year}-${month < 10 ? "0" + month : month}`;
   }, [focusedDate]);
+
+  //console.log(dateFromFocusedDate);
 
   const thisMonth = focusedDate.month;
   //console.log(dateFromFocusedDate);
@@ -96,7 +99,10 @@ const CalendarBasic: FC = () => {
       month: date.month,
       day: date.day,
     };
-    setCurrentDate(makeDateISOStringFromObject(work_Date));
+    const t_Date = makeDateISOStringFromObject(work_Date);
+    //console.log(t_Date);
+
+    setCurrentDate(t_Date);
     // setValue(focusedDate);
     setFocusedDate(date);
   };

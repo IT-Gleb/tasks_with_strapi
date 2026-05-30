@@ -50,30 +50,32 @@ export function makeDateISOStringFromNow(){
 
 export function makeDateISOStringFromDate(param:Date){
   const dt= new Date(param);
+
   const year= dt.getUTCFullYear();
   const month= dt.getUTCMonth()+1;
   const day= dt.getUTCDate();
   return makeDateISOStringFromObject({year,month,day})
 }
 
-export function firstLastMonthDayLastCurrentMonthDay(param:number|Date){
-  let dt= new Date(param);
+export function firstLastMonthDayLastCurrentMonthDay(param:Date){
+
+  const dt= new Date(param);
 
   let year= dt.getFullYear();
-  let month= dt.getUTCMonth()+1;
+  let month= dt.getUTCMonth();
   const first_Date= new Date(year,month, 1);
   const last_Date= new Date(year, month+1, 1);
   //last_Date.setUTCHours(last_Date.getUTCHours()-1);
   
-  year= first_Date.getFullYear();
+  year= first_Date.getUTCFullYear();
   month= first_Date.getMonth();
-  let day= first_Date.getDate();
+  let day= first_Date.getUTCDate();
 
   const firstDate= makeDateISOStringFromObject({year,month,day});
 
-  year= last_Date.getFullYear();
+  year= last_Date.getUTCFullYear();
   month= last_Date.getMonth();
-  day= last_Date.getDate();
+  day= last_Date.getUTCDate();
 
   const currentDate= makeDateISOStringFromObject({year,month,day});
 

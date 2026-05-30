@@ -125,9 +125,12 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   }
 
   return (
-    <div className="min-h-70 md:min-h-120 w-full h-full object-cover">
+    <Surface
+      variant="default"
+      className="min-h-70 md:min-h-120 w-full h-full object-cover rounded-xl p-1"
+    >
       <canvas ref={chartRef} id="chartData" className="w-full h-full"></canvas>
-    </div>
+    </Surface>
   );
 }
 

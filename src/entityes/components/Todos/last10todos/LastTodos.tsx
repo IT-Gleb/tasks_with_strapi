@@ -12,10 +12,13 @@ import {
   TodosLast20_prefix,
 } from "@/shared/utils/consts";
 import useDateStore from "@/shared/store/dateStore";
+import { useMemo } from "react";
 
 export default function LastTodos() {
   const currentDate = useDateStore((state) => state.currentDate);
-  const dates = firstLastMonthDayLastCurrentMonthDay(new Date(currentDate));
+  const dates = useMemo(() => {
+    return firstLastMonthDayLastCurrentMonthDay(new Date(currentDate));
+  }, [currentDate]);
   //console.log(dates);
 
   const url = `${API_URL}/${TodosLast20.replace("%1", dates.firstDate).replace("%2", dates.currentDate)}`;
