@@ -88,6 +88,10 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   useLayoutEffect(() => {
     let isWork: boolean = true;
     if (isWork) {
+      if (todoChart.current !== null) {
+        todoChart.current.destroy();
+        todoChart.current = null;
+      }
       todoChart.current = new ChartJS(chartRef.current as ChartItem, options);
     }
     return () => {
@@ -178,7 +182,7 @@ export default function ChartMonthProvider() {
         return -1;
       }
     });
-    console.log(result);
+    // console.log(result);
   }, [todos]);
 
   //console.log(chartTodos);

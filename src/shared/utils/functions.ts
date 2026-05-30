@@ -34,8 +34,9 @@ export function makeDateISOStringFromObject(param: {
   month: number;
   day: number;
 }): TDateISOString {
+  const mn = param.month < 1? 1: param.month;
   return makeDateISOString(
-    `${param.year}-${param.month < 10 ? "0" + param.month : param.month}-${param.day < 10 ? "0" + param.day : param.day}`,
+    `${param.year}-${mn < 10 ? "0" + mn : param.month}-${param.day < 10 ? "0" + param.day : param.day}`,
   );
 }
 
@@ -59,9 +60,10 @@ export function firstLastMonthDayLastCurrentMonthDay(param:number|Date){
   let dt= new Date(param);
 
   let year= dt.getFullYear();
-  let month= dt.getMonth()+1;
+  let month= dt.getUTCMonth()+1;
   const first_Date= new Date(year,month-1, 1);
   const last_Date= new Date(year, month+1, 1);
+  //last_Date.setDate(last_Date.getDate()-1);
   
   year= first_Date.getFullYear();
   month= first_Date.getMonth();

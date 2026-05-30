@@ -11,14 +11,18 @@ import {
   TodosLast20,
   TodosLast20_prefix,
 } from "@/shared/utils/consts";
+import useDateStore from "@/shared/store/dateStore";
 
 export default function LastTodos() {
-  const dates = firstLastMonthDayLastCurrentMonthDay(Date.now());
+  const currentDate = useDateStore((state) => state.currentDate);
+  const dates = firstLastMonthDayLastCurrentMonthDay(new Date(currentDate));
   //console.log(dates);
 
   const url = `${API_URL}/${TodosLast20.replace("%1", dates.firstDate).replace("%2", dates.currentDate)}`;
+  //console.log(url);
+
   const { data: todos, isError } = useGetData<TTodosData>({
-    dataKey: TodosLast20_prefix,
+    dataKey: TodosLast20_prefix + "-" + dates.currentDate,
     paramUrl: url,
   });
 

@@ -79,7 +79,7 @@ const CalendarBasic: FC = () => {
       day: param.day,
     };
     const toGo = makeDateISOStringFromObject(currentDate);
-    setCurrentDate(toGo);
+    //setCurrentDate(toGo);
 
     if (!!toGo) {
       router.push(`/todos/${toGo}`);
