@@ -331,7 +331,10 @@ function TodosTable({
             <Pagination.Content>
               <Pagination.Item>
                 <Pagination.Previous
-                  isDisabled={pageMeta.pagination.page === 1}
+                  isDisabled={
+                    Number.isNaN(pageMeta.pagination.page) ||
+                    Number(pageMeta.pagination.page) <= 1
+                  }
                   onPress={() => paginatePage(-1)}
                 >
                   <Pagination.PreviousIcon />
@@ -342,7 +345,9 @@ function TodosTable({
               <Pagination.Item>
                 <Pagination.Next
                   isDisabled={
-                    pageMeta.pagination.page === pageMeta.pagination.pageCount
+                    Number.isNaN(pageMeta.pagination.page) ||
+                    Number(pageMeta.pagination.page) >=
+                      Number(pageMeta.pagination.pageCount)
                   }
                   onPress={() => paginatePage(1)}
                 >
