@@ -10,6 +10,7 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
 import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
 import Loading from "./loading";
+import SearchTasks from "@/entityes/components/search/SearchTasks";
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();
@@ -26,7 +27,12 @@ export default async function Home() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       {!!result && (
-        <div className="w-full p-2 text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-2">
+        <div className="w-full p-2 text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-y-3 space-y-5">
+          <Suspense fallback={<Loading />}>
+            <span className="block lg:col-span-2">
+              <SearchTasks />
+            </span>
+          </Suspense>
           <Suspense fallback={<Loading from="fromstart" />}>
             <CalendarBasic />
             {/* <div className="text-xs p-2">

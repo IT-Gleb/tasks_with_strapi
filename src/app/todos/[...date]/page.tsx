@@ -66,7 +66,7 @@ export default async function TodoOnDate({
   const queryClient = getCacheQueryClient();
   const api_url = process.env.API_URL ?? "no_api";
   const url = `${api_url}/${DatePagePath_Max200.replace("%1", date[0])}`;
-  console.log(url);
+  //console.log(url);
 
   const result = await queryClient.fetchQuery({
     queryKey: [DatePage_Prefix.replace("%1", date[0])],
