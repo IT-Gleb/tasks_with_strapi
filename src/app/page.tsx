@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
 import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
+import Loading from "./loading";
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();
@@ -24,13 +25,9 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {result && (
+      {!!result && (
         <div className="w-full p-2 text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-2">
-          <Suspense
-            fallback={
-              <div className=" bg-stone-400 min-w-60 min-h-40 rounded-2xl"></div>
-            }
-          >
+          <Suspense fallback={<Loading from="fromstart" />}>
             <CalendarBasic />
             {/* <div className="text-xs p-2">
               {FormatDateTime(
@@ -38,18 +35,10 @@ export default async function Home() {
               )}
             </div> */}
           </Suspense>
-          <Suspense
-            fallback={
-              <div className=" bg-stone-400 min-w-60 min-h-40 rounded-2xl"></div>
-            }
-          >
+          <Suspense fallback={<Loading />}>
             <LastTodos />
           </Suspense>
-          <Suspense
-            fallback={
-              <div className="w-full lg:col-span-2 bg-stone-400 min-w-80 min-h-50 rounded-2xl"></div>
-            }
-          >
+          <Suspense fallback={<Loading />}>
             <div className="mt-5 lg:col-span-2">
               <ChartMonthProvider />
             </div>

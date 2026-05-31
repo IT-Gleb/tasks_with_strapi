@@ -1,22 +1,15 @@
 "use client";
 
-import { ProgressBar } from "@heroui/react";
-//import { Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { JSX } from "react";
 
-function Loading(): JSX.Element {
+type Tdirection = "fromcenter" | "fromstart";
+
+function Loading({ from = "fromcenter" }: { from?: Tdirection }): JSX.Element {
   return (
-    <ProgressBar
-      isIndeterminate
-      aria-label="Loading"
-      className="w-64"
-      color="default"
-    >
-      {/* <Label>Загружаю данные...</Label> */}
-      <ProgressBar.Track>
-        <ProgressBar.Fill />
-      </ProgressBar.Track>
-    </ProgressBar>
+    <div className={`w-fit mx-auto ${from} text-warning dark:text-slate-400`}>
+      <Loader2 size={68} className=" animate-spin" />
+    </div>
   );
 }
 
