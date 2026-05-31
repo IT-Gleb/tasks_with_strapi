@@ -15,6 +15,7 @@ import {
 import {
   Button,
   cn,
+  Description,
   Link,
   Pagination,
   SortDescriptor,
@@ -342,6 +343,14 @@ function TodosTable({
                 </Pagination.Previous>
               </Pagination.Item>
 
+              {/* {pages.map((p) => (
+              <Pagination.Item key={p}>
+                <Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
+                  {p}
+                </Pagination.Link>
+              </Pagination.Item>
+            ))} */}
+
               <Pagination.Item>
                 <Pagination.Next
                   isDisabled={
@@ -377,7 +386,11 @@ export default function TodosTableProvider({
     return `${API_URL}/${DatePagePath.replace("%1", paramDate).replace("%2", String(page))}`;
   }, [page]);
 
-  const { data: todos, isSuccess } = useQuery({
+  const {
+    data: todos,
+    isSuccess,
+    error,
+  } = useQuery({
     queryKey: [queryKey, page],
     queryFn: async () => {
       return await fetchGet<TTodosData>(url);
@@ -399,6 +412,17 @@ export default function TodosTableProvider({
   // if (isLoading) {
   //   return <Loading />;
   // }
+
+  if (!!error) {
+    return (
+      <div className="p-2 w-fit mx-auto flex flex-col gap-y-4">
+        Ошибка!
+        <Description>
+          <span>{error.name}</span> <span>{error.message}</span>
+        </Description>
+      </div>
+    );
+  }
 
   return isSuccess ? (
     <TodosTable
