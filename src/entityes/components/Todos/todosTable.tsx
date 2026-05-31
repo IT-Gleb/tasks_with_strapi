@@ -2,12 +2,24 @@
 
 import type {
   TDateISOString,
+  TPageMeta,
   TTodo,
   TTodosData,
 } from "@/shared/types/main_types";
 import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
-import { DeleteTodoQuery, ModifyDataQuery } from "@/shared/utils/fetchers";
-import { Button, cn, Link, SortDescriptor, Table } from "@heroui/react";
+import {
+  DeleteTodoQuery,
+  fetchGet,
+  ModifyDataQuery,
+} from "@/shared/utils/fetchers";
+import {
+  Button,
+  cn,
+  Link,
+  Pagination,
+  SortDescriptor,
+  Table,
+} from "@heroui/react";
 import {
   ArrowUp,
   Check,
@@ -22,6 +34,7 @@ import ToDoTitleEdit from "./TodoTitleEdit";
 
 import Loading from "@/app/loading";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -248,9 +261,13 @@ const TableBodyRow = memo(
 function TodosTable({
   paramDate,
   paramTodos,
+  pageMeta,
+  paginatePage,
 }: {
   paramDate: TDateISOString;
   paramTodos: TTodo[];
+  pageMeta: TPageMeta;
+  paginatePage: (param: number) => void;
 }) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "order",
@@ -270,7 +287,7 @@ function TodosTable({
 
       return cmp;
     });
-  }, [sortDescriptor]);
+  }, [sortDescriptor, paramTodos]);
 
   return (
     <section className="w-full mt-2">
@@ -306,6 +323,36 @@ function TodosTable({
             </Table.Content>
           </Table.ResizableContainer>
         </Table.ScrollContainer>
+        <Table.Footer>
+          <Pagination size="sm" className="w-full">
+            <Pagination.Summary>
+              <span>{`Страница: ${pageMeta.pagination.page} из ${pageMeta.pagination.pageCount}`}</span>
+            </Pagination.Summary>
+            <Pagination.Content>
+              <Pagination.Item>
+                <Pagination.Previous
+                  isDisabled={pageMeta.pagination.page === 1}
+                  onPress={() => paginatePage(-1)}
+                >
+                  <Pagination.PreviousIcon />
+                  <span>Предыдущая</span>
+                </Pagination.Previous>
+              </Pagination.Item>
+
+              <Pagination.Item>
+                <Pagination.Next
+                  isDisabled={
+                    pageMeta.pagination.page === pageMeta.pagination.pageCount
+                  }
+                  onPress={() => paginatePage(1)}
+                >
+                  <span>Следующая</span>
+                  <Pagination.NextIcon />
+                </Pagination.Next>
+              </Pagination.Item>
+            </Pagination.Content>
+          </Pagination>
+        </Table.Footer>
       </Table>
     </section>
   );
@@ -316,19 +363,44 @@ export default function TodosTableProvider({
 }: {
   paramDate: TDateISOString;
 }) {
-  const url = `${API_URL}/${DatePagePath.replace("%1", paramDate)}`;
+  const [page, setPage] = useState<number>(1);
+  const [todosData, setTodosData] = useState<TTodo[]>([]);
+
   const queryKey = DatePage_Prefix.replace("%1", paramDate);
-  const {
-    data: todos,
-    isSuccess,
-    isLoading,
-  } = useGetData<TTodosData>({ dataKey: queryKey, paramUrl: url });
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  const url = useMemo(() => {
+    return `${API_URL}/${DatePagePath.replace("%1", paramDate).replace("%2", String(page))}`;
+  }, [page]);
 
-  return isSuccess && todos?.data !== undefined ? (
-    <TodosTable paramDate={paramDate} paramTodos={todos?.data as TTodo[]} />
+  const { data: todos, isSuccess } = useQuery({
+    queryKey: [queryKey, page],
+    queryFn: async () => {
+      return await fetchGet<TTodosData>(url);
+    },
+    placeholderData: keepPreviousData,
+  });
+
+  useMemo(() => {
+    //console.log(page, todos?.meta, todos?.data);
+    if (!!todos && todos.data.length > 0) {
+      setTodosData(todos?.data as TTodo[]);
+    }
+  }, [todos]);
+
+  const handlerPage = (offsetPage: number) => {
+    setPage((prev) => (prev = prev + offsetPage));
+  };
+
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
+
+  return isSuccess ? (
+    <TodosTable
+      paramDate={paramDate}
+      paramTodos={todosData}
+      pageMeta={todos?.meta as TPageMeta}
+      paginatePage={handlerPage}
+    />
   ) : null;
 }

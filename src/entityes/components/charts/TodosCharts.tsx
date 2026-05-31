@@ -3,7 +3,11 @@
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import useDateStore from "@/shared/store/dateStore";
 import { TDateISOString, TTodo, TTodosData } from "@/shared/types/main_types";
-import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
+import {
+  API_URL,
+  DatePage_Prefix,
+  DatePagePath_Max100,
+} from "@/shared/utils/consts";
 import {
   extractMonthName,
   makeDateISOStringFromDate,
@@ -144,7 +148,7 @@ export default function ChartMonthProvider() {
 
   //const [chartValue, setChartValue] = useState<TChartData | null>(null);
 
-  const url = `${API_URL}/${DatePagePath.replace("%1", nowDt)}`;
+  const url = `${API_URL}/${DatePagePath_Max100.replace("%1", nowDt)}`;
   const queryKey = DatePage_Prefix.replace("%1", nowDt);
   const { data: todos } = useGetData<TTodosData>({
     dataKey: queryKey,

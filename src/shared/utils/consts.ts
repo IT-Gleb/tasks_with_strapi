@@ -1,7 +1,8 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const MainPageSeo_Prefix = "MainPageSEO";
 export const MainPageSEOPath = "page-seo";
-export const DatePagePath = "todos?filters[updated][$containsi]=%1&pagination[limit]=100";
+export const DatePagePath = "todos?filters[updated][$containsi]=%1&sort[0]=createdAt:asc&pagination[page]=%2&pagination[pageSize]=15";
+export const DatePagePath_Max100 = "todos?filters[updated][$containsi]=%1&pagination[limit]=100";
 export const DatePage_Prefix = "todos-%1";
 export const NewDateTodo = "/todos/%1/newTodo";
 export const TodosMax =
