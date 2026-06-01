@@ -35,10 +35,10 @@ export default function LastTodos() {
   }
 
   return (
-    <Card className="w-full p-0">
-      <Card.Header className="p-1 ">
-        <Card.Title className="flex flex-col gap-y-2 overflow-hidden">
-          <div className="flex gap-1 items-center flex-1 w-fit mx-auto">
+    <Card className="w-full p-0 overflow-hidden bg-default-100/25 dark:bg-default-700/25">
+      <Card.Header>
+        <Card.Title className="flex flex-col gap-y-2 bg-rose-300/25 dark:bg-rose-700/50">
+          <div className="flex gap-1 items-center flex-1 w-fit mx-auto pt-2">
             <List size={18} />
             <span className="text-sm font-bold">
               Незавершенные задачи (последние 20):

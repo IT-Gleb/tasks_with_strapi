@@ -131,7 +131,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   return (
     <Surface
       variant="default"
-      className="min-h-70 md:min-h-120 w-full h-full object-cover rounded-xl p-1"
+      className="min-h-50 md:min-h-110 w-full h-full object-cover rounded-xl p-1"
     >
       <canvas ref={chartRef} id="chartData" className="w-full h-full"></canvas>
     </Surface>

@@ -6,9 +6,9 @@
   --foreground: #171717; */
   --headerH: 8;
   --footerH: 4;
-  --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1vh);
-  --minHeaderH: calc(var(--headerH) * 1vh);
-  --minFooterH: calc(var(--footerH) * 1vh);
+  --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1dvh);
+  --minHeaderH: calc(var(--headerH) * 1dvh);
+  --minFooterH: calc(var(--footerH) * 1dvh);
   --chocolate: #e97451;
   --chocolate-dark: #7b3f00;
   --chocolate-dark2: #814141;
@@ -17,7 +17,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
-  --chocolate-dark: oklch(from var(--chocolate-dark) 0.25 0.85 105);
+  --chocolate-dark: oklch(from var(--chocolate-dark) 0.15 0.55 10);
 }
 
 @theme inline {
@@ -52,7 +52,7 @@
     @apply overflow-x-hidden flex flex-col text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
 
     main {
-      @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235  xl:max-w-235 place-content-start flex-1;
+      @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235 xl:max-w-235 place-content-start flex-1;
     }
   }
   .layout_header {

@@ -28,11 +28,6 @@ export default async function Home() {
     <HydrationBoundary state={dehydrate(queryClient)}>
       {!!result && (
         <div className="w-full p-2 text-xl grid grid-cols-1 lg:grid-cols-2 items-start gap-y-3 space-y-5">
-          <Suspense fallback={<Loading />}>
-            <span className="block lg:col-span-2">
-              <SearchTasks />
-            </span>
-          </Suspense>
           <Suspense fallback={<Loading from="fromstart" />}>
             <CalendarBasic />
             {/* <div className="text-xs p-2">
