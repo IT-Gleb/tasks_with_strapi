@@ -105,3 +105,26 @@ export function extractMonthName(param: TDateISOString) {
 
   return nmMonths[month];
 }
+
+export function ParamsFromString(param:string){
+  if (param.trim().length < 1){
+    return "";
+  }
+  
+  const res = param.match(/[^\s.,!?:\-\[\]\(\)]+/gi);
+
+  let result= "";
+
+  if (res?.length) {
+      res.filter((item) => item.trim().length > 2).map((item,index)=>{
+      return result+=`param${index}=${encodeURI(item)}&`;
+      });
+
+    } else{
+      return ""
+    }
+
+   // result= result.substring(0,result.length-1);
+
+  return result;  
+}

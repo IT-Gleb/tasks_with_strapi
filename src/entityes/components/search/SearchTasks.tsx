@@ -4,12 +4,15 @@ import { Button, Surface, useMediaQuery } from "@heroui/react";
 import { Cross, Search } from "lucide-react";
 import { ChangeEvent, useRef, useState } from "react";
 import SearchTasksPopover from "./SearchPopover";
+import { ParamsFromString } from "@/shared/utils/functions";
+import { useRouter } from "next/navigation";
 
 export default function SearchTasks() {
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
 
   const isMobile = useMediaQuery("screen and (100px < width < 641px)");
+  const router = useRouter();
 
   const handlerClear = () => {
     setSearchValue("");
@@ -19,6 +22,15 @@ export default function SearchTasks() {
   const handlerChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
     setSearchValue(value);
+  };
+
+  const handlerSearch = () => {
+    const res = ParamsFromString(searchValue);
+    if (res.length < 1) {
+      return;
+    }
+    //console.log(res);
+    router.push("/search?" + res);
   };
 
   return (
@@ -64,6 +76,7 @@ export default function SearchTasks() {
           variant="primary"
           className={" scale-80 place-content-center active:scale-70"}
           isIconOnly={isMobile}
+          onClick={handlerSearch}
         >
           <Search size={14} />
           Искать

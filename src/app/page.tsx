@@ -10,7 +10,6 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
 import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
 import Loading from "./loading";
-import SearchTasks from "@/entityes/components/search/SearchTasks";
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();

@@ -2,7 +2,14 @@
 import { Breadcrumbs, BreadcrumbsItem } from "@heroui/react";
 import { FC, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { Check, Home, List, ListCheck, ListEnd } from "lucide-react";
+import {
+  Check,
+  Home,
+  List,
+  ListCheck,
+  ListEnd,
+  SearchCheck,
+} from "lucide-react";
 
 type TBreadCrambsProps = {
   path: string;
@@ -33,6 +40,13 @@ const BreadCrambs: FC = () => {
             title: "Новая задача",
             path: "",
             Icon: <ListEnd size={14} />,
+          });
+          break;
+        case "search":
+          tmp.push({
+            title: "Поиск",
+            path: "",
+            Icon: <SearchCheck size={14} />,
           });
           break;
         default:
