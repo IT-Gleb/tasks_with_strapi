@@ -48,6 +48,11 @@ const BreadCrambs: FC = () => {
             path: "",
             Icon: <SearchCheck size={14} />,
           });
+          tmp.push({
+            title: "Задачи",
+            path: "",
+            Icon: <SearchCheck size={14} />,
+          });
           break;
         default:
           tmp.push({

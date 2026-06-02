@@ -34,55 +34,54 @@ export function makeDateISOStringFromObject(param: {
   month: number;
   day: number;
 }): TDateISOString {
-  const mn = param.month < 1? 1: param.month;
+  const mn = param.month < 1 ? 1 : param.month;
   return makeDateISOString(
     `${param.year}-${mn < 10 ? "0" + mn : param.month}-${param.day < 10 ? "0" + param.day : param.day}`,
   );
 }
 
-export function makeDateISOStringFromNow(){
-  const dt= new Date(Date.now());
-  const year= dt.getUTCFullYear();
-  const month= dt.getUTCMonth()+1;
-  const day= dt.getUTCDate();
-  return makeDateISOStringFromObject({year,month,day})
+export function makeDateISOStringFromNow() {
+  const dt = new Date(Date.now());
+  const year = dt.getUTCFullYear();
+  const month = dt.getUTCMonth() + 1;
+  const day = dt.getUTCDate();
+  return makeDateISOStringFromObject({ year, month, day });
 }
 
-export function makeDateISOStringFromDate(param:Date){
-  const dt= new Date(param);
+export function makeDateISOStringFromDate(param: Date) {
+  const dt = new Date(param);
 
-  const year= dt.getUTCFullYear();
-  const month= dt.getUTCMonth()+1;
-  const day= dt.getUTCDate();
-  return makeDateISOStringFromObject({year,month,day})
+  const year = dt.getUTCFullYear();
+  const month = dt.getUTCMonth() + 1;
+  const day = dt.getUTCDate();
+  return makeDateISOStringFromObject({ year, month, day });
 }
 
-export function firstLastMonthDayLastCurrentMonthDay(param:Date){
+export function firstLastMonthDayLastCurrentMonthDay(param: Date) {
+  const dt = new Date(param);
 
-  const dt= new Date(param);
-
-  let year= dt.getFullYear();
-  let month= dt.getUTCMonth();
-  const first_Date= new Date(year,month, 1);
-  const last_Date= new Date(year, month+1, 1);
+  let year = dt.getFullYear();
+  let month = dt.getUTCMonth();
+  const first_Date = new Date(year, month, 1);
+  const last_Date = new Date(year, month + 1, 1);
   //last_Date.setUTCHours(last_Date.getUTCHours()-1);
-  
-  year= first_Date.getUTCFullYear();
-  month= first_Date.getMonth();
-  let day= first_Date.getUTCDate();
 
-  const firstDate= makeDateISOStringFromObject({year,month,day});
+  year = first_Date.getUTCFullYear();
+  month = first_Date.getMonth();
+  let day = first_Date.getUTCDate();
 
-  year= last_Date.getUTCFullYear();
-  month= last_Date.getMonth();
-  day= last_Date.getUTCDate();
+  const firstDate = makeDateISOStringFromObject({ year, month, day });
 
-  const currentDate= makeDateISOStringFromObject({year,month,day});
+  year = last_Date.getUTCFullYear();
+  month = last_Date.getMonth();
+  day = last_Date.getUTCDate();
+
+  const currentDate = makeDateISOStringFromObject({ year, month, day });
 
   return {
     firstDate: firstDate,
-    currentDate
-  }
+    currentDate,
+  };
 }
 
 export function extractMonthName(param: TDateISOString) {
@@ -106,25 +105,20 @@ export function extractMonthName(param: TDateISOString) {
   return nmMonths[month];
 }
 
-export function ParamsFromString(param:string){
-  if (param.trim().length < 1){
+export function ParamsFromString(param: string) {
+  if (param.trim().length < 1) {
     return "";
   }
-  
+
   const res = param.match(/[^\s.,!?:\-\[\]\(\)]+/gi);
 
-  let result= "";
-
   if (res?.length) {
-      res.filter((item) => item.trim().length > 2).map((item,index)=>{
-      return result+=`param${index}=${encodeURI(item)}&`;
-      });
+    const urlParam = new URLSearchParams();
+    res
+      .filter((item) => item.trim().length > 2)
+      .map((item,index) => urlParam.append(`param[${index}]`, encodeURI(item)));
 
-    } else{
-      return ""
-    }
-
-   // result= result.substring(0,result.length-1);
-
-  return result;  
+    return urlParam.toString();
+  }
+  return "";
 }

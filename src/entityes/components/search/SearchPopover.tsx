@@ -1,11 +1,14 @@
+import { ParamsFromString } from "@/shared/utils/functions";
 import { Button, Popover } from "@heroui/react";
 import { Check, Cross, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useRef, useState } from "react";
 
 export default function SearchTasksPopover() {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   const handlerChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.currentTarget;
@@ -15,6 +18,17 @@ export default function SearchTasksPopover() {
   const handlerClear = () => {
     setSearchValue("");
     searchRef.current?.focus();
+  };
+
+  const handlerSearch = () => {
+    const sParams = ParamsFromString(searchValue);
+    if (sParams === "") {
+      return;
+    }
+
+    setSearchValue("");
+    setPopoverOpen(false);
+    router.push(`/search?${sParams}`);
   };
 
   return (
@@ -49,7 +63,7 @@ export default function SearchTasksPopover() {
               onChange={handlerChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  setSearchValue("");
+                  handlerSearch();
                 }
               }}
             />
@@ -59,6 +73,7 @@ export default function SearchTasksPopover() {
               isIconOnly
               isDisabled={searchValue.trim().length < 3}
               className={"px-4 py-0.5"}
+              onClick={handlerSearch}
             >
               <span className="block w-fit text-green-600 dark:text-green-300">
                 <Check size={12} strokeWidth={3} />

@@ -1,11 +1,9 @@
 import { Metadata, ResolvingMetadata } from "next";
 
-type TProps = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+type TProps = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export async function generateMetadata(
-  { searchParams }: TProps,
+  searchParams: TProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   //console.log(date);
@@ -20,7 +18,7 @@ export async function generateMetadata(
 export default async function SearchedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: TProps;
 }) {
   const serch = await searchParams;
   //console.log(serch);

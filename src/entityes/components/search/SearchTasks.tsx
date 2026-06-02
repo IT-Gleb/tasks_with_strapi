@@ -30,6 +30,7 @@ export default function SearchTasks() {
       return;
     }
     //console.log(res);
+    setSearchValue("");
     router.push("/search?" + res);
   };
 
@@ -55,7 +56,7 @@ export default function SearchTasks() {
           onChange={handlerChange}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              setSearchValue("");
+              handlerSearch();
             }
           }}
         />
