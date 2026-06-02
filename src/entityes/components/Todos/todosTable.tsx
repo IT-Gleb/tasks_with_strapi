@@ -127,11 +127,13 @@ const ActionsCell = ({
   handlerCompleted,
   handlerDelete,
   handlerIsEdit,
+  handlerSetTitle,
 }: {
   todo: TTodo;
   handlerCompleted: (param: boolean) => void;
   handlerDelete: (param: boolean) => void;
   handlerIsEdit: (param: boolean) => void;
+  handlerSetTitle: (param: string) => void;
 }) => {
   const [completed, setCompleted] = useState<boolean>(todo.isCompleted);
 
@@ -146,14 +148,19 @@ const ActionsCell = ({
         isIconOnly
         size="md"
         aria-label="Изменить статус"
-        className={" w-10 h-6 text-green-700 active:scale-90"}
+        className={" w-11 h-6 text-green-700 active:scale-90"}
         onClick={() => {
           setCompleted((prev) => (prev = !prev));
         }}
       >
         <Check size={20} strokeWidth={2} />
       </Button>
-      <Button
+      <ToDoTitleEdit
+        paramTitleTodo={todo.title}
+        handler={handlerIsEdit}
+        handlerSetData={handlerSetTitle}
+      />
+      {/* <Button
         variant="ghost"
         isIconOnly
         size="md"
@@ -162,7 +169,7 @@ const ActionsCell = ({
         onClick={() => handlerIsEdit(true)}
       >
         <Edit size={20} />
-      </Button>
+      </Button> */}
       <TodoDeleteDialog handler={handlerDelete} />
     </span>
   );
@@ -218,7 +225,7 @@ const TableBodyRow = memo(
         <Table.Cell
           className={rowTodo.isCompleted ? " line-through text-slate-400" : ""}
         >
-          {isTitileEdit ? (
+          {/* {isTitileEdit ? (
             <ToDoTitleEdit
               paramTitleTodo={rowTodo.title}
               handler={setIsTitleEdit}
@@ -226,7 +233,8 @@ const TableBodyRow = memo(
             />
           ) : (
             rowTodo.title
-          )}
+          )} */}
+          {rowTodo.title}
         </Table.Cell>
         <Table.Cell
           className={
@@ -252,6 +260,7 @@ const TableBodyRow = memo(
             handlerCompleted={handlerIsCompletedTodo}
             handlerDelete={handlerIsRowDelete}
             handlerIsEdit={setIsTitleEdit}
+            handlerSetTitle={handlerIsTitleTodo}
           />
         </Table.Cell>
       </Table.Row>
