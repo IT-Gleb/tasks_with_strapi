@@ -110,13 +110,14 @@ export function ParamsFromString(param: string) {
     return "";
   }
 
-  const res = param.match(/[^\s.,!?:\-\[\]\(\)]+/gi);
+  const res = param.match(/[^\s.,!?:\`\~\&\-\[\]\(\)]+/gi);
 
   if (res?.length) {
     const urlParam = new URLSearchParams();
+    urlParam.append("word0",param);
     res
       .filter((item) => item.trim().length > 2)
-      .map((item,index) => urlParam.append(`param[${index}]`, encodeURI(item)));
+      .map((item,index) => urlParam.append(`word${index+1}`, item));
 
     return urlParam.toString();
   }

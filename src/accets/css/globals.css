@@ -4,8 +4,8 @@
 :root {
   /* --background: #ffffff;
   --foreground: #171717; */
-  --headerH: 8;
-  --footerH: 6;
+  --headerH: 10;
+  --footerH: 8;
   --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1dvh);
   --minHeaderH: calc(var(--headerH) * 1dvh);
   --minFooterH: calc(var(--footerH) * 1dvh);
