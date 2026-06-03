@@ -44,7 +44,7 @@ export default function SearchTasksPopover() {
       <Popover.Content placement="left" className={" min-w-30"}>
         <Popover.Dialog>
           <Popover.Arrow />
-          <search className=" flex items-center rounded-s-lg outline-1 outline-stone-200 focus-within:outline-2 focus-within:outline-accent">
+          <search className=" flex items-center rounded-s-lg overflow-hidden border border-stone-200 dark:border-stone-600 focus-within:outline-2 focus-within:outline-accent focus-within:border-0">
             <span className="block w-fit p-2 place-content-center">
               <Search size={12} />
             </span>
