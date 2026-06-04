@@ -114,10 +114,18 @@ export function ParamsFromString(param: string) {
 
   if (res?.length) {
     const urlParam = new URLSearchParams();
-    urlParam.append("word0",param);
-    res
-      .filter((item) => item.trim().length > 2)
-      .map((item,index) => urlParam.append(`word${index+1}`, item));
+    let wordSearch = res.reduce((acc, val) => {
+      acc += " " + val;
+      return acc;
+    }, "");
+
+    urlParam.append("word0", wordSearch.trim());
+
+    urlParam.append("page", "1");
+    urlParam.append("limit", "20");
+    // res
+    //   .filter((item) => item.trim().length > 2)
+    //   .map((item,index) => urlParam.append(`word${index+1}`, item));
 
     return urlParam.toString();
   }

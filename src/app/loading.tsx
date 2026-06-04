@@ -7,7 +7,7 @@ type Tdirection = "fromcenter" | "fromstart";
 
 function Loading({ from = "fromcenter" }: { from?: Tdirection }): JSX.Element {
   return (
-    <div className={`w-fit mx-auto ${from} text-warning dark:text-slate-400`}>
+    <div className={`w-fit mx-auto ${from} text-default dark:text-slate-400`}>
       <Loader2 size={68} className=" animate-spin" />
     </div>
   );

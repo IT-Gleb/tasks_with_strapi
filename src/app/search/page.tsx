@@ -1,4 +1,5 @@
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
+import { API_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -30,26 +31,49 @@ export default async function SearchedPage({
     params.append(item, serch[item] as string),
   );
 
-  const url = `http://localhost:1337/api/todo-search?${params.toString()}`;
+  const url = `${API_URL}/todo-search?${params.toString()}`;
   //console.log(url);
 
   const query = getCacheQueryClient();
   const response = await query.fetchQuery({
     queryKey: ["search", params.toString()],
     queryFn: async () => {
-      return await fetchGet<{ data: Record<string, string>[] }>(url);
+      return await fetchGet<{
+        data:
+          | {
+              id: string;
+              documentId: string;
+              title: string;
+              updated: Date | string;
+            }[]
+          | { error: boolean; name: string; message: string };
+      }>(url);
     },
   });
 
+  if (response == null || "error" in response.data) {
+    return <div className="p-2 w-fit mx-auto">Ошибка получения данных.</div>;
+  }
+
+  if (response && response.data.length < 1) {
+    return (
+      <div className="mt-1 p-2 w-fit mx-auto">
+        <h3 className=" font-bold text-sky-700 dark:text-sky-400">
+          Данные не найдены
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {serch &&
-        response &&
-        response.data.map((item, index) => {
-          const keys = Object.keys(item);
+      {response &&
+        response.data.length > 0 &&
+        response.data.map((item) => {
           return (
-            <div key={index}>
-              <span>{keys[0]}</span> : {decodeURI(item[keys[0]])}
+            <div key={item.documentId} className=" grid grid-cols-2 p-1">
+              <div>{item.title}</div>
+              <div>{item.updated as string}</div>
             </div>
           );
         })}
