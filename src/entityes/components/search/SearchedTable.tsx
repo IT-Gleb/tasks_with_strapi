@@ -24,8 +24,9 @@ type TTblData = Pick<
 function SearchedTable({ paramData }: { paramData: TTblData }) {
   return (
     <div className=" w-fit mx-auto mt-5">
-      {paramData.map((item) => (
-        <div key={item.documentId} className="grid grid-cols-5 gap-x-4 text-sm">
+      {paramData.map((item, index) => (
+        <div key={item.documentId} className="grid grid-cols-6 gap-x-4 text-sm">
+          <div>{index + 1}.</div>
           <div>{item.id}</div>
           <div className=" col-span-2">
             <Link
@@ -87,10 +88,10 @@ export default function SearchedTableProvider() {
     return <Loading />;
   }
 
-  //console.log(data);
+  //  console.log(data);
 
   if (isError || (!!data && "error" in data)) {
-    const msg = (data?.data as TErrorSearchData).message;
+    const msg = (data as unknown as TErrorSearchData).message;
     return (
       <div>
         <WhatSearch paramWhatSearch={whatSearch} />
@@ -116,9 +117,9 @@ export default function SearchedTableProvider() {
     );
   }
   return (
-    <div>
+    <>
       <WhatSearch paramWhatSearch={whatSearch} />
       <SearchedTable paramData={data?.data as TTblData} />
-    </div>
+    </>
   );
 }
