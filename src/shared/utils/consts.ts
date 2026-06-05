@@ -13,3 +13,5 @@ export const TodoDatesPath =
 
 export const TodosLast20_prefix= "todos-last-20";
 export const TodosLast20= "todos?filters[updated][$between][0]=%1&filters[updated][$between][1]=%2&filters[isCompleted][$eq]=0&sort[0]=updated:asc&pagination[limit]=20"
+
+export const LimitSearch=15;

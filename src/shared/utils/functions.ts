@@ -1,4 +1,5 @@
 import { TDateISOString, TDateTimeISOString } from "../types/main_types";
+import { LimitSearch } from "./consts";
 
 export function FormatDateTime(param: number | string) {
   //console.log(param);
@@ -122,7 +123,7 @@ export function ParamsFromString(param: string) {
     urlParam.append("word0", wordSearch.trim());
 
     urlParam.append("page", "1");
-    urlParam.append("limit", "20");
+    urlParam.append("limit", String(LimitSearch));
     // res
     //   .filter((item) => item.trim().length > 2)
     //   .map((item,index) => urlParam.append(`word${index+1}`, item));

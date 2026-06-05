@@ -4,9 +4,17 @@ import Loading from "@/app/loading";
 import { TPageMeta, TTodo } from "@/shared/types/main_types";
 import { API_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
-import { Description, Link, Surface } from "@heroui/react";
+import {
+  cn,
+  Description,
+  Link,
+  Pagination,
+  SortDescriptor,
+  Surface,
+  Table,
+} from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { ArrowBigDown, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -16,35 +24,193 @@ type TErrorSearchData = {
   message: string;
 };
 
-type TTblData = Pick<
+type TForSearchTable = Pick<
   TTodo,
   "id" | "documentId" | "title" | "isCompleted" | "updated"
->[];
+>;
 
-function SearchedTable({ paramData }: { paramData: TTblData }) {
+type TSearchTableHeader = { [key in TForSearchTable as string]: string };
+
+interface TForTableData extends Pick<
+  TTodo,
+  "id" | "documentId" | "title" | "isCompleted" | "updated"
+> {}
+
+type TTblData = TForTableData[];
+
+function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
+  const [page, setPage] = useState(paramMeta.pagination.page as number);
+
   return (
-    <div className=" w-fit mx-auto mt-5">
-      {paramData.map((item, index) => (
-        <div key={item.documentId} className="grid grid-cols-6 gap-x-4 text-sm">
-          <div>{index + 1}.</div>
-          <div>{item.id}</div>
-          <div className=" col-span-2">
-            <Link
-              className={item.isCompleted ? " line-through text-stone-400" : ""}
-              href={`/todos/${item.updated.toString()}`}
-            >
-              {item.title}
-            </Link>
-          </div>
-          <div>{item.updated.toString()}</div>
-          <div
-            className={`p-1 mx-auto ${item.isCompleted ? "text-stone-400" : ""}`}
+    <Pagination size="sm" className="w-full">
+      <Pagination.Summary>
+        <span>Страница {paramMeta.pagination.page}</span> из{" "}
+        <span>{paramMeta.pagination.pageCount}</span>
+        <span>Найдено: {paramMeta.pagination.total} задач </span>
+      </Pagination.Summary>
+      <Pagination.Content>
+        <Pagination.Item>
+          <Pagination.Previous
+            isDisabled={page === 1}
+            onPress={() => setPage((p) => p - 1)}
           >
-            {item.isCompleted ? <CheckCircle2 /> : "в работе"}
-          </div>
-        </div>
-      ))}
-    </div>
+            <span>Предыдущая</span>
+            <Pagination.PreviousIcon />
+          </Pagination.Previous>
+        </Pagination.Item>
+
+        <Pagination.Item>
+          <Pagination.Next
+            isDisabled={page === paramMeta.pagination.pageCount}
+            onPress={() => setPage((p) => p + 1)}
+          >
+            <span>Следующая</span>
+            <Pagination.NextIcon />
+          </Pagination.Next>
+        </Pagination.Item>
+      </Pagination.Content>
+    </Pagination>
+  );
+}
+
+function TableRow({
+  todo,
+  paramIndex,
+}: {
+  todo: TForTableData;
+  paramIndex: number;
+}) {
+  return (
+    <Table.Row id={todo.documentId}>
+      <Table.Cell>{paramIndex}</Table.Cell>
+      <Table.Cell>
+        <Link
+          href={`/todos/${todo.updated.toString()}`}
+          className={todo.isCompleted ? " line-through text-stone-400" : ""}
+        >
+          {todo.title}
+        </Link>{" "}
+      </Table.Cell>
+      <Table.Cell className={"text-center"}>
+        {todo.isCompleted ? (
+          <CheckCircle2 size={14} color="darkgrey" className="w-fit mx-auto" />
+        ) : (
+          "в работе"
+        )}
+      </Table.Cell>
+      <Table.Cell
+        className={`text-xs ${todo.isCompleted ? "line-through text-stone-400" : ""}`}
+      >
+        {Intl.DateTimeFormat("ru-RU", {
+          dateStyle: "medium",
+        }).format(new Date(todo.updated))}
+      </Table.Cell>
+    </Table.Row>
+  );
+}
+
+function SortableColumnHeader({
+  children,
+  sortDirection,
+}: {
+  children: React.ReactNode;
+  sortDirection?: "ascending" | "descending";
+}) {
+  return (
+    <span className="flex items-center justify-between">
+      {children}
+      {!!sortDirection && (
+        <ArrowBigDown
+          className={cn(
+            "size-4 transform transition-transform duration-200 ease-out",
+            sortDirection === "descending" ? "rotate-180" : "",
+          )}
+        />
+      )}
+    </span>
+  );
+}
+
+function SearchedTable({
+  paramHead,
+  paramData,
+  paramMeta,
+}: {
+  paramHead: TSearchTableHeader;
+  paramData: TTblData;
+  paramMeta: TPageMeta;
+}) {
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "updated",
+    direction: "ascending",
+  });
+
+  const sortedData = useMemo(() => {
+    return [...paramData].sort((a, b) => {
+      //const col = sortDescriptor.column as keyof TTblData;
+      const col = sortDescriptor.column as keyof TForTableData;
+      const first = String(a[col]);
+      const second = String(b[col]);
+      let cmp = first.localeCompare(second, "ru-RU", { numeric: true });
+
+      if (sortDescriptor.direction === "descending") {
+        cmp *= -1;
+      }
+
+      return cmp;
+    });
+  }, [sortDescriptor, paramData]);
+
+  return (
+    <Table className="mt-5">
+      <Table.ScrollContainer>
+        <Table.ResizableContainer>
+          <Table.Content
+            aria-label="Search table with pagination"
+            sortDescriptor={sortDescriptor}
+            onSortChange={setSortDescriptor}
+          >
+            <Table.Header className="uppercase">
+              <Table.Column isRowHeader maxWidth={80} id="id">
+                №/№
+              </Table.Column>
+              {Object.keys(paramHead).map((item, index) => (
+                <Table.Column
+                  key={index}
+                  allowsSorting
+                  isRowHeader
+                  defaultWidth={item === "title" ? "2fr" : "0.5fr"}
+                  minWidth={120}
+                  id={item}
+                  className=" lg:font-bold"
+                >
+                  {({ sortDirection }) => {
+                    const text = paramHead[item];
+                    return (
+                      <SortableColumnHeader sortDirection={sortDirection}>
+                        {text}
+                      </SortableColumnHeader>
+                    );
+                  }}
+                </Table.Column>
+              ))}
+            </Table.Header>
+            <Table.Body>
+              {sortedData.map((item, index) => (
+                <TableRow
+                  key={item.documentId}
+                  todo={item}
+                  paramIndex={index + 1}
+                />
+              ))}
+            </Table.Body>
+          </Table.Content>
+        </Table.ResizableContainer>
+      </Table.ScrollContainer>
+      <Table.Footer>
+        <TablePagination paramMeta={paramMeta} />
+      </Table.Footer>
+    </Table>
   );
 }
 
@@ -119,7 +285,15 @@ export default function SearchedTableProvider() {
   return (
     <>
       <WhatSearch paramWhatSearch={whatSearch} />
-      <SearchedTable paramData={data?.data as TTblData} />
+      <SearchedTable
+        paramHead={{
+          title: "Наименование",
+          isCompleted: "Статус",
+          updated: "На дату",
+        }}
+        paramData={data?.data as TTblData}
+        paramMeta={data?.meta as TPageMeta}
+      />
     </>
   );
 }
