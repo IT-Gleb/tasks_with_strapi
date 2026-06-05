@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
+import { useSearchPage } from "@/shared/store/searchPageStore";
 import { TPageMeta, TTodo } from "@/shared/types/main_types";
 import { API_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
@@ -13,7 +14,7 @@ import {
   Surface,
   Table,
 } from "@heroui/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ArrowBigDown, CheckCircle2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -39,7 +40,21 @@ interface TForTableData extends Pick<
 type TTblData = TForTableData[];
 
 function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
-  const [page, setPage] = useState(paramMeta.pagination.page as number);
+  const Page = useSearchPage((state) => state.page);
+  const setPage = useSearchPage((state) => state.setPage);
+
+  const Pages = useMemo(() => {
+    const maxLen = paramMeta.pagination.total as number;
+    const itemOnPage = paramMeta.pagination.pageSize as number;
+
+    const tmp: number[] = [];
+
+    for (let i = 0; i < Math.ceil(maxLen / itemOnPage); i++) {
+      tmp.push(i + 1);
+    }
+
+    return tmp;
+  }, [paramMeta]);
 
   return (
     <Pagination size="sm" className="w-full">
@@ -51,18 +66,29 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
       <Pagination.Content>
         <Pagination.Item>
           <Pagination.Previous
-            isDisabled={page === 1}
-            onPress={() => setPage((p) => p - 1)}
+            isDisabled={Page === 1}
+            onPress={() => setPage(Page - 1)}
           >
             <span>Предыдущая</span>
             <Pagination.PreviousIcon />
           </Pagination.Previous>
         </Pagination.Item>
 
+        {Pages.map((item) => (
+          <Pagination.Item key={item}>
+            <Pagination.Link
+              isActive={item === Page}
+              onPress={() => setPage(item)}
+            >
+              {item}
+            </Pagination.Link>
+          </Pagination.Item>
+        ))}
+
         <Pagination.Item>
           <Pagination.Next
-            isDisabled={page === paramMeta.pagination.pageCount}
-            onPress={() => setPage((p) => p + 1)}
+            isDisabled={Page === paramMeta.pagination.pageCount}
+            onPress={() => setPage(Page + 1)}
           >
             <span>Следующая</span>
             <Pagination.NextIcon />
@@ -228,25 +254,32 @@ function WhatSearch({ paramWhatSearch }: { paramWhatSearch: string }) {
 export default function SearchedTableProvider() {
   const srch_params = useSearchParams();
   //console.log(srch_params);
+  const sParams = new URLSearchParams(srch_params.toString());
 
-  const url = `${API_URL}/todo-search?${srch_params.toString()}`;
-  //console.log(url);
+  const Page = useSearchPage((state) => state.page);
 
   const [whatSearch, setWhatSearch] = useState<string>(
-    srch_params.get("word0") ?? "",
+    sParams.get("word0") ?? "",
   );
 
-  useMemo(() => {
-    setWhatSearch(srch_params.get("word0") ?? "");
-  }, [srch_params.get("word0")]);
+  const url = useMemo(() => {
+    setWhatSearch(sParams.get("word0") ?? "");
+    //    setPage((sParams.get("page") as unknown as number) ?? 1);
+    sParams.set("page", String(Page));
+    //    console.log(sParams.toString());
+    return `${API_URL}/todo-search?${sParams.toString()}`;
+  }, [srch_params.get("word0"), Page]);
+
+  //console.log(url);
 
   const { data, isSuccess, isLoading, isError } = useQuery({
-    queryKey: ["search", srch_params.toString()],
+    queryKey: ["search", sParams.toString(), Page],
     queryFn: async () => {
       return await fetchGet<{
         data: TTblData | TErrorSearchData;
         meta: TPageMeta;
       }>(url);
+      placeholderData: keepPreviousData;
     },
   });
 
