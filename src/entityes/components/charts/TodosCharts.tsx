@@ -17,6 +17,7 @@ import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useMemo, useRef } from "react";
+import * as motion from "motion/react-client";
 
 ChartJS.register(...registerables);
 
@@ -129,12 +130,14 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
   }
 
   return (
-    <Surface
-      variant="default"
-      className="min-h-50 md:min-h-100 w-full h-full object-cover rounded-xl p-1 border border-slate-200/25 dark:border-slate-600/25"
+    <motion.div
+      className="min-h-50 md:min-h-100 w-full h-full object-cover rounded-xl p-1 border border-slate-200/25 dark:border-slate-600/25 bg-default/20"
+      initial={{ y: 200, opacity: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.65 }}
     >
       <canvas ref={chartRef} id="chartData" className="w-full h-full"></canvas>
-    </Surface>
+    </motion.div>
   );
 }
 
@@ -199,9 +202,14 @@ export default function ChartMonthProvider() {
 
   if (chartData === null || chartData.length < 1) {
     return (
-      <Surface className="p-2 mt-5 w-fit mx-auto text-sm">
-        Нет данных...
-      </Surface>
+      <motion.div
+        className="p-2 mt-5 w-fit mx-auto text-sm"
+        initial={{ opacity: 0, y: 200 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1 }}
+      >
+        <Surface>Нет данных...</Surface>
+      </motion.div>
     );
   }
   return <TodosCharts paramData={chartData} />;

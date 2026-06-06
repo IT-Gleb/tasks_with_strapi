@@ -3,8 +3,9 @@
 import type { CalendarDate, DateValue } from "@internationalized/date";
 
 import { Calendar } from "@heroui/react";
-import { FC, Suspense, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import * as motion from "motion/react-client";
 
 import {
   getLocalTimeZone,
@@ -107,44 +108,53 @@ const CalendarBasic: FC = () => {
   };
 
   return (
-    <Calendar
-      aria-label="Event date"
-      className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
-      // focusedValue={focusedDate}
-      // value={value}
-      // onChange={setValue}
-      onFocusChange={handlerFocusChange}
-      defaultValue={focusedDate}
+    <motion.div
+      className="w-fit"
+      initial={{ opacity: 0, x: -100 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.35 }}
     >
-      <Calendar.Header>
-        <Calendar.Heading />
-        <Calendar.NavButton slot="previous" />
-        <Calendar.NavButton slot="next" />
-      </Calendar.Header>
-      <Calendar.Grid>
-        <Calendar.GridHeader>
-          {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-        </Calendar.GridHeader>
-        <Calendar.GridBody>
-          {(date) => (
-            <Calendar.Cell
-              date={date}
-              className={`text-soft-foreground hover:bg-accent-soft-foreground hover:text-white dark:hover:bg-default-foreground/40 active:bg-red-400 data-[today="true"]:bg-accent/55 data-[today="true"]:text-accent-foreground`}
-              onClick={() => handlerDate(date)}
-            >
-              {({ formattedDate }) => (
-                <>
-                  {formattedDate}
-                  {(isToday(date, getLocalTimeZone()) ||
-                    (daysWithTask.includes(date.day) &&
-                      thisMonth === date.month)) && <Calendar.CellIndicator />}
-                </>
-              )}
-            </Calendar.Cell>
-          )}
-        </Calendar.GridBody>
-      </Calendar.Grid>
-    </Calendar>
+      <Calendar
+        aria-label="Event date"
+        className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
+        // focusedValue={focusedDate}
+        // value={value}
+        // onChange={setValue}
+        onFocusChange={handlerFocusChange}
+        defaultValue={focusedDate}
+      >
+        <Calendar.Header>
+          <Calendar.Heading />
+          <Calendar.NavButton slot="previous" />
+          <Calendar.NavButton slot="next" />
+        </Calendar.Header>
+        <Calendar.Grid>
+          <Calendar.GridHeader>
+            {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+          </Calendar.GridHeader>
+          <Calendar.GridBody>
+            {(date) => (
+              <Calendar.Cell
+                date={date}
+                className={`text-soft-foreground hover:bg-accent-soft-foreground hover:text-white dark:hover:bg-default-foreground/40 active:bg-red-400 data-[today="true"]:bg-accent/55 data-[today="true"]:text-accent-foreground`}
+                onClick={() => handlerDate(date)}
+              >
+                {({ formattedDate }) => (
+                  <>
+                    {formattedDate}
+                    {(isToday(date, getLocalTimeZone()) ||
+                      (daysWithTask.includes(date.day) &&
+                        thisMonth === date.month)) && (
+                      <Calendar.CellIndicator />
+                    )}
+                  </>
+                )}
+              </Calendar.Cell>
+            )}
+          </Calendar.GridBody>
+        </Calendar.Grid>
+      </Calendar>
+    </motion.div>
   );
 };
 

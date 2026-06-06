@@ -21,21 +21,14 @@ import {
   SortDescriptor,
   Table,
 } from "@heroui/react";
-import {
-  ArrowUp,
-  Check,
-  CircleCheck,
-  Edit,
-  ListIndentIncrease,
-} from "lucide-react";
+import { ArrowUp, Check, CircleCheck, ListIndentIncrease } from "lucide-react";
 
 import { memo, useEffect, useMemo, useState } from "react";
 import TodoDeleteDialog from "../dialog/TodoDeleteDialog";
 import ToDoTitleEdit from "./TodoTitleEdit";
 
-import Loading from "@/app/loading";
-import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import * as motion from "motion/react-client";
 
 type THeader = "id" | "title" | "isCompleted" | "order" | "actions";
 
@@ -434,11 +427,17 @@ export default function TodosTableProvider({
   }
 
   return isSuccess ? (
-    <TodosTable
-      paramDate={paramDate}
-      paramTodos={todosData}
-      pageMeta={todos?.meta as TPageMeta}
-      paginatePage={handlerPage}
-    />
+    <motion.div
+      initial={{ opacity: 0, y: -100 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25 }}
+    >
+      <TodosTable
+        paramDate={paramDate}
+        paramTodos={todosData}
+        pageMeta={todos?.meta as TPageMeta}
+        paginatePage={handlerPage}
+      />
+    </motion.div>
   ) : null;
 }
