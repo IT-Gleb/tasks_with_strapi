@@ -69,8 +69,8 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
             isDisabled={Page === 1}
             onPress={() => setPage(Page - 1)}
           >
-            <span>Предыдущая</span>
             <Pagination.PreviousIcon />
+            <span>Предыдущая</span>
           </Pagination.Previous>
         </Pagination.Item>
 

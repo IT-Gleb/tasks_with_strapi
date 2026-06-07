@@ -22,6 +22,7 @@ import {
   useState,
 } from "react";
 import * as z from "zod";
+import * as motion from "motion/react-client";
 
 const todoValidate = z
   .string()
@@ -176,9 +177,12 @@ export default function AddNewTodo({
   }
 
   return (
-    <Surface
+    <motion.div
       title=" Новая задача "
       className="p-4 mt-5 rounded-xl border border-accent-soft relative before:absolute before:content-[attr(title)] before:text-xs before:text-accent before:z-3 before:-top-2.5 before:left-4 before:bg-white dark:before:bg-background"
+      initial={{ scaleX: 0 }}
+      animate={{ scaleX: 1 }}
+      transition={{ ease: "easeInOut", delay: 0.35 }}
     >
       <form
         onChange={formChange}
@@ -225,6 +229,6 @@ export default function AddNewTodo({
           </Button>
         </div>
       </form>
-    </Surface>
+    </motion.div>
   );
 }
