@@ -1,8 +1,11 @@
+"use client";
+
 import { ParamsFromString } from "@/shared/utils/functions";
 import { Button, Popover } from "@heroui/react";
 import { Check, Cross, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useRef, useState } from "react";
+import * as motion from "motion/react-client";
 
 export default function SearchTasksPopover() {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -44,7 +47,12 @@ export default function SearchTasksPopover() {
       <Popover.Content placement="left" className={" min-w-30"}>
         <Popover.Dialog>
           <Popover.Arrow />
-          <search className=" flex items-center rounded-s-lg overflow-hidden border border-stone-200 dark:border-stone-600 focus-within:outline-2 focus-within:outline-accent focus-within:border-0">
+          <motion.div
+            role="search"
+            className=" flex items-center rounded-s-lg overflow-hidden border border-stone-200 dark:border-stone-600 focus-within:outline-2 focus-within:outline-accent focus-within:border-0"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+          >
             <span className="block w-fit p-2 place-content-center">
               <Search size={12} />
             </span>
@@ -82,7 +90,7 @@ export default function SearchTasksPopover() {
             <Button variant="ghost" size="sm" onClick={handlerClear}>
               <Cross size={12} className="rotate-45" />
             </Button>
-          </search>
+          </motion.div>
         </Popover.Dialog>
       </Popover.Content>
     </Popover>

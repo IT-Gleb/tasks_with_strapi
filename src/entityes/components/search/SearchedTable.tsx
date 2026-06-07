@@ -44,16 +44,34 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
   const setPage = useSearchPage((state) => state.setPage);
 
   const Pages = useMemo(() => {
-    const maxLen = paramMeta.pagination.total as number;
-    const itemOnPage = paramMeta.pagination.pageSize as number;
+    const totalPages = paramMeta.pagination.pageCount as number;
 
-    const tmp: number[] = [];
+    const getPageNumbers = () => {
+      const pages: (number | "ellipsis")[] = [];
 
-    for (let i = 0; i < Math.ceil(maxLen / itemOnPage); i++) {
-      tmp.push(i + 1);
-    }
+      pages.push(1);
 
-    return tmp;
+      if (Page > 3) {
+        pages.push("ellipsis");
+      }
+
+      const start = Math.max(2, Page - 1);
+      const end = Math.min(totalPages - 1, Page + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (Page < totalPages - 2) {
+        pages.push("ellipsis");
+      }
+
+      pages.push(totalPages);
+
+      return pages;
+    };
+
+    return getPageNumbers();
   }, [paramMeta]);
 
   return (
@@ -74,16 +92,22 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
           </Pagination.Previous>
         </Pagination.Item>
 
-        {Pages.map((item) => (
-          <Pagination.Item key={item}>
-            <Pagination.Link
-              isActive={item === Page}
-              onPress={() => setPage(item)}
-            >
-              {item}
-            </Pagination.Link>
-          </Pagination.Item>
-        ))}
+        {Pages.map((item, index) =>
+          item === "ellipsis" ? (
+            <Pagination.Item key={`ellipsis-${index}`}>
+              <Pagination.Ellipsis />
+            </Pagination.Item>
+          ) : (
+            <Pagination.Item key={item}>
+              <Pagination.Link
+                isActive={item === Page}
+                onPress={() => setPage(item)}
+              >
+                {item}
+              </Pagination.Link>
+            </Pagination.Item>
+          ),
+        )}
 
         <Pagination.Item>
           <Pagination.Next
@@ -222,13 +246,21 @@ function SearchedTable({
               ))}
             </Table.Header>
             <Table.Body>
-              {sortedData.map((item, index) => (
-                <TableRow
-                  key={item.documentId}
-                  todo={item}
-                  paramIndex={index + 1}
-                />
-              ))}
+              {sortedData.map((item, index) => {
+                const pIndex =
+                  Number(paramMeta.pagination.page) === 1
+                    ? 0
+                    : Number(paramMeta.pagination.page) *
+                        Number(paramMeta.pagination.pageSize) -
+                      Number(paramMeta.pagination.pageSize);
+                return (
+                  <TableRow
+                    key={item.documentId}
+                    todo={item}
+                    paramIndex={index + 1 + pIndex}
+                  />
+                );
+              })}
             </Table.Body>
           </Table.Content>
         </Table.ResizableContainer>
@@ -279,8 +311,8 @@ export default function SearchedTableProvider() {
         data: TTblData | TErrorSearchData;
         meta: TPageMeta;
       }>(url);
-      placeholderData: keepPreviousData;
     },
+    placeholderData: keepPreviousData,
   });
 
   if (isLoading) {
