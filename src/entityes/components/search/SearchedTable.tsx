@@ -1,6 +1,6 @@
 "use client";
 
-import Loading from "@/app/loading";
+import Loading from "@/app/(isTask)/loading";
 import { useSearchPage } from "@/shared/store/searchPageStore";
 import { TPageMeta, TTodo } from "@/shared/types/main_types";
 import { API_URL } from "@/shared/utils/consts";

@@ -1,6 +1,6 @@
 "use server";
 
-import Loading from "@/app/loading";
+import Loading from "@/app/(isTask)/loading";
 import AddNewTodo from "@/entityes/components/newTodo/AddNewTodo";
 import NoTodo from "@/entityes/components/noTodo/NoTodo";
 import TodosTableProvider from "@/entityes/components/Todos/todosTable";

@@ -19,7 +19,7 @@ import { makeDateISOStringFromObject } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosDates } from "@/shared/types/main_types";
 import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
-import Loading from "@/app/loading";
+import Loading from "@/app/(isTask)/loading";
 import useDateStore from "@/shared/store/dateStore";
 
 const CalendarBasic: FC = () => {
