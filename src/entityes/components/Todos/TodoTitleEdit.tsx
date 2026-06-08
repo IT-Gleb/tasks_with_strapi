@@ -1,6 +1,9 @@
+"use client";
+
 import { Button, Popover } from "@heroui/react";
 import { CheckCheck, Cross, Edit } from "lucide-react";
 import { ChangeEvent, MouseEvent, useRef, useState } from "react";
+import * as motion from "motion/react-client";
 
 export default function ToDoTitleEdit({
   paramTitleTodo,
@@ -43,7 +46,11 @@ export default function ToDoTitleEdit({
       <Popover.Content placement="start">
         <Popover.Dialog>
           <Popover.Arrow />
-          <div className="p-1 flex flex-row items-center rounded-s-xl outline-2 outline-stone-400 gap-0 focus-within:outline-accent">
+          <motion.div
+            className="p-1 flex flex-row items-center rounded-s-xl outline-2 outline-stone-400 gap-0 focus-within:outline-accent"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+          >
             <input
               ref={refInput}
               autoComplete="off"
@@ -72,7 +79,7 @@ export default function ToDoTitleEdit({
                 }
               }}
             />
-            <div className="bg-stone-100 dark:bg-stone-900 p-1">
+            <div className="bg-transparent p-1">
               <Button
                 isIconOnly
                 variant="ghost"
@@ -98,7 +105,7 @@ export default function ToDoTitleEdit({
                 <Cross size={14} className="rotate-45" />
               </Button>
             </div>
-          </div>
+          </motion.div>
         </Popover.Dialog>
       </Popover.Content>
     </Popover>
