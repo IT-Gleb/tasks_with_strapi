@@ -62,7 +62,7 @@ export default function RootLayout({
         <TanstaqProvider>
           <ThisThemeProvider>
             <HeaderLayout />
-            <main>{children}</main>
+            <main className="flex-1">{children}</main>
             <FooterLayout />
           </ThisThemeProvider>
         </TanstaqProvider>

@@ -5,6 +5,7 @@
   "scripts": {
     "dockerup": "rundocker.cmd",
     "dockerdown": "dockerdown.cmd",
+    "predev": "rundocker.cmd",
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
