@@ -5,11 +5,7 @@ import TanstaqProvider from "@/entityes/providers/TanstackProvider";
 
 import { fetchGet } from "@/shared/utils/fetchers";
 import { TPageSeo } from "@/shared/types/main_types";
-import {
-  API_URL,
-  MainPageSeo_Prefix,
-  MainPageSEOPath,
-} from "@/shared/utils/consts";
+import { MainPageSeo_Prefix, MainPageSEOPath } from "@/shared/utils/consts";
 import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
 import HeaderLayout from "@/entityes/components/HeaderLayout";
 import FooterLayout from "@/entityes/components/FooterLayout";
@@ -33,6 +29,7 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 export async function generateMetadata(): Promise<Metadata> {
   const query = getCacheQueryClient();
   const api_url = process.env.API_URL ?? "no_api";
+
   const result = await query.fetchQuery({
     queryKey: [MainPageSeo_Prefix],
     queryFn: async () => {
@@ -59,11 +56,11 @@ export default function RootLayout({
       className="light h-full antialiased"
       suppressHydrationWarning
     >
-      <body className="min-h-full">
+      <body className="min-h-full flex flex-col px-2">
         <TanstaqProvider>
           <ThisThemeProvider>
             <HeaderLayout />
-            <main>{children}</main>
+            <main className="flex-1">{children}</main>
             <FooterLayout />
           </ThisThemeProvider>
         </TanstaqProvider>

@@ -49,21 +49,6 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden overflow-y-auto flex flex-col text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-200;
+    @apply overflow-x-hidden text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-300;
   }
-
-}
-
-@layer components{
-  main {
-    @apply w-full mx-auto min-h-(--minMainH) px-2 xl:w-235 xl:max-w-235 place-content-start flex-1;
-  }
-
-  .layout_header {
-    @apply min-h-(--minHeaderH);
-  }
-  .layout_footer {
-    @apply min-h-(--minFooterH);
-  }
-
 }

@@ -3,7 +3,7 @@
 import type { CalendarDate, DateValue } from "@internationalized/date";
 
 import { Calendar } from "@heroui/react";
-import { FC, useMemo, useState } from "react";
+import { FC, memo, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as motion from "motion/react-client";
 
@@ -22,7 +22,7 @@ import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
 import Loading from "@/app/(isTask)/loading";
 import useDateStore from "@/shared/store/dateStore";
 
-const CalendarBasic: FC = () => {
+const CalendarBasic = memo(() => {
   //const [value, setValue] = useState<DateValue | null>(null);
   const [focusedDate, setFocusedDate] = useState<DateValue>(
     today(getLocalTimeZone()),
@@ -109,7 +109,7 @@ const CalendarBasic: FC = () => {
 
   return (
     <motion.div
-      className="w-fit"
+      className="w-fit mx-auto"
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.35 }}
@@ -121,7 +121,7 @@ const CalendarBasic: FC = () => {
         // value={value}
         // onChange={setValue}
         onFocusChange={handlerFocusChange}
-        defaultValue={focusedDate}
+        defaultValue={focusedDate as CalendarDate}
       >
         <Calendar.Header>
           <Calendar.Heading />
@@ -156,6 +156,6 @@ const CalendarBasic: FC = () => {
       </Calendar>
     </motion.div>
   );
-};
+});
 
 export default CalendarBasic;

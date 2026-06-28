@@ -12,11 +12,11 @@ import {
   extractMonthName,
   makeDateISOStringFromDate,
 } from "@/shared/utils/functions";
-import { Surface } from "@heroui/react";
+import { Surface, useMediaQuery } from "@heroui/react";
 import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as motion from "motion/react-client";
 
 ChartJS.register(...registerables);
@@ -27,9 +27,10 @@ type TChartData = {
   nocompleted: number;
 }[];
 
-function TodosCharts({ paramData }: { paramData: TChartData }) {
+const TodosCharts = memo(({ paramData }: { paramData: TChartData }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const todoChart = useRef<ChartJS | null>(null);
+  const isMobile = useMediaQuery(" screen and (100px < width <= 768px)");
 
   const router = useRouter();
 
@@ -61,8 +62,12 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       onClick: (e) => clickHandler(e),
+      indexAxis: isMobile ? "y" : "x",
       //   events: ["click"],
+
       plugins: {
         legend: {
           display: true,
@@ -89,8 +94,9 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
     },
   } satisfies ChartConfiguration;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let isWork: boolean = true;
+
     if (isWork) {
       if (todoChart.current !== null) {
         todoChart.current.destroy();
@@ -102,8 +108,9 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
     return () => {
       isWork = false;
       (todoChart.current as ChartJS).destroy();
+      todoChart.current = null;
     };
-  }, [paramData]);
+  }, [paramData, isMobile]);
 
   function clickHandler(evt: any) {
     const points = (todoChart.current as ChartJS).getElementsAtEventForMode(
@@ -131,7 +138,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
 
   return (
     <motion.div
-      className="min-h-50 md:min-h-100 w-full h-full object-cover rounded-xl p-1 border border-slate-200/25 dark:border-slate-600/25 bg-default/20"
+      className="min-h-100 w-full h-full object-cover rounded-xl p-1 border border-slate-200/25 dark:border-slate-600/25 bg-default/20"
       initial={{ y: 200, opacity: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.65 }}
@@ -139,7 +146,7 @@ function TodosCharts({ paramData }: { paramData: TChartData }) {
       <canvas ref={chartRef} id="chartData" className="w-full h-full"></canvas>
     </motion.div>
   );
-}
+});
 
 export default function ChartMonthProvider() {
   const currentDate = useDateStore((state) => state.currentDate);

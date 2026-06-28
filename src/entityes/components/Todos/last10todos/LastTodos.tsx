@@ -12,10 +12,10 @@ import {
   TodosLast20_prefix,
 } from "@/shared/utils/consts";
 import useDateStore from "@/shared/store/dateStore";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import * as motion from "motion/react-client";
 
-export default function LastTodos() {
+const LastTodos = memo(() => {
   const currentDate = useDateStore((state) => state.currentDate);
   const dates = useMemo(() => {
     return firstLastMonthDayLastCurrentMonthDay(new Date(currentDate));
@@ -37,7 +37,7 @@ export default function LastTodos() {
 
   return (
     <motion.div
-      className="w-fit"
+      className="w-fit mx-auto"
       initial={{ x: 200, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.5 }}
@@ -86,4 +86,6 @@ export default function LastTodos() {
       </Card>
     </motion.div>
   );
-}
+});
+
+export default LastTodos;

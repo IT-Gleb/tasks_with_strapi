@@ -30,7 +30,7 @@
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.100.13",
     "@types/chart.js": "^2.9.41",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "chart.js": "^4.5.1",
