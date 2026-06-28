@@ -49,6 +49,12 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden text-sm xl:text-lg bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-300;
+    @apply overflow-x-hidden text-sm xl:text-lg scrollbar-thin bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-300;
+  }
+}
+
+@layer theme {
+  * {
+    @apply scrollbar-thin scrollbar-thumb-accent scrollbar-track-amber-200;
   }
 }
