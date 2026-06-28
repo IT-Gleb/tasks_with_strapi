@@ -50,8 +50,8 @@ export default function SearchTasksPopover() {
           <motion.div
             role="search"
             className=" flex items-center rounded-s-lg overflow-hidden border border-stone-200 dark:border-stone-600 focus-within:outline-2 focus-within:outline-accent focus-within:border-0"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
+            initial={{ scaleX: 0, originX: 1 }}
+            animate={{ scaleX: 1, originX: 1 }}
           >
             <span className="block w-fit p-2 place-content-center">
               <Search size={12} />

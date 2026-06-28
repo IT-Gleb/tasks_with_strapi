@@ -60,7 +60,9 @@ export default function RootLayout({
         <TanstaqProvider>
           <ThisThemeProvider>
             <HeaderLayout />
-            <main className="flex-1">{children}</main>
+            <main className="w-full lg:max-w-240 lg:mx-auto flex-1">
+              {children}
+            </main>
             <FooterLayout />
           </ThisThemeProvider>
         </TanstaqProvider>

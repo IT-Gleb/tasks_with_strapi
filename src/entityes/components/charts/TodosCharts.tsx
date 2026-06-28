@@ -67,7 +67,19 @@ const TodosCharts = memo(({ paramData }: { paramData: TChartData }) => {
       onClick: (e) => clickHandler(e),
       indexAxis: isMobile ? "y" : "x",
       //   events: ["click"],
-
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+        x: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
       plugins: {
         legend: {
           display: true,

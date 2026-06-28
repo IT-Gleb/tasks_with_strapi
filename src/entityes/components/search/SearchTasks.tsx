@@ -6,7 +6,6 @@ import { ChangeEvent, useRef, useState } from "react";
 import SearchTasksPopover from "./SearchPopover";
 import { ParamsFromString } from "@/shared/utils/functions";
 import { useRouter } from "next/navigation";
-import * as motion from "motion/react-client";
 
 export default function SearchTasks() {
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -36,12 +35,7 @@ export default function SearchTasks() {
   };
 
   return (
-    <motion.div
-      className="w-full p-1 flex gap-x-2 items-start bg-transparent "
-      initial={{ scaleX: 0 }}
-      animate={{ scaleX: 1 }}
-      transition={{ delay: 0.7 }}
-    >
+    <div className="w-full p-1 flex gap-x-2 items-start bg-transparent ">
       {!isMobile && (
         <search
           role="search"
@@ -92,6 +86,6 @@ export default function SearchTasks() {
           Искать
         </Button>
       )}
-    </motion.div>
+    </div>
   );
 }
