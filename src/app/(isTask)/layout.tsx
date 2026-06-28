@@ -2,14 +2,10 @@ import type { Metadata } from "next";
 
 import "@/accets/css/globals.css";
 import TanstaqProvider from "@/entityes/providers/TanstackProvider";
-import { QueryClient } from "@tanstack/react-query";
+
 import { fetchGet } from "@/shared/utils/fetchers";
 import { TPageSeo } from "@/shared/types/main_types";
-import {
-  API_URL,
-  MainPageSeo_Prefix,
-  MainPageSEOPath,
-} from "@/shared/utils/consts";
+import { MainPageSeo_Prefix, MainPageSEOPath } from "@/shared/utils/consts";
 import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
 import HeaderLayout from "@/entityes/components/HeaderLayout";
 import FooterLayout from "@/entityes/components/FooterLayout";
@@ -32,10 +28,12 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function generateMetadata(): Promise<Metadata> {
   const query = getCacheQueryClient();
+  const api_url = process.env.API_URL ?? "no_api";
+
   const result = await query.fetchQuery({
     queryKey: [MainPageSeo_Prefix],
     queryFn: async () => {
-      return await fetchGet<TPageSeo>(`${API_URL}/${MainPageSEOPath}`);
+      return await fetchGet<TPageSeo>(`${api_url}/${MainPageSEOPath}`);
     },
   });
 
@@ -58,7 +56,7 @@ export default function RootLayout({
       className="light h-full antialiased"
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col px-2">
         <TanstaqProvider>
           <ThisThemeProvider>
             <HeaderLayout />

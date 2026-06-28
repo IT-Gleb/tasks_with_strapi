@@ -1,4 +1,4 @@
-type TPageMeta = {
+export type TPageMeta = {
   pagination: {
     total?: number;
     page?: number;

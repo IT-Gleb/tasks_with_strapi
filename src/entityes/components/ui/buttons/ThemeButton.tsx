@@ -26,7 +26,7 @@ const ThemeButton = () => {
       isSelected={isToggle}
       onChange={setIsToggle}
       onClick={callBackTheme}
-      className="transition-colors duration-100 bg-segment dark:text-default-foreground dark:bg-default-hover"
+      className="transition-colors duration-100 bg-segment dark:text-default-foreground dark:bg-black"
     >
       {isToggle ? (
         <Moon size={20} color="currentColor" />

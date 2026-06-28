@@ -3,8 +3,9 @@
 import type { CalendarDate, DateValue } from "@internationalized/date";
 
 import { Calendar } from "@heroui/react";
-import { FC, Suspense, useMemo, useState } from "react";
+import { FC, memo, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import * as motion from "motion/react-client";
 
 import {
   getLocalTimeZone,
@@ -18,18 +19,25 @@ import { makeDateISOStringFromObject } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosDates } from "@/shared/types/main_types";
 import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
-import { Loader2 } from "lucide-react";
+import Loading from "@/app/(isTask)/loading";
+import useDateStore from "@/shared/store/dateStore";
 
-const CalendarBasic: FC = () => {
+const CalendarBasic = memo(() => {
+  //const [value, setValue] = useState<DateValue | null>(null);
   const [focusedDate, setFocusedDate] = useState<DateValue>(
     today(getLocalTimeZone()),
   );
 
+  const setCurrentDate = useDateStore((state) => state.setCurrentDate);
+
   const router = useRouter();
   const dateFromFocusedDate = useMemo(() => {
+    let year = focusedDate.year;
     let month = focusedDate.month;
-    return `${focusedDate.year}-${month < 10 ? "0" + month : month}`;
+    return `${year}-${month < 10 ? "0" + month : month}`;
   }, [focusedDate]);
+
+  //console.log(dateFromFocusedDate);
 
   const thisMonth = focusedDate.month;
   //console.log(dateFromFocusedDate);
@@ -74,29 +82,46 @@ const CalendarBasic: FC = () => {
       day: param.day,
     };
     const toGo = makeDateISOStringFromObject(currentDate);
+    //setCurrentDate(toGo);
+
     if (!!toGo) {
       router.push(`/todos/${toGo}`);
     }
   };
 
   if (isLoading) {
-    return (
-      <div className="w-fit mx-auto p-2">
-        <Loader2 size={38} className=" animate-spin" />
-      </div>
-    );
+    return <Loading />;
   }
 
+  const handlerFocusChange = (date: CalendarDate) => {
+    const work_Date = {
+      year: date.year,
+      month: date.month,
+      day: date.day,
+    };
+    const t_Date = makeDateISOStringFromObject(work_Date);
+    //console.log(t_Date);
+
+    setCurrentDate(t_Date);
+    // setValue(focusedDate);
+    setFocusedDate(date);
+  };
+
   return (
-    <Suspense fallback={<Loader2 size={38} className=" animate-spin" />}>
+    <motion.div
+      className="w-fit mx-auto"
+      initial={{ opacity: 0, x: -100 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.35 }}
+    >
       <Calendar
         aria-label="Event date"
         className={"fromcenter p-2 border border-slate-400/35 rounded-sm"}
         // focusedValue={focusedDate}
         // value={value}
         // onChange={setValue}
-        onFocusChange={setFocusedDate}
-        defaultValue={focusedDate}
+        onFocusChange={handlerFocusChange}
+        defaultValue={focusedDate as CalendarDate}
       >
         <Calendar.Header>
           <Calendar.Heading />
@@ -129,8 +154,8 @@ const CalendarBasic: FC = () => {
           </Calendar.GridBody>
         </Calendar.Grid>
       </Calendar>
-    </Suspense>
+    </motion.div>
   );
-};
+});
 
 export default CalendarBasic;

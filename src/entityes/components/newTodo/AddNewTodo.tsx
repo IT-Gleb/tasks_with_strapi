@@ -1,5 +1,6 @@
 "use client";
 
+import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import type { TDateISOString, TTodosMax } from "@/shared/types/main_types";
 import {
@@ -12,8 +13,16 @@ import { Button, Surface } from "@heroui/react";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Cross, ListIndentIncrease, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, SubmitEvent, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  SubmitEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as z from "zod";
+import * as motion from "motion/react-client";
 
 const todoValidate = z
   .string()
@@ -33,12 +42,13 @@ export default function AddNewTodo({
 }: {
   paramDate: TDateISOString;
 }) {
-  const queryCl = new QueryClient();
+  const queryCl = getCacheQueryClient();
   const router = useRouter();
 
   const [inputValue, setInputValue] = useState<string>("");
   const [errValue, setErrValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [todoOrder, setTodoOrder] = useState<number>(0);
 
   const maxUrl = `${API_URL}/${TodosMax}`;
   const {
@@ -87,9 +97,29 @@ export default function AddNewTodo({
       title: inputValue,
       isCompleted: false,
       updated: paramDate,
-      order: (max?.data[0].order as number) + 1,
+      order: todoOrder,
     };
   }, [inputValue]);
+
+  useEffect(() => {
+    let isWork: boolean = true;
+
+    if (isWork) {
+      if (
+        max === undefined ||
+        max?.data === null ||
+        (max as TTodosMax).data.length < 1
+      )
+        setTodoOrder(1);
+      else {
+        setTodoOrder((max as TTodosMax).data[0].order + 1);
+      }
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [max]);
 
   const handlerInput = (evt: ChangeEvent<HTMLInputElement>) => {
     setInputValue(evt.target.value);
@@ -132,12 +162,7 @@ export default function AddNewTodo({
       </div>
     );
   }
-  if (
-    isError ||
-    max?.data === null ||
-    max?.data === undefined ||
-    max.data?.length < 1
-  ) {
+  if (isError || max?.data === null || max?.data === undefined) {
     return (
       <div className="mt-5 p-2 w-fit mx-auto">
         <p className=" text-red-500 dark:text-red-300">
@@ -152,9 +177,12 @@ export default function AddNewTodo({
   }
 
   return (
-    <Surface
+    <motion.div
       title=" Новая задача "
       className="p-4 mt-5 rounded-xl border border-accent-soft relative before:absolute before:content-[attr(title)] before:text-xs before:text-accent before:z-3 before:-top-2.5 before:left-4 before:bg-white dark:before:bg-background"
+      initial={{ scaleX: 0 }}
+      animate={{ scaleX: 1 }}
+      transition={{ ease: "easeInOut", delay: 0.35 }}
     >
       <form
         onChange={formChange}
@@ -201,6 +229,6 @@ export default function AddNewTodo({
           </Button>
         </div>
       </form>
-    </Surface>
+    </motion.div>
   );
 }

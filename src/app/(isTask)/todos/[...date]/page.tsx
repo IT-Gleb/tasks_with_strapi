@@ -1,6 +1,6 @@
 "use server";
 
-import Loading from "@/app/loading";
+import Loading from "@/app/(isTask)/loading";
 import AddNewTodo from "@/entityes/components/newTodo/AddNewTodo";
 import NoTodo from "@/entityes/components/noTodo/NoTodo";
 import TodosTableProvider from "@/entityes/components/Todos/todosTable";
@@ -9,7 +9,7 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 //import TodosTable from "@/entityes/components/Todos/todosTable";
 
 import type { TDateISOString, TTodosData } from "@/shared/types/main_types";
-import { API_URL, DatePage_Prefix, DatePagePath } from "@/shared/utils/consts";
+import { DatePage_Prefix, DatePagePath_Max200 } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { Loader2 } from "lucide-react";
@@ -64,7 +64,8 @@ export default async function TodoOnDate({
   //-------------------------------------------
   //const queryClient = new QueryClient();
   const queryClient = getCacheQueryClient();
-  const url = `${API_URL}/${DatePagePath.replace("%1", date[0])}`;
+  const api_url = process.env.API_URL ?? "no_api";
+  const url = `${api_url}/${DatePagePath_Max200.replace("%1", date[0])}`;
   //console.log(url);
 
   const result = await queryClient.fetchQuery({
@@ -74,7 +75,9 @@ export default async function TodoOnDate({
     },
   });
 
-  if (!!result && result.data.length < 1) {
+  //console.log(result);
+
+  if (result === null || result.data.length < 1) {
     return <NoTodo paramDate={date[0] as TDateISOString} />;
   }
 

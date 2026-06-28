@@ -2,10 +2,17 @@
 import { Breadcrumbs, BreadcrumbsItem } from "@heroui/react";
 import { FC, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { Check, Home, List, ListCheck, ListEnd } from "lucide-react";
+import {
+  Check,
+  Home,
+  List,
+  ListCheck,
+  ListEnd,
+  SearchCheck,
+} from "lucide-react";
 
 type TBreadCrambsProps = {
-  path: string;
+  path?: string;
   title: string;
   Icon?: ReactNode;
 }[];
@@ -26,13 +33,29 @@ const BreadCrambs: FC = () => {
           tmp[0] = { title: "Главная", path: "/", Icon: <Home size={14} /> };
           break;
         case "todos":
-          tmp.push({ title: "Задачи", path: "", Icon: <List size={14} /> });
+          tmp.push({
+            title: "Задачи",
+
+            Icon: <List size={14} />,
+          });
           break;
         case "newTodo":
           tmp.push({
             title: "Новая задача",
-            path: "",
+
             Icon: <ListEnd size={14} />,
+          });
+          break;
+        case "search":
+          tmp.push({
+            title: "Поиск",
+
+            Icon: <SearchCheck size={14} />,
+          });
+          tmp.push({
+            title: "Задачи",
+
+            Icon: <SearchCheck size={14} />,
           });
           break;
         default:
@@ -54,10 +77,18 @@ const BreadCrambs: FC = () => {
   return (
     <Breadcrumbs>
       {Items.map((item, index) => {
-        return (
+        return item.path !== undefined ? (
           <BreadcrumbsItem
             key={index}
             href={item.path}
+            className="last:font-bold last:border-b-2 last:border-b-default-foreground flex gap-x-1 items-center"
+          >
+            {!!item.Icon && item.Icon}
+            <span className="ml-1">{item.title}</span>
+          </BreadcrumbsItem>
+        ) : (
+          <BreadcrumbsItem
+            key={index}
             className="last:font-bold last:border-b-2 last:border-b-default-foreground flex gap-x-1 items-center"
           >
             {!!item.Icon && item.Icon}
