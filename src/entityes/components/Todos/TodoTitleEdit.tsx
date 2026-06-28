@@ -48,8 +48,8 @@ export default function ToDoTitleEdit({
           <Popover.Arrow />
           <motion.div
             className="p-1 flex flex-row items-center rounded-s-xl outline-2 outline-stone-400 gap-0 focus-within:outline-accent"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
+            initial={{ scaleX: 0, originX: 1 }}
+            animate={{ scaleX: 1, originX: 1 }}
           >
             <input
               ref={refInput}

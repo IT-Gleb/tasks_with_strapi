@@ -14,6 +14,7 @@ import {
 import useDateStore from "@/shared/store/dateStore";
 import { memo, useMemo } from "react";
 import * as motion from "motion/react-client";
+import { AnimatePresence } from "motion/react";
 
 const LastTodos = memo(() => {
   const currentDate = useDateStore((state) => state.currentDate);
@@ -45,7 +46,7 @@ const LastTodos = memo(() => {
       <Card className="w-full p-0 overflow-hidden bg-default-100/25 dark:bg-default-700/25">
         <Card.Header>
           <Card.Title className="flex flex-col gap-y-2 bg-rose-300/25 dark:bg-rose-700/50">
-            <div className="flex gap-1 items-center flex-1 w-fit mx-auto pt-2">
+            <div className="flex gap-1 items-center flex-1 w-fit mx-auto px-2 pt-1">
               <List size={18} />
               <span className="text-sm font-bold">
                 Незавершенные задачи (последние 20):
@@ -61,24 +62,36 @@ const LastTodos = memo(() => {
             className=" max-h-60 p-1"
           >
             {!!todos && todos.data.length < 1 && (
-              <p className="p-1 text-sm text-accent dark:text-green-300 text-center">
+              <motion.p
+                className="p-1 text-sm text-accent dark:text-green-300 text-center"
+                initial={{ x: -220, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.75 }}
+              >
                 Нет данных! Возможно, Вы-молодец!
-              </p>
+              </motion.p>
             )}
+
             {!!todos &&
               todos?.data.map((item, index) => {
                 return (
-                  <Link
+                  <motion.div
                     key={item.documentId}
-                    href={`/todos/${item.updated}`}
-                    className={
-                      "flex gap-x-3 items-center p-1 text-warning-foreground dark:text-red-300 hover:font-semibold"
-                    }
+                    initial={{ x: -220, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.25 * index }}
                   >
-                    {index + 1}.
-                    <ListOrdered size={14} />
-                    {item.title}
-                  </Link>
+                    <Link
+                      href={`/todos/${item.updated}`}
+                      className={
+                        "flex gap-x-3 items-center p-1 text-sm text-warning-foreground dark:text-red-300 hover:font-semibold"
+                      }
+                    >
+                      {index + 1}.
+                      <ListOrdered size={14} />
+                      {item.title}
+                    </Link>
+                  </motion.div>
                 );
               })}
           </ScrollShadow>
