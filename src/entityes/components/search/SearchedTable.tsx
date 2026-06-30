@@ -98,10 +98,10 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
               <Pagination.Ellipsis />
             </Pagination.Item>
           ) : (
-            <Pagination.Item key={item}>
+            <Pagination.Item key={item + item * Math.random()}>
               <Pagination.Link
                 isActive={item === Page}
-                onPress={() => setPage(item)}
+                onPress={() => setPage(item as number)}
               >
                 {item}
               </Pagination.Link>
@@ -247,6 +247,8 @@ function SearchedTable({
             </Table.Header>
             <Table.Body>
               {sortedData.map((item, index) => {
+                //console.log(item.documentId);
+
                 const pIndex =
                   Number(paramMeta.pagination.page) === 1
                     ? 0
@@ -304,11 +306,11 @@ export default function SearchedTableProvider() {
 
   //console.log(url);
 
-  const { data, isSuccess, isLoading, isError } = useQuery({
+  const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ["search", sParams.toString(), Page],
     queryFn: async () => {
       return await fetchGet<{
-        data: TTblData | TErrorSearchData;
+        data: TTblData | TErrorSearchData | null;
         meta: TPageMeta;
       }>(url);
     },
@@ -319,16 +321,16 @@ export default function SearchedTableProvider() {
     return <Loading />;
   }
 
-  //  console.log(data);
+  //console.log(data);
 
-  if (isError || (!!data && "error" in data)) {
-    const msg = (data as unknown as TErrorSearchData).message;
+  if (isError || data === null || (!!data && "error" in data)) {
+    //const msg = (data as unknown as TErrorSearchData).message;
     return (
-      <div>
+      <>
         <WhatSearch paramWhatSearch={whatSearch} />
         <div className="p-2 w-fit mx-auto mt-5">Ошибка получения данных.</div>
-        <div>{msg}</div>
-      </div>
+        <div>{error?.message}</div>
+      </>
     );
   }
 

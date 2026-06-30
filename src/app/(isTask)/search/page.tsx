@@ -24,9 +24,10 @@ export default async function SearchedPage({
 }: {
   searchParams: TProps;
 }) {
-  const serch = await searchParams;
+  const search = await searchParams;
 
-  if (serch) {
+  if (search) {
     return <SearchedTableProvider />;
   }
+  return <div className="w-fit mx-auto">Нет данных для поиска</div>;
 }
