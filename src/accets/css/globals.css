@@ -4,11 +4,11 @@
 :root {
   /* --background: #ffffff;
   --foreground: #171717; */
-  --headerH: 10;
-  --footerH: 8;
-  --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1vh);
-  --minHeaderH: calc(var(--headerH) * 1vh);
-  --minFooterH: calc(var(--footerH) * 1vh);
+  --headerH: 8;
+  --footerH: 6;
+  --minMainH: calc((100 - var(--headerH) - var(--footerH)) * 1dvh);
+  --minHeaderH: calc(var(--headerH) * 1dvh);
+  --minFooterH: calc(var(--footerH) * 1dvh);
   --chocolate: #e97451;
   --chocolate-dark: #7b3f00;
   --chocolate-dark2: #814141;
@@ -49,7 +49,7 @@
       Helvetica,
       Arial,
       sans-serif;
-    @apply overflow-x-hidden text-sm xl:text-lg scrollbar-thin bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-300;
+    @apply overflow-x-hidden text-sm lg:text-lg scrollbar-thin bg-white text-default-foreground dark:bg-chocolate-dark dark:text-default-foreground transition-colors duration-300;
   }
 }
 

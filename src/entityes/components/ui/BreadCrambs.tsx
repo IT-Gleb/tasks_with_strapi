@@ -9,6 +9,7 @@ import {
   ListCheck,
   ListEnd,
   SearchCheck,
+  ShoppingBag,
 } from "lucide-react";
 
 type TBreadCrambsProps = {
@@ -56,6 +57,16 @@ const BreadCrambs: FC = () => {
             title: "Задачи",
 
             Icon: <SearchCheck size={14} />,
+          });
+          break;
+        case "shop":
+          tmp.push({
+            title: "Магазин",
+            Icon: <ShoppingBag size={14} />,
+          });
+          tmp.push({
+            title: "Витрина",
+            Icon: <ShoppingBag size={14} />,
           });
           break;
         default:

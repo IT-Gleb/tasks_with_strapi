@@ -3,9 +3,9 @@ import GradientLine from "./ui/gradients/GradientLine";
 
 export default function FooterLayout() {
   return (
-    <footer className="w-full p-1">
+    <footer className="w-full flex flex-col bg-default/40 dark:bg-slate-900/30">
       <GradientLine />
-      <div className="w-fit mx-auto text-center p-1 align-middle mb-2 ">
+      <div className="w-fit mx-auto text-center p-1 align-middle mb-2 flex-1">
         <Description>
           &copy;&nbsp;Gleb Torgashin 2000-
           {Intl.DateTimeFormat("ru-RU", { year: "numeric" }).format(Date.now())}
