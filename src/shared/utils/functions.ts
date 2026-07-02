@@ -132,3 +132,71 @@ export function ParamsFromString(param: string) {
   }
   return "";
 }
+
+export function isObject(param: unknown) {
+  let res: boolean = false;
+  if (Array.isArray(param) || typeof param === "object") {
+    res = true;
+  }
+  return res;
+}
+
+//Поиск в объекте поля с данными по имени поля
+export function returnField(param: unknown, paramName: string): Object | null {
+  if (!isObject(param) || param === null || typeof param === "undefined") {
+    return null;
+  }
+  //Иницирую массив для поиска
+
+  const newObj = param as Object;
+  const keys = Object.keys(newObj);
+
+  const dataParam: any[] = [];
+
+  keys.forEach((item) => {
+    if (isObject(newObj[item as keyof typeof newObj])) {
+      if (paramName === item) {
+        return newObj[item as keyof typeof newObj];
+      }
+      dataParam.push(newObj[item as keyof typeof newObj]);
+    }
+  });
+
+  //Сам поиск, ищется первое вхождение
+  while (dataParam.length) {
+    const obj = dataParam.shift();
+    // const delete_key = dataParam.keys().next().value;
+
+    //Если массив добавить данные в структуру поиска
+    if (Array.isArray(obj)) {
+      obj.forEach((item) => {
+        if (isObject(item)) {
+          dataParam.push(item);
+        }
+      });
+    }
+    //-------------------------------
+    if (obj !== undefined && obj !== null) {
+      for (const key of Object.keys(obj)) {
+        //console.log(key);
+        //Если массив или объект
+        if (isObject(obj[key as keyof typeof obj])) {
+          if (key === paramName) {
+            return obj[key as keyof typeof obj];
+          }
+          if (Array.isArray(obj[key as keyof typeof obj])) {
+            obj[key as keyof typeof obj].forEach((itm: any) => {
+              if (isObject(itm)) {
+                dataParam.push(itm);
+              }
+            });
+          } else {
+            dataParam.push(obj[key as keyof typeof obj]);
+          }
+        }
+      }
+    }
+    // dataParam.delete(delete_key);
+  }
+  return null;
+}

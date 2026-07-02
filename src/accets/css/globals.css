@@ -60,4 +60,7 @@
   .backlines {
     @apply bg-repeat bg-size-[14px_16px] lg:bg-size-[25px_25px] bg-[linear-gradient(rgba(125,125,125,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(155,125,125,0.1)_1px,transparent_1px)];
   }
+  .backDots {
+    @apply duration-300 transition-discrete bg-repeat bg-size-[4px_4px] lg:bg-size-[8px_8px] bg-[radial-gradient(#334155_1px,transparent_1px)] dark:bg-[radial-gradient(#837699_1px,transparent_1px)];
+  }
 }

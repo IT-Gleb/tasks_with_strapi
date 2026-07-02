@@ -41,7 +41,7 @@ const RoundImage = ({
       className={`w-28 h-28 rounded-full overflow-hidden object-cover object-center p-0 border-6 ${borderColor}`}
       initial={{ x: -1200 }}
       animate={{ x: [-1200, 120, 0] }}
-      transition={{ delay: 0.75 * index }}
+      transition={{ delay: 0.15 * (index + 1) }}
     >
       <img
         src={url}
@@ -56,7 +56,7 @@ const RoundImage = ({
       className={`w-36 h-28 rounded-2xl overflow-hidden object-cover object-center shadow-lg border-6 ${borderColor}`}
       initial={{ y: -1000 }}
       animate={{ y: [1000, -120, 0] }}
-      transition={{ delay: 0.5 * index }}
+      transition={{ delay: 0.08 * (index + 1) }}
     >
       <img
         src={url}
@@ -88,8 +88,8 @@ const HeroComp = ({ text }: { text: string }) => {
 
   return (
     <div className="mt-5 w-full min-h-100 bg-green-800 dark:bg-blue-900 transition-discrete duration-300 rounded-t-3xl overflow-hidden">
-      <div className="w-full h-auto backlines relative">
-        <div className="absolute left-1 sm:left-10 top-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
+      <div className="w-full h-auto backlines relative z-1">
+        <div className="absolute z-2 left-1 sm:left-10 top-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
           {img1
             .map((item, index) => (
               <RoundImage
@@ -107,11 +107,11 @@ const HeroComp = ({ text }: { text: string }) => {
           className="w-fit mx-auto p-1 uppercase text-2xl lg:text-4xl font-semibold text-amber-100 dark:text-amber-300"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.5, ease: "easeInOut", duration: 0.5 }}
+          transition={{ delay: 1.2, ease: "easeInOut", duration: 0.5 }}
         >
           {text}
         </motion.h4>
-        <div className="absolute right-2 lg:right-10 bottom-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
+        <div className="absolute z-2 right-2 lg:right-10 bottom-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
           {img2.map((item, index) => (
             <RoundImage
               key={item}

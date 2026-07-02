@@ -7,7 +7,7 @@ import NavigationMain from "./ui/NavigationMain";
 
 export default function HeaderLayout() {
   return (
-    <header className="layout_header w-full px-1 xl:py-2 flex flex-col place-content-center">
+    <header className="w-full px-1 xl:py-2 flex flex-col place-content-center">
       <div className="w-full xl:max-w-300 xl:mx-auto flex items-center gap-4 justify-between">
         <NavigationMain />
         <div className="w-fit ml-auto">
