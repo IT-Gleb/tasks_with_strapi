@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import * as motion from "motion/react-client";
 import TitleComponent from "./TitleComponent";
+import { Loader2 } from "lucide-react";
 
 const url: string = `${API_URL}/main-page-shop`;
 
@@ -60,7 +61,7 @@ const animate_child = {
 };
 
 const MainPageShopProvider = () => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["main-page-shop"],
     queryFn: async () => {
       return await fetchGet<unknown>(url);
@@ -71,6 +72,9 @@ const MainPageShopProvider = () => {
   //Конвертируем данные в TCategories[]
   useEffect(() => {
     let isWork: boolean = true;
+    if (!data) {
+      return;
+    }
     if (isWork) {
       //console.log(returnField(data, "CategoryComp"));
       //console.log(data);
@@ -111,6 +115,14 @@ const MainPageShopProvider = () => {
       isWork = false;
     };
   }, [data]);
+
+  if (isLoading) {
+    return (
+      <div className="w-fit mx-auto mt-5 text-green-300 dark:text-default">
+        <Loader2 size={44} strokeWidth={2} className=" animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <section>
