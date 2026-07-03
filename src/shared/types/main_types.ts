@@ -61,3 +61,34 @@ export type TTodosDates = {
   }[];
   meta: TPageMeta;
 };
+
+//---Shop types -------------------
+export type TGoodItemPicture = {
+  id: number;
+  documentId: string;
+  url: string;
+  alternativeText: string | null;
+  mime: string;
+  ext: string;
+  size: number;
+  width: number;
+  height: number;
+};
+
+export type TGoodItem = {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  initialprice: number;
+  discount: number;
+  price: number;
+  isactive: boolean;
+  picture: TGoodItemPicture[];
+};
+
+export type TCategories = {
+  id: number;
+  title: string;
+  goods: TGoodItem[];
+};

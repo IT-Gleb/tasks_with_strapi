@@ -152,15 +152,19 @@ export function returnField(param: unknown, paramName: string): Object | null {
   const keys = Object.keys(newObj);
 
   const dataParam: any[] = [];
+  let found: Object | null = null;
 
   keys.forEach((item) => {
     if (isObject(newObj[item as keyof typeof newObj])) {
       if (paramName === item) {
-        return newObj[item as keyof typeof newObj];
+        found = newObj[item as keyof typeof newObj];
       }
       dataParam.push(newObj[item as keyof typeof newObj]);
     }
   });
+  if (found !== null) {
+    return found;
+  }
 
   //Сам поиск, ищется первое вхождение
   while (dataParam.length) {
@@ -182,7 +186,8 @@ export function returnField(param: unknown, paramName: string): Object | null {
         //Если массив или объект
         if (isObject(obj[key as keyof typeof obj])) {
           if (key === paramName) {
-            return obj[key as keyof typeof obj];
+            found = obj[key as keyof typeof obj];
+            break;
           }
           if (Array.isArray(obj[key as keyof typeof obj])) {
             obj[key as keyof typeof obj].forEach((itm: any) => {
@@ -198,5 +203,5 @@ export function returnField(param: unknown, paramName: string): Object | null {
     }
     // dataParam.delete(delete_key);
   }
-  return null;
+  return found;
 }

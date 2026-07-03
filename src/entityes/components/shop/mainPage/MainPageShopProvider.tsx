@@ -3,44 +3,15 @@
 import { API_URL, SERVER_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 import { returnField } from "@/shared/utils/functions";
-import { Typography } from "@heroui/react";
+
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import * as motion from "motion/react-client";
 import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
+import type { TCategories } from "@/shared/types/main_types";
 
 const url: string = `${API_URL}/main-page-shop`;
-
-type TGoodItemPicture = {
-  id: number;
-  documentId: string;
-  url: string;
-  alternativeText: string | null;
-  mime: string;
-  ext: string;
-  size: number;
-  width: number;
-  height: number;
-};
-
-type TGoodItem = {
-  id: number;
-  documentId: string;
-  title: string;
-  description: string;
-  initialprice: number;
-  discount: number;
-  price: number;
-  isactive: boolean;
-  picture: TGoodItemPicture[];
-};
-
-type TCategories = {
-  id: number;
-  title: string;
-  goods: TGoodItem[];
-};
 
 const animate_div = {
   active: {
@@ -51,20 +22,12 @@ const animate_div = {
     y: 0,
   },
 };
-const animate_child = {
-  active: {
-    scale: 1.5,
-  },
-  inactive: {
-    scale: 1,
-  },
-};
 
 const MainPageShopProvider = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["main-page-shop"],
     queryFn: async () => {
-      return await fetchGet<unknown>(url);
+      return await fetchGet<{ data: TCategories[] }>(url);
     },
   });
   const [categories, setCategories] = useState<TCategories[]>([]);
@@ -72,42 +35,13 @@ const MainPageShopProvider = () => {
   //Конвертируем данные в TCategories[]
   useEffect(() => {
     let isWork: boolean = true;
-    if (!data) {
+    if (!data || data.data === null) {
       return;
     }
     if (isWork) {
-      //console.log(returnField(data, "CategoryComp"));
       //console.log(data);
-
-      const temp_d = returnField(data, "GoodsZone");
-
-      const Category: TCategories[] = [];
-      if (temp_d !== null) {
-        (temp_d as Array<any>).forEach((item) => {
-          //   console.log(
-          //     "Ищем CategoryComp-  ",
-          //     returnField(item, "CategoryComp"),
-          //   );
-          const gds: TGoodItem[] = [];
-          item.CategoryComp.forEach((item: any) => {
-            gds.push(item.good);
-          });
-
-          //   if (gds.length > 0) {
-          //     gds.forEach((item) => {
-          //       const pics = item.picture;
-          //       pics.forEach((item) => (item.url = `${API_URL}${item.url}`));
-          //       pics.forEach((pic, index) => (item.picture[index].url = pic.url));
-          //     });
-          //   }
-
-          Category.push({
-            id: item.id,
-            title: item.title,
-            goods: gds,
-          });
-        });
-        setCategories(Category);
+      if (data.data.length > 0) {
+        setCategories(data.data);
       }
     }
 
