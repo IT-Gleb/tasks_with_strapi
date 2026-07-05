@@ -1,6 +1,6 @@
 "use client";
 
-import { API_URL } from "@/shared/utils/consts";
+import { API_URL, bgGradients } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
 import type { TCategories } from "@/shared/types/main_types";
 import GalleryGoods from "./galleryGoods";
+import { randomArrayValue } from "@/shared/utils/functions";
 
 const url: string = `${API_URL}/main-page-shop`;
 
@@ -54,9 +55,17 @@ const MainPageShopProvider = () => {
         categories.length > 0 &&
         categories.map((item) => {
           const { id, title, goods } = item;
+          let back1 = randomArrayValue(bgGradients);
+
+          const bgGrads: string = `${back1.light} dark:${back1.dark}`;
+          const lt = back1.light.replaceAll("from", "bg");
+          const dk = back1.dark.replaceAll("from", "bg");
+          const backgroundstr = `${lt} dark:${dk}`;
+          //console.log(backgroundstr, lt, dk);
+
           return (
             <section key={id} className="mt-5 w-full p-1">
-              <TitleComponent title={title} />
+              <TitleComponent title={title} className={bgGrads} />
               {goods.length > 0 && <GalleryGoods goods={goods} />}
             </section>
           );

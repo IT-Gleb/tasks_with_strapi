@@ -4,7 +4,7 @@ import MainPageShopProvider from "@/entityes/components/shop/mainPage/MainPageSh
 export default async function ShopPage() {
   return (
     <>
-      <HeroComp text="Приветствуем вас в нашем кафе-магазине" />
+      <HeroComp text="Приветствуем вас в нашем cafe-магазине" />
       <MainPageShopProvider />
     </>
   );

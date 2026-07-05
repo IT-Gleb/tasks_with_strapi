@@ -205,3 +205,10 @@ export function returnField(param: unknown, paramName: string): Object | null {
   }
   return found;
 }
+
+export function randomArrayValue<T>(paramArr: Array<T>): T {
+  const value = Math.floor(Math.random() * paramArr.length);
+  //console.log(value);
+
+  return paramArr[value];
+}

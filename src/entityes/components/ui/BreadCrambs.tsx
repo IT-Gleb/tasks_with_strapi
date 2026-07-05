@@ -59,6 +59,10 @@ const BreadCrambs: FC = () => {
             Icon: <SearchCheck size={14} />,
           });
           break;
+        case "task":
+          tmp.push({ title: "Задачи", Icon: <List size={14} /> });
+          tmp.push({ title: "Dashboard", Icon: <List size={14} /> });
+          break;
         case "shop":
           tmp.push({
             title: "Магазин",
