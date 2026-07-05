@@ -59,11 +59,11 @@ export default function RootLayout({
               <GradientLine />
             </div>
             <div className="mt-(--minHeaderH) w-full flex flex-row flex-nowrap flex-1">
-              <aside className="hidden sm:block">left panel</aside>
+              <aside className="hidden sm:block"></aside>
               <main className="w-full lg:max-w-220 lg:mx-auto flex-1 px-2 bg-white dark:bg-green-900/20">
                 {children}
               </main>
-              <aside className="hidden sm:block">right panel</aside>
+              <aside className="hidden sm:block"></aside>
             </div>
 
             <FooterLayout />

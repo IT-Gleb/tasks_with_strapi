@@ -5,6 +5,7 @@ import { SERVER_URL } from "@/shared/utils/consts";
 import { memo, useEffect, useMemo, useState } from "react";
 import * as motion from "motion/react-client";
 import { useTheme } from "next-themes";
+import InBasket from "./InBasket";
 
 const childVariants = {
   init: {
@@ -22,9 +23,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
   const picUrl = `${SERVER_URL}${picture[0].url}`;
   const theme = useTheme();
   const [activeBgColor, setActiveBgColor] = useState<string>("#0f766e");
-  const [priceWithDiscount] = useState<number>(
-    discount > 0 ? initialprice - (discount * 100) / initialprice : price,
-  );
+
   let bgColor = theme.resolvedTheme === "light" ? "#4ade80" : "#1e40af";
   let mainColor = theme.resolvedTheme === "light" ? "#000004" : "#d9f99d";
 
@@ -71,7 +70,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
 
   return (
     <motion.article
-      className="w-40 h-75 p-1.5 text-xs rounded-2xl overflow-hidden relative z-1"
+      className="w-40 h-82 p-1.5 text-xs rounded-2xl overflow-hidden relative z-1"
       variants={MainVariants}
       initial={"init"}
       whileHover={"active"}
@@ -87,7 +86,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
         </div>
       )}
       <motion.ul
-        className="overflow-hidden rounded-2xl flex flex-col"
+        className="overflow-hidden rounded-2xl grid grid-cols-1"
         variants={MainVariants}
         initial={"init"}
         whileHover={"active"}
@@ -120,28 +119,29 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
               {Intl.NumberFormat("ru-RU", {
                 style: "currency",
                 currency: "RUB",
-              }).format(priceWithDiscount)}
+              }).format(price)}
             </span>
           </div>
         </motion.li>
-        {discount > 0 && (
-          <motion.li
-            className="w-full pt-3 text-xs line-through text-center"
-            variants={childVariants2}
-            style={{
-              //backgroundColor: bgColor,
-              color: mainColor,
-            }}
-          >
-            {Intl.NumberFormat("ru-RU", {
-              style: "currency",
-              currency: "RUB",
-            }).format(initialprice)}
-          </motion.li>
-        )}
 
         <motion.li
-          className="h-full pt-2 text-sm font-semibold"
+          className="w-full mt-3 h-4 text-xs line-through text-center"
+          variants={childVariants2}
+          style={{
+            //backgroundColor: bgColor,
+            color: mainColor,
+          }}
+        >
+          {discount > 0
+            ? Intl.NumberFormat("ru-RU", {
+                style: "currency",
+                currency: "RUB",
+              }).format(initialprice)
+            : ""}
+        </motion.li>
+
+        <motion.li
+          className="mt-auto h-8 text-sm font-semibold"
           variants={childVariants2}
           style={{
             //backgroundColor: bgColor,
@@ -151,7 +151,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
           {title}
         </motion.li>
         <motion.li
-          className="h-20 pt-2 line-clamp-3"
+          className="mt-4 h-12 line-clamp-3 "
           variants={childVariants2}
           style={{
             //backgroundColor: bgColor,
@@ -159,6 +159,16 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
           }}
         >
           {description}
+        </motion.li>
+        <motion.li
+          className="pt-2 place-self-end"
+          variants={childVariants2}
+          style={{
+            //backgroundColor: bgColor,
+            color: mainColor,
+          }}
+        >
+          <InBasket />
         </motion.li>
       </motion.ul>
     </motion.article>

@@ -96,8 +96,8 @@ const GalleryGoods = memo(
         ref={containerRef}
         className={
           myclassName !== ""
-            ? `mt-5 w-full h-80 rounded-3xl py-2 px-3 overflow-hidden relative z-1 ${myclassName}`
-            : "mt-5 w-full h-80 rounded-3xl py-2 px-3 overflow-hidden relative z-1 bg-yellow-200/50 dark:bg-green-900/20"
+            ? `mt-5 w-full h-86 rounded-3xl py-2 px-3 overflow-hidden relative z-1 ${myclassName}`
+            : "mt-5 w-full h-86 rounded-3xl py-2 px-3 overflow-hidden relative z-1 bg-yellow-200/50 dark:bg-green-900/20"
         }
       >
         {showButtons && (
