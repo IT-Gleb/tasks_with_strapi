@@ -11,7 +11,10 @@ export default function NavigationMain({
     <nav
       className={`w-full xl:w-250 mx-auto flex flex-col gap-2 items-start ${className}`}
     >
-      <div role="presentation" className="flex flex-row gap-x-3 items-center">
+      <div
+        role="presentation"
+        className="w-full flex flex-row gap-x-3 items-center "
+      >
         <Link
           href="/shop"
           className="dark:text-stone-200 flex gap-1 items-end hover:underline-offset-8"
@@ -38,6 +41,7 @@ export default function NavigationMain({
           </Description>
         </Link>
       </div>
+
       <BreadCrambs />
     </nav>
   );

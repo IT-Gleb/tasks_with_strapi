@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
 import type { TCategories } from "@/shared/types/main_types";
-import GalleryGoods from "./galleryGoods";
+import GalleryGoods from "./gallery/galleryGoods";
 import { randomArrayValue } from "@/shared/utils/functions";
 
 const url: string = `${API_URL}/main-page-shop`;
