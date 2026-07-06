@@ -49,3 +49,13 @@ export const bgGradients: { light: string; dark: string }[] = [
   { light: "from-slate-200/50", dark: "from-slate-900/50" },
   { light: "from-yellow-200/50", dark: "from-yellow-900/50" },
 ];
+
+export const bgColors: { light: string; dark: string }[] = [
+  { light: "#80fef3c7", dark: "#ccb45309" },
+  { light: "#80fef9c3", dark: "#cca16207" },
+  { light: "#80dbeafe", dark: "#cc1d4ed8" },
+  { light: "#80f3e8ff", dark: "#cc7e22ce" },
+  { light: "#80f4f4f5", dark: "#cc3f3f46" },
+  { light: "#80fee2e2", dark: "#ccb91c1c" },
+  { light: "#80f1f5f9", dark: "#cc334155" },
+];

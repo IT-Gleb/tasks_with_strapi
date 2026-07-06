@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Drawer, Typography } from "@heroui/react";
+import { Badge, Button, Drawer, Typography } from "@heroui/react";
 import { Cross, ShoppingBasket } from "lucide-react";
 import { MouseEvent, useState } from "react";
 
@@ -12,8 +12,9 @@ const BasketDrawer = () => {
     evt.preventDefault();
     setAnimation("animate-From-right");
     const tm = setTimeout(() => {
-      setIsOpen(false);
       setAnimation("animate-From-left");
+      setIsOpen(false);
+
       clearTimeout(tm);
     }, 700);
   };
@@ -22,12 +23,15 @@ const BasketDrawer = () => {
     <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
         isIconOnly
-        size="sm"
+        size="md"
         variant="outline"
         onPress={() => setIsOpen(!isOpen)}
         aria-label="Ваша корзина"
       >
-        <ShoppingBasket size={18} strokeWidth={2} />
+        <Badge variant="primary" size="sm" placement="top-right">
+          0
+        </Badge>
+        <ShoppingBasket size={24} strokeWidth={2} />
       </Button>
       <Drawer.Backdrop variant="blur">
         <Drawer.Dialog>

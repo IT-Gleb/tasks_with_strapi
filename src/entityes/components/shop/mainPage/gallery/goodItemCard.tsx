@@ -2,7 +2,7 @@
 
 import type { TGoodItem } from "@/shared/types/main_types";
 import { SERVER_URL } from "@/shared/utils/consts";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import * as motion from "motion/react-client";
 import { useTheme } from "next-themes";
 import InBasket from "./InBasket";
