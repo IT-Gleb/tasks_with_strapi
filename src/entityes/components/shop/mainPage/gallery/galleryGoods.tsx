@@ -75,42 +75,43 @@ const GalleryGoods = memo(({ goods }: { goods: TGoodItem[] }) => {
   useMemo(() => {
     const backdiv = randomArrayValue(bgColors);
     const lt = backdiv.light;
-
     const dk = backdiv.dark;
+
     setBgColor(theme.resolvedTheme === "light" ? lt : dk);
   }, [theme]);
 
   //console.log(myclassName);
 
   return (
-    <div
-      ref={containerRef}
-      className={
-        "mt-5 w-full h-86 rounded-3xl py-2 px-3 overflow-hidden relative z-1"
-      }
-      style={{ backgroundColor: bgColor }}
-    >
+    <div className="w-full py-2 px-3 overflow-hidden relative z-1">
       {showButtons && (
         <div className="absolute left-1 top-[45%] z-3 ">
           <Button
             isIconOnly
             size="sm"
             variant="outline"
-            className="bg-white/50 active:scale-90 dark:text-blue-950/90"
+            className="bg-white/50 active:scale-90 dark:text-blue-950/90 border-2 border-slate-500 dark:border-slate-300"
             onPress={() => handlerGalleryStep(-1)}
           >
             <ChevronLeft size={24} strokeWidth={2} />
           </Button>
         </div>
       )}
-
       <div
-        ref={lentaRef}
-        className="w-fit flex items-center gap-x-3 absolute left-2 top-2 z-2 transition-discrete duration-200"
+        ref={containerRef}
+        className={
+          "mt-5 w-full h-86 rounded-3xl py-2 px-3 overflow-y-hidden overflow-x-auto scrollbar-none relative z-1 "
+        }
+        style={{ backgroundColor: bgColor }}
       >
-        {goods.map((good) => {
-          return <GoodItemCard key={good.documentId} item={good} />;
-        })}
+        <div
+          ref={lentaRef}
+          className="w-fit flex items-center gap-x-3 absolute left-2 top-2 z-2 transition-discrete duration-200"
+        >
+          {goods.map((good) => {
+            return <GoodItemCard key={good.documentId} item={good} />;
+          })}
+        </div>
       </div>
       {showButtons && (
         <div className="absolute right-1 top-[45%] z-3 text-default">
@@ -118,7 +119,7 @@ const GalleryGoods = memo(({ goods }: { goods: TGoodItem[] }) => {
             isIconOnly
             size="sm"
             variant="outline"
-            className="bg-white/50 active:scale-90 dark:text-blue-950/90"
+            className="bg-white/50 active:scale-90 dark:text-blue-950/90 border-2 border-slate-500 dark:border-slate-300"
             onPress={() => handlerGalleryStep()}
           >
             <ChevronRight size={24} strokeWidth={2} />

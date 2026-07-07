@@ -168,7 +168,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
             color: mainColor,
           }}
         >
-          <InBasket />
+          <InBasket goodItem={item} />
         </motion.li>
       </motion.ul>
     </motion.article>

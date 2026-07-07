@@ -1,0 +1,110 @@
+"use client";
+
+import { type TBasketItem, useBasket } from "@/shared/store/basketStore";
+import { Checkbox } from "@heroui/react";
+import { memo, useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
+
+const CheckItem = ({
+  name,
+  index,
+  handler,
+}: {
+  name: string;
+  index: number;
+  handler: (param: boolean, index: number) => void;
+}) => {
+  const [isSelected, setIsSelected] = useState<boolean>(false);
+
+  useEffect(() => {
+    handler(isSelected, index);
+  }, [isSelected]);
+
+  return (
+    <Checkbox name={name} isSelected={isSelected} onChange={setIsSelected}>
+      <Checkbox.Content>
+        <Checkbox.Control className={"bg-slate-300 dark:bg-slate-600"}>
+          <Checkbox.Indicator />
+        </Checkbox.Control>
+        {/* Accept terms and conditions */}
+      </Checkbox.Content>
+    </Checkbox>
+  );
+};
+
+const BasketTable = memo(() => {
+  const mapToArray = useBasket(useShallow((state) => state.mapToArray));
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const handlerSelect = (param: boolean, index: number) => {
+    //console.log(param, index);
+
+    const t_array = mapToArray();
+    //Сначала посчитать общую стоимость
+    let total = 0;
+    //Вычесть неактивные данные
+    t_array.forEach((item, indx) => {
+      if (indx === index && param === false) {
+        total -= item.price * item.count;
+      }
+      if (indx === index && param) {
+        total += item.price * item.count;
+      }
+    });
+    if (totalPrice === 0 && total < 0) {
+      total = 0;
+    }
+    setTotalPrice(totalPrice + total);
+  };
+
+  return (
+    <div className="px-4 mt-1">
+      <div className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-x-2 items-center font-bold p-3 bg-slate-200 dark:bg-slate-700">
+        <div>В заказ</div>
+        <div>Наименование</div>
+        <div className="text-center">Цена</div>
+        <div className="text-center">Количество</div>
+        <div className="text-center">Итог</div>
+      </div>
+      {mapToArray().map((item, index) => {
+        return (
+          <div
+            key={item.documentId}
+            className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-2 items-center p-2 odd:bg-slate-200/50 dark:odd:bg-slate-700"
+          >
+            <div className="w-fit mx-auto">
+              <CheckItem
+                name={`selected-${index + 1}`}
+                index={index}
+                handler={handlerSelect}
+              />
+            </div>
+            <div>{item.title}</div>
+            <div className="text-right">
+              {Intl.NumberFormat("ru-RU", {
+                style: "currency",
+                currency: "RUB",
+              }).format(item.price)}
+            </div>
+            <div className="text-center">{item.count}</div>
+            <div className="text-right">
+              {Intl.NumberFormat("ru-RU", {
+                style: "currency",
+                currency: "RUB",
+              }).format(item.price * item.count)}
+            </div>
+          </div>
+        );
+      })}
+      <div className="w-full mt-10 p-2 text-right">
+        <span className="font-bold text-sm pr-5">Сумма заказа: </span>
+        {Intl.NumberFormat("ru-RU", {
+          style: "currency",
+          currency: "RUB",
+        }).format(totalPrice)}
+      </div>
+    </div>
+  );
+});
+
+export default BasketTable;
