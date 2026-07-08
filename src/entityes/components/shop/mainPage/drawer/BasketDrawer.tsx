@@ -2,7 +2,7 @@
 
 import { useBasket } from "@/shared/store/basketStore";
 import { Badge, Button, Drawer, Typography } from "@heroui/react";
-import { Cross, ShoppingBasket } from "lucide-react";
+import { Cross, LucideListOrdered, ShoppingBasket } from "lucide-react";
 import { memo, MouseEvent, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
@@ -66,7 +66,12 @@ const BasketDrawer = memo(() => {
             >
               <BasketContentTabs />
             </Drawer.Body>
-            <Drawer.Footer></Drawer.Footer>
+            <Drawer.Footer className="p-2 text-center place-content-center">
+              <Button size="sm" variant="primary" className={"w-fit mx-auto"}>
+                <LucideListOrdered size={20} strokeWidth={2} />
+                Заказать
+              </Button>
+            </Drawer.Footer>
           </Drawer.Content>
         </Drawer.Dialog>
       </Drawer.Backdrop>

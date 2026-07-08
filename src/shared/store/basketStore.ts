@@ -10,6 +10,10 @@ export type TBasketItem = Pick<TGoodItem, "documentId" | "title" | "price"> & {
   count: number;
 };
 
+export function isTBasketItem(param: unknown): param is TBasketItem {
+  return typeof param === "object" && param !== null && "count" in param;
+}
+
 type TBasketState = {
   goods: Map<string, TBasketItem>;
   length: number;
@@ -20,6 +24,7 @@ interface IBasketActions {
   setItem: (param: TBasketItem) => void;
   deleteItem: (param: TBasketItem) => void;
   inBasket: (paramId: string) => boolean;
+  getItem: (paramId: string) => TBasketItem | null;
 }
 
 type TBasketStore = TBasketState & IBasketActions;
@@ -48,6 +53,13 @@ export const useBasket = create<TBasketStore>()((set, get) => ({
     let res: boolean = false;
     if (get().goods.has(param)) {
       res = true;
+    }
+    return res;
+  },
+  getItem: (paramId: string) => {
+    let res: TBasketItem | null = null;
+    if (get().goods.has(paramId)) {
+      res = get().goods.get(paramId) as TBasketItem;
     }
     return res;
   },

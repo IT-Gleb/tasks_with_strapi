@@ -1,16 +1,33 @@
 "use client";
 
-import { TBasketItem, useBasket } from "@/shared/store/basketStore";
+import {
+  isTBasketItem,
+  TBasketItem,
+  useBasket,
+} from "@/shared/store/basketStore";
 import { TGoodItem } from "@/shared/types/main_types";
 import { NumberField } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-const InBasket = memo(({ goodItem }: { goodItem: TGoodItem }) => {
-  const [value, setValue] = useState<number>(0);
+const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
+  const [value, setValue] = useState<number>(
+    isTBasketItem(goodItem) ? (goodItem as TBasketItem).count : 0,
+  );
   const { setItem, deleteItem, inBasket } = useBasket(
     useShallow((state) => state),
   );
+
+  useEffect(() => {
+    const unsubscribe = useBasket.subscribe((state) => {
+      const hasItem = state.getItem(goodItem.documentId);
+      hasItem !== null ? setValue(hasItem.count) : setValue(0);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     let isWork: boolean = true;

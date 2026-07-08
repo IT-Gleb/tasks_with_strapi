@@ -4,6 +4,7 @@ import { type TBasketItem, useBasket } from "@/shared/store/basketStore";
 import { Checkbox } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
+import InBasket from "../gallery/InBasket";
 
 const CheckItem = ({
   name,
@@ -59,7 +60,7 @@ const BasketTable = memo(() => {
 
   return (
     <div className="px-4 mt-1">
-      <div className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-x-2 items-center font-bold p-3 bg-slate-200 dark:bg-slate-700">
+      <div className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
         <div>В заказ</div>
         <div>Наименование</div>
         <div className="text-center">Цена</div>
