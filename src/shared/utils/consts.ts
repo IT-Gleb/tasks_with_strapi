@@ -24,23 +24,6 @@ export const LimitSearch = 15;
 const mainPageCategory =
   "main-page-shop?populate[GoodsZone][on][goods.goods-category][populate][CategoryComp][populate][good][populate][picture][populate]";
 
-export const backgroundsLight: string[] = [
-  "bg-rose-300/50",
-  "bg-green-300/50",
-  "bg-amber-300/50",
-  "bg-blue-300/50",
-  "bg-slate-300/50",
-  "bg-mist-300/50",
-];
-export const backgroundsDark: string[] = [
-  "bg-rose-800/50",
-  "bg-green-800/50",
-  "bg-amber-800/50",
-  "bg-blue-800/50",
-  "bg-slate-800/50",
-  "bg-mist-800/50",
-];
-
 export const bgGradients: { light: string; dark: string }[] = [
   { light: "from-rose-200/50", dark: "from-rose-900/50" },
   { light: "from-green-200/50", dark: "from-green-900/50" },

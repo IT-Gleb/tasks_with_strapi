@@ -3,15 +3,25 @@
 import { useBasket } from "@/shared/store/basketStore";
 import { Badge, Button, Drawer, Typography } from "@heroui/react";
 import { Cross, LucideListOrdered, ShoppingBasket } from "lucide-react";
-import { memo, MouseEvent, useState } from "react";
+import { memo, MouseEvent, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
 const BasketDrawer = memo(() => {
+  const { length, saveToBase } = useBasket(useShallow((state) => state));
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [animation, setAnimation] = useState<string>("animate-From-left");
 
-  const basketCount = useBasket(useShallow((state) => state.length));
+  useEffect(() => {
+    let isWork: boolean = true;
+    //if (isWork) {
+    useBasket.getState().getFromBase();
+    // }
+    return () => {
+      isWork = false;
+    };
+  }, []);
 
   const handlerClose = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
@@ -24,18 +34,27 @@ const BasketDrawer = memo(() => {
     }, 700);
   };
 
+  const handlerOpen = (evt: MouseEvent<Element>) => {
+    evt.preventDefault();
+    saveToBase();
+    setIsOpen(true);
+  };
+
   return (
     <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
         isIconOnly
         size="md"
         variant="outline"
-        onPress={() => setIsOpen(!isOpen)}
+        onClick={handlerOpen}
         aria-label="Ваша корзина"
       >
-        <Badge variant="primary" size="sm" placement="top-right">
-          {basketCount === 0 ? "" : basketCount}
-        </Badge>
+        {length > 0 && (
+          <Badge variant="primary" size="sm" placement="top-right">
+            {length}
+          </Badge>
+        )}
+
         <ShoppingBasket size={24} strokeWidth={2} />
       </Button>
       <Drawer.Backdrop variant="blur">

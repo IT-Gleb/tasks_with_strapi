@@ -1,4 +1,8 @@
-import { TDateISOString, TDateTimeISOString } from "../types/main_types";
+import {
+  TDateISOString,
+  TDateTimeISOString,
+  TGoodItem,
+} from "../types/main_types";
 import { LimitSearch } from "./consts";
 
 export function FormatDateTime(param: number | string) {
@@ -211,4 +215,15 @@ export function randomArrayValue<T>(paramArr: Array<T>): T {
   //console.log(value);
 
   return paramArr[value];
+}
+
+export function isGoodItemType(entity: unknown): entity is TGoodItem {
+  return (
+    typeof entity === "object" &&
+    entity !== null &&
+    "documentId" in entity &&
+    "initialprice" in entity &&
+    "duscount" in entity &&
+    "title" in entity
+  );
 }

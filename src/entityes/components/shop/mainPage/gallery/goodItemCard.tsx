@@ -81,7 +81,7 @@ const GoodItemCard = memo(({ item }: { item: TGoodItem }) => {
       }}
     >
       {discount > 0 && (
-        <div className="absolute z-20 rotate-45 top-2 -right-8 bg-red-600 text-yellow-200 w-30 h-8 p-1 text-center ">
+        <div className="absolute z-20 rotate-45 top-2 -right-8 bg-red-600 dark:bg-yellow-300 text-yellow-100 dark:text-blue-800 w-30 h-8 p-1 text-center ">
           Скидка
         </div>
       )}
