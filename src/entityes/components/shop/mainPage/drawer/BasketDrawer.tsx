@@ -2,26 +2,59 @@
 
 import { useBasket } from "@/shared/store/basketStore";
 import { Badge, Button, Drawer, Typography } from "@heroui/react";
-import { Cross, LucideListOrdered, ShoppingBasket } from "lucide-react";
-import { memo, MouseEvent, useEffect, useState } from "react";
+import {
+  Cross,
+  Loader2,
+  LucideListOrdered,
+  ShoppingBasket,
+} from "lucide-react";
+import { memo, MouseEvent, ReactNode, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
-const BasketDrawer = memo(() => {
+import useBasketHydration from "@/shared/store/HydrationStore";
+
+export const BasketHydrated = ({ children }: { children: ReactNode }) => {
+  const hydrate = useBasketHydration();
+
+  if (!hydrate) {
+    return <Loader2 size={18} className=" animate-spin" />;
+  }
+  return <>{children}</>;
+};
+
+const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
+  const isHydrated = useBasket((state) => state._hasHydrated);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    useBasket.persist.rehydrate();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    //console.log(isHydrated);
+
+    if (isHydrated) {
+      useBasket.getState().getFromBase();
+
+      setIsLoading(false);
+    }
+  }, [isHydrated]);
+
+  if (isLoading) {
+    return <Loader2 size={14} className=" animate-spin" />;
+  }
+
+  return <>{children}</>;
+});
+
+const BasketDrawer = () => {
   const { length, saveToBase } = useBasket(useShallow((state) => state));
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [animation, setAnimation] = useState<string>("animate-From-left");
-
-  useEffect(() => {
-    let isWork: boolean = true;
-    //if (isWork) {
-    useBasket.getState().getFromBase();
-    // }
-    return () => {
-      isWork = false;
-    };
-  }, []);
+  //const hydrate = useBasketHydration();
 
   const handlerClose = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
@@ -41,61 +74,63 @@ const BasketDrawer = memo(() => {
   };
 
   return (
-    <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
-      <Button
-        isIconOnly
-        size="md"
-        variant="outline"
-        onClick={handlerOpen}
-        aria-label="Ваша корзина"
-      >
-        {length > 0 && (
-          <Badge variant="primary" size="sm" placement="top-right">
-            {length}
-          </Badge>
-        )}
+    <HydrateBasked>
+      <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Button
+          isIconOnly
+          size="md"
+          variant="outline"
+          onClick={handlerOpen}
+          aria-label="Ваша корзина"
+        >
+          {length > 0 && (
+            <Badge variant="primary" size="sm" placement="top-right">
+              {length}
+            </Badge>
+          )}
 
-        <ShoppingBasket size={24} strokeWidth={2} />
-      </Button>
-      <Drawer.Backdrop variant="blur">
-        <Drawer.Dialog>
-          <Drawer.Content
-            placement="left"
-            className={`w-[90%] lg:w-[50%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
-          >
-            <Drawer.Header>
-              <div className="w-full p-2 flex gap-x-2 items-center justify-between">
-                <Typography type="h4">Ваша корзина</Typography>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="ghost"
-                  onClick={handlerClose}
-                >
-                  <Cross size={14} className="rotate-45" />
-                </Button>
-              </div>
-            </Drawer.Header>
-            <Drawer.Body
-              className="p-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.nativeEvent.stopImmediatePropagation();
-              }}
+          <ShoppingBasket size={24} strokeWidth={2} />
+        </Button>
+        <Drawer.Backdrop variant="blur">
+          <Drawer.Dialog>
+            <Drawer.Content
+              placement="left"
+              className={`w-[90%] lg:w-[50%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
             >
-              <BasketContentTabs />
-            </Drawer.Body>
-            <Drawer.Footer className="p-2 text-center place-content-center">
-              <Button size="sm" variant="primary" className={"w-fit mx-auto"}>
-                <LucideListOrdered size={20} strokeWidth={2} />
-                Заказать
-              </Button>
-            </Drawer.Footer>
-          </Drawer.Content>
-        </Drawer.Dialog>
-      </Drawer.Backdrop>
-    </Drawer>
+              <Drawer.Header>
+                <div className="w-full p-2 flex gap-x-2 items-center justify-between">
+                  <Typography type="h4">Ваша корзина</Typography>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="ghost"
+                    onClick={handlerClose}
+                  >
+                    <Cross size={14} className="rotate-45" />
+                  </Button>
+                </div>
+              </Drawer.Header>
+              <Drawer.Body
+                className="p-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent.stopImmediatePropagation();
+                }}
+              >
+                <BasketContentTabs />
+              </Drawer.Body>
+              <Drawer.Footer className="p-2 text-center place-content-center">
+                <Button size="sm" variant="primary" className={"w-fit mx-auto"}>
+                  <LucideListOrdered size={20} strokeWidth={2} />
+                  Заказать
+                </Button>
+              </Drawer.Footer>
+            </Drawer.Content>
+          </Drawer.Dialog>
+        </Drawer.Backdrop>
+      </Drawer>
+    </HydrateBasked>
   );
-});
+};
 
 export default BasketDrawer;

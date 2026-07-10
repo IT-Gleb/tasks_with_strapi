@@ -17,6 +17,7 @@ import FooterLayout from "@/entityes/components/FooterLayout";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ThemeButton from "@/entityes/components/ui/buttons/ThemeButton";
 import DrawerBasket from "@/entityes/components/shop/mainPage/drawer/DrawerBasket";
+
 //import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
 
 // export async function generateMetadata(): Promise<Metadata> {
