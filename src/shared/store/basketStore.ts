@@ -92,10 +92,22 @@ export const useBasket = create<TBasketStore>()(
         });
       },
 
-      setData: (param: TBasketValues) => {
-        const t_goods = new Map(param.goods);
-        const lt = t_goods.size;
-        set({ goods: t_goods, length: lt });
+      setData: (param: unknown) => {
+        if (
+          typeof param !== "object" &&
+          param === null &&
+          !("goods" in param) &&
+          !("length" in param)
+        ) {
+          return;
+        }
+        try {
+          const t_goods = new Map((param as TBasketValues).goods);
+          const lt = t_goods.size;
+          set({ goods: t_goods, length: lt });
+        } catch (err: unknown) {
+          console.log((err as Error).message);
+        }
       },
 
       mapToArray: () => {

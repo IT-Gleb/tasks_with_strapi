@@ -9,8 +9,9 @@ import { useEffect, useState } from "react";
 import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
 import type { TCategories } from "@/shared/types/main_types";
-import GalleryGoods from "./gallery/galleryGoods";
+//import GalleryGoods from "./gallery/galleryGoods";
 import { randomArrayValue } from "@/shared/utils/functions";
+import NewGalleryGoods from "./gallery/newGalleryGoods";
 
 const url: string = `${API_URL}/main-page-shop`;
 
@@ -58,15 +59,18 @@ const MainPageShopProvider = () => {
           let back1 = randomArrayValue(bgGradients);
 
           const bgGrads: string = `${back1.light} dark:${back1.dark}`;
-          const lt = back1.light.replaceAll("from", "bg");
-          const dk = back1.dark.replaceAll("from", "bg");
-          const backgroundstr = `${lt} dark:${dk}`;
+          //const backgroundstr = `${lt} dark:${dk}`;
           //console.log(backgroundstr, lt, dk);
 
           return (
             <section key={id} className="mt-5 w-full p-1">
               <TitleComponent title={title} className={bgGrads} />
-              {goods.length > 0 && <GalleryGoods goods={goods} />}
+              {goods.length > 0 && (
+                <NewGalleryGoods
+                  goods={goods}
+                  className={["bg-slate-300/60", "dark:bg-slate-800/60"]}
+                />
+              )}
             </section>
           );
         })}

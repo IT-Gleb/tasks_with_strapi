@@ -6,7 +6,7 @@ import {
   useBasket,
 } from "@/shared/store/basketStore";
 import { TGoodItem } from "@/shared/types/main_types";
-import { NumberField } from "@heroui/react";
+import { Label, NumberField } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -53,22 +53,25 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
   }, [value]);
 
   return (
-    <NumberField
-      aria-label="Item in basket"
-      value={value}
-      onChange={setValue}
-      step={1}
-      minValue={0}
-      maxValue={50}
-      defaultValue={value}
-      className={"scale-80"}
-    >
-      <NumberField.Group>
-        <NumberField.DecrementButton />
-        <NumberField.Input />
-        <NumberField.IncrementButton />
-      </NumberField.Group>
-    </NumberField>
+    <Label>
+      <span className="text-xs">Добавить в корзину</span>
+      <NumberField
+        aria-label="Item in basket"
+        value={value}
+        onChange={setValue}
+        step={1}
+        minValue={0}
+        maxValue={50}
+        defaultValue={value}
+        className={"scale-80"}
+      >
+        <NumberField.Group>
+          <NumberField.DecrementButton />
+          <NumberField.Input />
+          <NumberField.IncrementButton />
+        </NumberField.Group>
+      </NumberField>
+    </Label>
   );
 });
 
