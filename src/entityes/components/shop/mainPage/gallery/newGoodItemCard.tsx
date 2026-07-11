@@ -5,6 +5,7 @@ import { forwardRef, MouseEvent, Ref } from "react";
 import { cn } from "@heroui/styles";
 import { SERVER_URL } from "@/shared/utils/consts";
 import InBasket from "./InBasket";
+import { Typography } from "@heroui/react";
 
 const NewGoodItemCard = forwardRef(
   (
@@ -74,13 +75,18 @@ const NewGoodItemCard = forwardRef(
                   currency: "RUB",
                 }).format(initialprice)}
           </span>
-          <span className="p-2  text-sm font-semibold">{title}</span>
+          <Typography
+            type="h6"
+            className="p-2 group-hover:text-green-100 group-active:text-green-100 dark:text-green-200"
+          >
+            {title}
+          </Typography>
           <p className="h-16 indent-2 line-clamp-4 first-letter:uppercase ">
             {description}
           </p>
-          <span className="inline-block flex-1 place-content-end ">
+          <footer className="inline-block flex-1 place-content-end ">
             <InBasket goodItem={good} />
-          </span>
+          </footer>
         </article>
       </div>
     );
