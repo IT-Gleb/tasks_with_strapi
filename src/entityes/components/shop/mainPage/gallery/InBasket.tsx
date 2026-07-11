@@ -54,7 +54,9 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
 
   return (
     <Label>
-      <span className="text-xs">Добавить в корзину</span>
+      <span className="text-xs group-hover:text-green-100 group-active:text-green-100">
+        В корзину
+      </span>
       <NumberField
         aria-label="Item in basket"
         value={value}
