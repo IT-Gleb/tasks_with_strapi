@@ -3,8 +3,7 @@
 import { create } from "zustand";
 import { TGoodItem } from "../types/main_types";
 import { createStore, get, set, del } from "idb-keyval";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { StateStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 const nameInBase = "goods";
 

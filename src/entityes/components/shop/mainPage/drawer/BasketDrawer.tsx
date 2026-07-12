@@ -24,7 +24,7 @@ export const BasketHydrated = ({ children }: { children: ReactNode }) => {
 };
 
 const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
-  const isHydrated = useBasket((state) => state._hasHydrated);
+  const { _hasHydrated, setData } = useBasket((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -35,12 +35,19 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     //console.log(isHydrated);
 
-    if (isHydrated) {
-      useBasket.getState().getFromBase();
+    if (_hasHydrated) {
+      useBasket
+        .getState()
+        .getFromBase()
+        .then((data) => {
+          if (data !== null) {
+            setData(data);
+          }
+        });
 
       setIsLoading(false);
     }
-  }, [isHydrated]);
+  }, [_hasHydrated]);
 
   if (isLoading) {
     return <Loader2 size={14} className=" animate-spin" />;
@@ -64,7 +71,7 @@ const BasketDrawer = () => {
       setIsOpen(false);
 
       clearTimeout(tm);
-    }, 700);
+    }, 550);
   };
 
   const handlerOpen = (evt: MouseEvent<Element>) => {

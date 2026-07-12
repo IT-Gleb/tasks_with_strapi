@@ -33,6 +33,7 @@ const useBasketHydration = () => {
 export const HydrationBasketStore = () => {
   const hydrate = useBasketHydration();
   //const _hasHydrated = useBasket((state) => state._hasHydrated);
+  const setData = useBasket((state) => state.setData);
 
   useEffect(() => {
     useBasket.persist.rehydrate();
@@ -42,7 +43,14 @@ export const HydrationBasketStore = () => {
     //console.log(hydrate, _hasHydrated);
 
     if (hydrate) {
-      useBasket.getState().getFromBase();
+      useBasket
+        .getState()
+        .getFromBase()
+        .then((data) => {
+          if (data !== null) {
+            setData(data);
+          }
+        });
 
       //console.log(useBasket.getState().length);
     }
