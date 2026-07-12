@@ -3,7 +3,7 @@
 import type { CalendarDate, DateValue } from "@internationalized/date";
 
 import { Calendar } from "@heroui/react";
-import { FC, memo, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as motion from "motion/react-client";
 
@@ -31,6 +31,7 @@ const CalendarBasic = memo(() => {
   const setCurrentDate = useDateStore((state) => state.setCurrentDate);
 
   const router = useRouter();
+
   const dateFromFocusedDate = useMemo(() => {
     let year = focusedDate.year;
     let month = focusedDate.month;

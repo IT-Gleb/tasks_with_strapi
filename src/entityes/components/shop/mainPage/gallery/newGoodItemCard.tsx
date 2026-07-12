@@ -27,9 +27,9 @@ const NewGoodItemCard = forwardRef(
       <div
         ref={ref}
         className={cn(
-          "group w-50 h-110 overflow-hidden relative bg-green-400 dark:bg-blue-500 rounded-t-3xl text-xs transition-discrete duration-200 p-2 hover:bg-green-700 hover:text-green-200 dark:hover:bg-blue-800 ",
+          "group w-50 h-110 overflow-hidden relative bg-green-400 dark:bg-blue-500 rounded-t-3xl text-xs transition-discrete duration-200 p-2 hover:bg-green-500 hover:text-green-200 dark:hover:bg-blue-800 ",
           index === activeIndex
-            ? "bg-green-700 text-green-200 dark:bg-blue-800 "
+            ? "bg-green-600 text-green-200 dark:bg-blue-800 "
             : "",
         )}
         onClick={(e) => onClick(e, index)}
@@ -40,7 +40,7 @@ const NewGoodItemCard = forwardRef(
           </div>
         )}
 
-        <div className="w-44 h-48 mx-auto rounded-t-3xl object-cover object-center overflow-hidden ">
+        <div className="w-45 h-48 mx-auto rounded-t-3xl object-cover object-center overflow-hidden ">
           <picture>
             <source
               srcSet={`${SERVER_URL}${picture[0].url}`}
@@ -55,7 +55,7 @@ const NewGoodItemCard = forwardRef(
             />
           </picture>
         </div>
-        <article className="p-1 h-[56%] flex flex-col group-hover:bg-green-700 group-active:bg-green-700 dark:group-hover:bg-blue-800 dark:group-active:bg-blue-800 ">
+        <article className="p-1 h-[56%] flex flex-col group-hover:bg-green-500 group-active:bg-green-500 dark:group-hover:bg-blue-800 dark:group-active:bg-blue-800 ">
           <span className="text-2xl text-center font-semibold">
             {Intl.NumberFormat("ru-RU", {
               style: "currency",
@@ -68,8 +68,9 @@ const NewGoodItemCard = forwardRef(
               index === activeIndex ? "text-white/80 dark:text-white/80" : "",
             )}
           >
+            &nbsp;
             {discount === 0
-              ? " "
+              ? ""
               : Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
@@ -77,7 +78,9 @@ const NewGoodItemCard = forwardRef(
           </span>
           <Typography
             type="h6"
-            className="p-2 group-hover:text-green-100 group-active:text-green-100 dark:text-green-200"
+            className={cn(
+              "p-2 group-hover:text-green-100 text-sm/tight group-active:text-green-100 dark:text-green-200",
+            )}
           >
             {title}
           </Typography>

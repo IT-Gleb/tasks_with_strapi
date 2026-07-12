@@ -68,7 +68,7 @@ const MainPageShopProvider = () => {
               {goods.length > 0 && (
                 <NewGalleryGoods
                   goods={goods}
-                  className={["bg-slate-300/60", "dark:bg-slate-800/60"]}
+                  className={["bg-slate-300/60", "dark:bg-slate-700/60"]}
                 />
               )}
             </section>

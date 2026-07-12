@@ -14,6 +14,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const NewGalleryGoods = memo(
   ({ goods, className = [] }: { goods: TGoodItem[]; className?: string[] }) => {
     const goodsRef = useRef<HTMLDivElement[]>([]);
+
     // Функция сохранения рефа
     const registerRef = useCallback(
       (element: HTMLDivElement, index: number) => {
@@ -23,7 +24,21 @@ const NewGalleryGoods = memo(
       },
       [],
     );
+
     const [activeIndex, setActiveIndex] = useState<number>(0);
+
+    const setInView = (param: number) => {
+      if (param < 0 || param > goods.length - 1) {
+        return;
+      }
+
+      setActiveIndex(param);
+      goodsRef.current[param].scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+        inline: "nearest",
+      });
+    };
 
     const handlerActiveIndex = (param: -1 | 1) => {
       let current: number = activeIndex;
@@ -35,20 +50,12 @@ const NewGalleryGoods = memo(
         current = 0;
       }
 
-      goodsRef.current[current].scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-        inline: "nearest",
-      });
-      setActiveIndex(current);
+      setInView(current);
     };
 
     const handlerSelect = (evt: MouseEvent<HTMLDivElement>, index: number) => {
       evt.preventDefault();
-      if (index < 0 || index > goods.length - 1) {
-        return;
-      }
-      setActiveIndex(index);
+      setInView(index);
     };
 
     return (
