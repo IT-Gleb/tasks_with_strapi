@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
 import type { TCategories } from "@/shared/types/main_types";
-//import GalleryGoods from "./gallery/galleryGoods";
 import { randomArrayValue } from "@/shared/utils/functions";
 import NewGalleryGoods from "./gallery/newGalleryGoods";
 

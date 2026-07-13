@@ -3,20 +3,8 @@ import { useMediaQuery } from "@heroui/react";
 import { stagger } from "motion";
 import * as motion from "motion/react-client";
 import { useMemo, useState } from "react";
-
-const images1 = [
-  "/images/pirozhki-1.jpg",
-  "/images/pirozhki-2.jpg",
-  "/images/pirozhki-3.jpg",
-  "/images/pirozhki-4.jpg",
-];
-
-const images2 = [
-  "/images/desert-1.jpg",
-  "/images/desert-3.jpg",
-  "/images/desert-4.jpg",
-  "/images/desert-7.jpg",
-];
+import { THeroImage } from "@/shared/types/main_types";
+import { SERVER_URL } from "@/shared/utils/consts";
 
 const ImageAnimo = {
   active: {
@@ -69,21 +57,29 @@ const RoundImage = ({
   );
 };
 
-const HeroComp = ({ text }: { text: string }) => {
+const HeroComp = ({
+  text,
+  paramTopImages,
+  paramBottomImages,
+}: {
+  text: string;
+  paramTopImages: THeroImage[];
+  paramBottomImages: THeroImage[];
+}) => {
   const isMobile = useMediaQuery(" screen and (200px < width <= 768px)");
 
-  const img1 = useMemo<string[]>(() => {
+  const img1 = useMemo<THeroImage[]>(() => {
     if (isMobile) {
-      return images1.slice(0, 3);
+      return paramTopImages.slice(0, 3);
     }
-    return images1;
+    return paramTopImages;
   }, [isMobile]);
 
-  const img2 = useMemo<string[]>(() => {
+  const img2 = useMemo<THeroImage[]>(() => {
     if (isMobile) {
-      return images2.slice(0, 2);
+      return paramBottomImages.slice(0, 2);
     }
-    return images2;
+    return paramBottomImages;
   }, [isMobile]);
 
   return (
@@ -93,8 +89,8 @@ const HeroComp = ({ text }: { text: string }) => {
           {img1
             .map((item, index) => (
               <RoundImage
-                key={item}
-                url={item}
+                key={item.documentId}
+                url={SERVER_URL + item.url}
                 borderColor="border-green-400/50 dark:border-blue-400/50"
                 index={index}
                 direction_animate="right"
@@ -114,8 +110,8 @@ const HeroComp = ({ text }: { text: string }) => {
         <div className="absolute z-2 right-2 lg:right-10 bottom-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
           {img2.map((item, index) => (
             <RoundImage
-              key={item}
-              url={item}
+              key={item.documentId}
+              url={SERVER_URL + item.url}
               borderColor="border-green-400/50 dark:border-blue-400/50"
               index={index}
               direction_animate="top"

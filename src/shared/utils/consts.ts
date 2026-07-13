@@ -23,6 +23,7 @@ export const LimitSearch = 15;
 //Магазин
 const mainPageCategory =
   "main-page-shop?populate[GoodsZone][on][goods.goods-category][populate][CategoryComp][populate][good][populate][picture][populate]";
+export const shopPageSEO = "main-page-shop?pageSEO=1";
 
 export const bgGradients: { light: string; dark: string }[] = [
   { light: "from-rose-200/50", dark: "from-rose-900/50" },

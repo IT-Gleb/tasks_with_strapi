@@ -92,3 +92,37 @@ export type TCategories = {
   title: string;
   goods: TGoodItem[];
 };
+
+export type TShopPageSEO = {
+  data: {
+    id: number;
+    title: string;
+    description: string;
+    author: string;
+    creator: string;
+  };
+};
+
+//------Hero Component
+export type THeroImage = {
+  id: number;
+  documentId: string;
+  url: string;
+  alternativeText: string | null;
+  width: number;
+  height: number;
+};
+
+export type THero = {
+  data: {
+    id: number;
+    HelloText: string;
+    topImages: THeroImage[];
+    bottomImages: THeroImage[];
+  };
+};
+
+export type THeroError = {
+  error: boolean;
+  message: string;
+};
