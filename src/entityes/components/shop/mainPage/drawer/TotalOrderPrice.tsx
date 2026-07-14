@@ -1,9 +1,10 @@
 "use client";
 
 import { useBasket } from "@/shared/store/basketStore";
+import { memo } from "react";
 import { useShallow } from "zustand/shallow";
 
-const TotalOrderPrice = () => {
+const TotalOrderPrice = memo(() => {
   const { totalOrderPrice } = useBasket(useShallow((state) => state));
 
   return (
@@ -15,6 +16,6 @@ const TotalOrderPrice = () => {
       }).format(totalOrderPrice())}
     </div>
   );
-};
+});
 
 export default TotalOrderPrice;

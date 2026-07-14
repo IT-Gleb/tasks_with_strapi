@@ -117,6 +117,7 @@ const BasketDrawer = () => {
                     <Cross size={14} className="rotate-45" />
                   </Button>
                 </div>
+                <GradientLine />
               </Drawer.Header>
               <Drawer.Body
                 className="p-2"
