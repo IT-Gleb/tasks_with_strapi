@@ -17,8 +17,9 @@ export default async function ShopPage() {
 
   if ((result && "error" in result) || result === null) {
     return (
-      <div className="mt-5 w-fit mx-auto text-lg">
-        Ошибка (или отсутствие данных) получения данных
+      <div className="mt-5 w-fit mx-auto text-lg indent-2">
+        Ошибка (или отсутствие данных) получения данных. Попробуйте
+        перезагрузить страницу позднее.
       </div>
     );
   }

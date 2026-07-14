@@ -16,7 +16,7 @@ const url: string = `${API_URL}/main-page-shop`;
 
 const MainPageShopProvider = () => {
   const { data, isLoading } = useQuery({
-    queryKey: ["main-page-shop"],
+    queryKey: ["main-page-shop", 1],
     queryFn: async () => {
       return await fetchGet<{ data: TCategories[] }>(url);
     },
@@ -50,7 +50,7 @@ const MainPageShopProvider = () => {
   }
 
   return (
-    <section>
+    <>
       {categories &&
         categories.length > 0 &&
         categories.map((item) => {
@@ -73,7 +73,7 @@ const MainPageShopProvider = () => {
             </section>
           );
         })}
-    </section>
+    </>
   );
 };
 

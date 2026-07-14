@@ -12,12 +12,13 @@ import {
   extractMonthName,
   makeDateISOStringFromDate,
 } from "@/shared/utils/functions";
-import { Surface, useMediaQuery } from "@heroui/react";
+import { Surface } from "@heroui/react";
 import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { useRouter } from "next/navigation";
-import { memo, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import * as motion from "motion/react-client";
+import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
 ChartJS.register(...registerables);
 
@@ -30,7 +31,7 @@ type TChartData = {
 const TodosCharts = memo(({ paramData }: { paramData: TChartData }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const todoChart = useRef<ChartJS | null>(null);
-  const isMobile = useMediaQuery(" screen and (100px < width <= 768px)");
+  const isMobile = useIsMobile();
 
   const router = useRouter();
 

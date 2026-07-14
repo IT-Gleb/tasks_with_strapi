@@ -13,6 +13,7 @@ import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
 import useBasketHydration from "@/shared/store/HydrationStore";
+import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 
 export const BasketHydrated = ({ children }: { children: ReactNode }) => {
   const hydrate = useBasketHydration();
@@ -126,11 +127,18 @@ const BasketDrawer = () => {
               >
                 <BasketContentTabs />
               </Drawer.Body>
-              <Drawer.Footer className="p-2 text-center place-content-center">
-                <Button size="sm" variant="primary" className={"w-fit mx-auto"}>
-                  <LucideListOrdered size={20} strokeWidth={2} />
-                  Заказать
-                </Button>
+              <Drawer.Footer className="p-2 flex flex-col gap-y-1 text-center place-content-center">
+                <GradientLine />
+                <div className="w-full p-1 flex-1">
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    className={"w-fit mx-auto"}
+                  >
+                    <LucideListOrdered size={20} strokeWidth={2} />
+                    Заказать
+                  </Button>
+                </div>
               </Drawer.Footer>
             </Drawer.Content>
           </Drawer.Dialog>

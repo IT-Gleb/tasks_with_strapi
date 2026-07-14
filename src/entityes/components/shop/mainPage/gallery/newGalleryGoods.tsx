@@ -77,7 +77,7 @@ const NewGalleryGoods = memo(
             ...className,
           )}
         >
-          <div className="w-[96%] h-[96%] mx-auto overflow-x-auto scrollbar-none overflow-y-hidden">
+          <div className="w-[96%] h-[96%] mx-auto overflow-x-auto scrollbar-none overflow-y-hidden touch-pan-x">
             <div className="w-fit flex gap-x-2 items-start">
               {goods.map((item, index) => (
                 <NewGoodItemCard

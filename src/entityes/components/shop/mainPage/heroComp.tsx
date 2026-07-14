@@ -1,10 +1,10 @@
 "use client";
-import { useMediaQuery } from "@heroui/react";
 import { stagger } from "motion";
 import * as motion from "motion/react-client";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { THeroImage } from "@/shared/types/main_types";
 import { SERVER_URL } from "@/shared/utils/consts";
+import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
 const ImageAnimo = {
   active: {
@@ -66,7 +66,7 @@ const HeroComp = ({
   paramTopImages: THeroImage[];
   paramBottomImages: THeroImage[];
 }) => {
-  const isMobile = useMediaQuery(" screen and (200px < width <= 768px)");
+  const isMobile = useIsMobile();
 
   const img1 = useMemo<THeroImage[]>(() => {
     if (isMobile) {

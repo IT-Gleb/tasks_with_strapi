@@ -1,17 +1,18 @@
 "use client";
 
-import { Button, Surface, useMediaQuery } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Cross, Search } from "lucide-react";
 import { ChangeEvent, useRef, useState } from "react";
 import SearchTasksPopover from "./SearchPopover";
 import { ParamsFromString } from "@/shared/utils/functions";
 import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
 export default function SearchTasks() {
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const isMobile = useMediaQuery("screen and (100px < width < 641px)");
+  const isMobile = useIsMobile();
   const router = useRouter();
 
   const handlerClear = () => {

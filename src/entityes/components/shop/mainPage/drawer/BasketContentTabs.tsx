@@ -3,6 +3,7 @@
 import { Tabs } from "@heroui/react";
 import BasketTable from "./BasketTable";
 import { memo } from "react";
+import TotalOrderPrice from "./TotalOrderPrice";
 
 const BasketContentTabs = memo(() => {
   return (
@@ -20,7 +21,10 @@ const BasketContentTabs = memo(() => {
         </Tabs.List>
       </Tabs.ListContainer>
       <Tabs.Panel className="pt-4" id="items">
-        <BasketTable />
+        <div className="max-h-130 lg:max-h-180 overflow-y-auto">
+          <BasketTable />
+        </div>
+        <TotalOrderPrice totalPrice={175} />
       </Tabs.Panel>
       <Tabs.Panel className="pt-4" id="orders">
         <p>This tab is also available for selection.</p>

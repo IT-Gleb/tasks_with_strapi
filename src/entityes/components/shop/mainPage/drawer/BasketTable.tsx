@@ -2,9 +2,11 @@
 
 import { type TBasketItem, useBasket } from "@/shared/store/basketStore";
 import { Checkbox } from "@heroui/react";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import InBasket from "../gallery/InBasket";
+//import InBasket from "../gallery/InBasket";
+import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
+import TotalOrderPrice from "./TotalOrderPrice";
 
 const CheckItem = ({
   name,
@@ -17,12 +19,15 @@ const CheckItem = ({
 }) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
-  useEffect(() => {
-    handler(isSelected, index);
-  }, [isSelected]);
+  const handlerSelected = (param: boolean) => {
+    setIsSelected(param);
+    handler(param, index);
+
+    //console.log(param, name);
+  };
 
   return (
-    <Checkbox name={name} isSelected={isSelected} onChange={setIsSelected}>
+    <Checkbox name={name} isSelected={isSelected} onChange={handlerSelected}>
       <Checkbox.Content>
         <Checkbox.Control className={"bg-slate-300 dark:bg-slate-600"}>
           <Checkbox.Indicator />
@@ -36,6 +41,7 @@ const CheckItem = ({
 const BasketTable = memo(() => {
   const mapToArray = useBasket(useShallow((state) => state.mapToArray));
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const isMobile = useIsMobile();
 
   const handlerSelect = (param: boolean, index: number) => {
     //console.log(param, index);
@@ -62,9 +68,9 @@ const BasketTable = memo(() => {
     <div className="px-4 mt-1">
       <div className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
         <div>В заказ</div>
-        <div>Наименование</div>
+        <div>{isMobile ? "На-ие" : "Наименование"}</div>
         <div className="text-center">Цена</div>
-        <div className="text-center">Количество</div>
+        <div className="text-center">{isMobile ? "Кол-во" : "Количество"}</div>
         <div className="text-center">Итог</div>
       </div>
       {mapToArray().map((item, index) => {
@@ -97,13 +103,6 @@ const BasketTable = memo(() => {
           </div>
         );
       })}
-      <div className="w-full mt-10 p-2 text-right">
-        <span className="font-bold text-sm pr-5">Сумма заказа: </span>
-        {Intl.NumberFormat("ru-RU", {
-          style: "currency",
-          currency: "RUB",
-        }).format(totalPrice)}
-      </div>
     </div>
   );
 });
