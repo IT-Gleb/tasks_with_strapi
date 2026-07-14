@@ -24,7 +24,7 @@ const BasketContentTabs = memo(() => {
         <div className="max-h-130 lg:max-h-180 overflow-y-auto">
           <BasketTable />
         </div>
-        <TotalOrderPrice totalPrice={175} />
+        <TotalOrderPrice />
       </Tabs.Panel>
       <Tabs.Panel className="pt-4" id="orders">
         <p>This tab is also available for selection.</p>

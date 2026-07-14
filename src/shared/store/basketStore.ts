@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { TGoodItem } from "../types/main_types";
 import { createStore, get, set, del } from "idb-keyval";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 const nameInBase = "goods";
 
@@ -26,6 +26,7 @@ const MyStorage = {
 
 export type TBasketItem = Pick<TGoodItem, "documentId" | "title" | "price"> & {
   count: number;
+  inOrder: boolean;
 };
 
 export function isTBasketItem(param: unknown): param is TBasketItem {
@@ -47,12 +48,13 @@ interface IBasketActions {
   inBasket: (paramId: string) => boolean;
   getItem: (paramId: string) => TBasketItem | null;
   saveToBase: () => void;
-  getFromBase: () => Promise<{
+  loadFromBase: () => Promise<{
     goods: Map<string, TBasketItem>;
     length: number;
   } | null>;
   setHasHydrated: (state: boolean) => void;
   setData: (param: TBasketValues) => void;
+  totalOrderPrice: () => number;
 }
 
 type TBasketStore = TBasketState & IBasketActions;
@@ -147,7 +149,7 @@ export const useBasket = create<TBasketStore>()(
           await MyStorage.setItem(nameInBase, dataToSave);
         }
       },
-      getFromBase: async () => {
+      loadFromBase: async () => {
         const data = await MyStorage.getItem(nameInBase);
 
         if (data !== null) {
@@ -164,11 +166,23 @@ export const useBasket = create<TBasketStore>()(
         }
         return null;
       },
+      totalOrderPrice: () => {
+        const t_array = get().mapToArray();
+        let res: number = 0;
+        if (t_array === null || t_array.length < 1) {
+          return res;
+        }
+
+        res = t_array.reduce((acc, value) => {
+          return (acc += value.inOrder ? value.count * value.price : 0);
+        }, 0);
+        return res;
+      },
     }),
     {
       name: "ordersStore",
       version: 1,
-      //storage: createJSONStorage(() => MyStorage),
+      storage: createJSONStorage(() => sessionStorage),
       skipHydration: true,
       onRehydrateStorage: (state) => {
         return () => state.setHasHydrated(true);

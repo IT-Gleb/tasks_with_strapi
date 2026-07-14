@@ -37,6 +37,7 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
         title: goodItem.title,
         price: goodItem.price,
         count: value,
+        inOrder: false,
       };
       //если есть в корзине
       if (inBasket(goodInBasket.documentId) && value === 0) {

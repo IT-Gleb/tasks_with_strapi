@@ -11,13 +11,15 @@ import TotalOrderPrice from "./TotalOrderPrice";
 const CheckItem = ({
   name,
   index,
+  initialValue,
   handler,
 }: {
   name: string;
   index: number;
+  initialValue: boolean;
   handler: (param: boolean, index: number) => void;
 }) => {
-  const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [isSelected, setIsSelected] = useState<boolean>(initialValue);
 
   const handlerSelected = (param: boolean) => {
     setIsSelected(param);
@@ -39,29 +41,18 @@ const CheckItem = ({
 };
 
 const BasketTable = memo(() => {
-  const mapToArray = useBasket(useShallow((state) => state.mapToArray));
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const { mapToArray, setItem } = useBasket(useShallow((state) => state));
+  //const [totalPrice, setTotalPrice] = useState<number>(0);
   const isMobile = useIsMobile();
 
   const handlerSelect = (param: boolean, index: number) => {
     //console.log(param, index);
 
     const t_array = mapToArray();
-    //Сначала посчитать общую стоимость
-    let total = 0;
-    //Вычесть неактивные данные
-    t_array.forEach((item, indx) => {
-      if (indx === index && param === false) {
-        total -= item.price * item.count;
-      }
-      if (indx === index && param) {
-        total += item.price * item.count;
-      }
-    });
-    if (totalPrice === 0 && total < 0) {
-      total = 0;
-    }
-    setTotalPrice(totalPrice + total);
+    const selectedItem: TBasketItem = t_array[index];
+    selectedItem.inOrder = param;
+    setItem(selectedItem);
+    t_array[index] = selectedItem;
   };
 
   return (
@@ -83,6 +74,7 @@ const BasketTable = memo(() => {
               <CheckItem
                 name={`selected-${index + 1}`}
                 index={index}
+                initialValue={item.inOrder}
                 handler={handlerSelect}
               />
             </div>

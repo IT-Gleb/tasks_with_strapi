@@ -39,7 +39,7 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
     if (_hasHydrated) {
       useBasket
         .getState()
-        .getFromBase()
+        .loadFromBase()
         .then((data) => {
           if (data !== null) {
             setData(data);
