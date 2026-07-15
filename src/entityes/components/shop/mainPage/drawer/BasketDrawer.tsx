@@ -33,6 +33,7 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    let isWork: boolean = true;
     setIsLoading(true);
     //console.log(isHydrated);
 
@@ -42,11 +43,17 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
         .loadFromBase()
         .then((data) => {
           if (data !== null) {
-            setData(data);
+            if (isWork) {
+              setData(data);
+              setIsLoading(false);
+            }
           }
         });
 
       setIsLoading(false);
+      return () => {
+        isWork = false;
+      };
     }
   }, [_hasHydrated]);
 
@@ -58,10 +65,13 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
 });
 
 const BasketDrawer = () => {
-  const { length, saveToBase } = useBasket(useShallow((state) => state));
+  const { length, saveToBase, inOrder } = useBasket(
+    useShallow((state) => state),
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [animation, setAnimation] = useState<string>("animate-From-left");
+  const [basketCount, setBasketCount] = useState<number>(length);
   //const hydrate = useBasketHydration();
 
   const handlerClose = (evt: MouseEvent<Element>) => {
@@ -81,6 +91,18 @@ const BasketDrawer = () => {
     setIsOpen(true);
   };
 
+  useEffect(() => {
+    let isWork: boolean = true;
+
+    if (isWork && length >= 0) {
+      setBasketCount(length);
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [length]);
+
   return (
     <HydrateBasked>
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
@@ -91,9 +113,9 @@ const BasketDrawer = () => {
           onClick={handlerOpen}
           aria-label="Ваша корзина"
         >
-          {length > 0 && (
+          {basketCount > 0 && (
             <Badge variant="primary" size="sm" placement="top-right">
-              {length}
+              {basketCount}
             </Badge>
           )}
 
@@ -135,6 +157,7 @@ const BasketDrawer = () => {
                     size="sm"
                     variant="primary"
                     className={"w-fit mx-auto"}
+                    isDisabled={!inOrder()}
                   >
                     <LucideListOrdered size={20} strokeWidth={2} />
                     Заказать

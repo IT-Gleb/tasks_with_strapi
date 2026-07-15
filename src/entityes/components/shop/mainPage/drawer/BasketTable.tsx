@@ -2,11 +2,11 @@
 
 import { type TBasketItem, useBasket } from "@/shared/store/basketStore";
 import { Checkbox } from "@heroui/react";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 //import InBasket from "../gallery/InBasket";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
-import TotalOrderPrice from "./TotalOrderPrice";
+//import TotalOrderPrice from "./TotalOrderPrice";
 
 const CheckItem = ({
   name,
@@ -40,7 +40,7 @@ const CheckItem = ({
   );
 };
 
-const BasketTable = memo(() => {
+const BasketTable = () => {
   const { mapToArray, setItem } = useBasket(useShallow((state) => state));
   //const [totalPrice, setTotalPrice] = useState<number>(0);
   const isMobile = useIsMobile();
@@ -54,6 +54,8 @@ const BasketTable = memo(() => {
     setItem(selectedItem);
     t_array[index] = selectedItem;
   };
+
+  //console.log(basketItems);
 
   return (
     <div className="px-4 mt-1">
@@ -99,6 +101,6 @@ const BasketTable = memo(() => {
       })}
     </div>
   );
-});
+};
 
 export default BasketTable;

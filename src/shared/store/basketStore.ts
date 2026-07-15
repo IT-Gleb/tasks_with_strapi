@@ -55,6 +55,7 @@ interface IBasketActions {
   setHasHydrated: (state: boolean) => void;
   setData: (param: TBasketValues) => void;
   totalOrderPrice: () => number;
+  inOrder: () => boolean;
 }
 
 type TBasketStore = TBasketState & IBasketActions;
@@ -112,32 +113,57 @@ export const useBasket = create<TBasketStore>()(
       },
 
       mapToArray: () => {
+        if (get().length < 1) return [];
+
         const tmp: TBasketItem[] = Array.from(get().goods).map(
           (item) => item[1],
         );
         return tmp;
       },
       setItem: (param: TBasketItem) => {
-        const temp_goods = new Map(get().goods);
+        //console.log(get().length);
+        let temp_goods = new Map<string, TBasketItem>();
+        if (get().length > 0) {
+          temp_goods = new Map(get().goods);
+        }
+
         temp_goods.set(param.documentId, param);
         set({ goods: temp_goods, length: temp_goods.size });
       },
       deleteItem: (param: TBasketItem) => {
+        if (get().length < 1) {
+          return;
+        }
         const temp_goods = new Map(get().goods);
         if (temp_goods.has(param.documentId)) {
           temp_goods.delete(param.documentId);
+          //console.log(temp_goods.size);
+
           set({ goods: temp_goods, length: temp_goods.size });
         }
       },
       inBasket: (param: string) => {
         let res: boolean = false;
-        if (get().goods.has(param)) {
-          res = true;
+        if (get().length < 1) {
+          return res;
         }
+
+        try {
+          const tmp = new Map<string, TBasketItem>(get().goods);
+          if (tmp.has(param)) {
+            res = true;
+          }
+        } catch (err) {
+          return res;
+        }
+
         return res;
       },
       getItem: (paramId: string) => {
         let res: TBasketItem | null = null;
+        if (get().length < 1) {
+          return res;
+        }
         if (get().goods.has(paramId)) {
           res = get().goods.get(paramId) as TBasketItem;
         }
@@ -145,9 +171,8 @@ export const useBasket = create<TBasketStore>()(
       },
       saveToBase: async () => {
         const dataToSave = get().mapToArray();
-        if (dataToSave.length > 0) {
-          await MyStorage.setItem(nameInBase, dataToSave);
-        }
+
+        await MyStorage.setItem(nameInBase, dataToSave);
       },
       loadFromBase: async () => {
         const data = await MyStorage.getItem(nameInBase);
@@ -176,6 +201,15 @@ export const useBasket = create<TBasketStore>()(
         res = t_array.reduce((acc, value) => {
           return (acc += value.inOrder ? value.count * value.price : 0);
         }, 0);
+        return res;
+      },
+      inOrder: () => {
+        let res: boolean = false;
+        if (get().length < 1) {
+          return res;
+        }
+        const tmp_data = get().mapToArray();
+        res = tmp_data.filter((item) => item.inOrder === true).length > 0;
         return res;
       },
     }),

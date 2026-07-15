@@ -31,16 +31,20 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
 
   useEffect(() => {
     let isWork: boolean = true;
+
+    const goodInBasket: TBasketItem = {
+      documentId: goodItem.documentId,
+      title: goodItem.title,
+      price: goodItem.price,
+      count: value,
+      inOrder: false,
+    };
     if (isWork) {
-      const goodInBasket: TBasketItem = {
-        documentId: goodItem.documentId,
-        title: goodItem.title,
-        price: goodItem.price,
-        count: value,
-        inOrder: false,
-      };
       //если есть в корзине
-      if (inBasket(goodInBasket.documentId) && value === 0) {
+      if (
+        useBasket.getState().inBasket(goodInBasket.documentId) &&
+        value === 0
+      ) {
         deleteItem(goodInBasket);
       }
       //Установить количество в корзине

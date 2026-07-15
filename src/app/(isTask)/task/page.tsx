@@ -3,13 +3,26 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { type TPageSeo } from "@/shared/types/main_types";
 import { MainPageSEOPath, MainPageSeo_Prefix } from "@/shared/utils/consts";
 
-import CalendarBasic from "@/entityes/components/calendar/CalendarBasic";
+//import CalendarBasic from "@/entityes/components/calendar/CalendarBasic";
 import { Suspense } from "react";
 
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
-import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
-import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
+//import LastTodos from "@/entityes/components/Todos/last10todos/LastTodos";
+//import ChartMonthProvider from "@/entityes/components/charts/TodosCharts";
 import Loading from "../loading";
+import dynamic from "next/dynamic";
+
+const CalendarBasicDyn = dynamic(
+  () => import("@/entityes/components/calendar/CalendarBasic"),
+);
+
+const LastTodosDyn = dynamic(
+  () => import("@/entityes/components/Todos/last10todos/LastTodos"),
+);
+
+const ChartMonthProviderDyn = dynamic(
+  () => import("@/entityes/components/charts/TodosCharts"),
+);
 
 export default async function Home() {
   const queryClient = getCacheQueryClient();
@@ -28,7 +41,7 @@ export default async function Home() {
       {!!result && (
         <div className="w-full lg:max-w-200 lg:mx-auto p-4 text-xl grid grid-cols-1 lg:grid-cols-2  lg:items-start gap-y-3 space-y-5">
           <Suspense fallback={<Loading from="fromstart" />}>
-            <CalendarBasic />
+            <CalendarBasicDyn />
             {/* <div className="text-xs p-2">
               {FormatDateTime(
                 CheckIsTimeZoneString(result?.data.publishedAt as string),
@@ -36,11 +49,11 @@ export default async function Home() {
             </div> */}
           </Suspense>
           <Suspense fallback={<Loading />}>
-            <LastTodos />
+            <LastTodosDyn />
           </Suspense>
           <Suspense fallback={<Loading />}>
             <div className="mt-5 lg:col-span-2">
-              <ChartMonthProvider />
+              <ChartMonthProviderDyn />
             </div>
           </Suspense>
         </div>

@@ -1,9 +1,9 @@
 "use server";
 
 import Loading from "@/app/(isTask)/loading";
-import AddNewTodo from "@/entityes/components/newTodo/AddNewTodo";
+//import AddNewTodo from "@/entityes/components/newTodo/AddNewTodo";
 import NoTodo from "@/entityes/components/noTodo/NoTodo";
-import TodosTableProvider from "@/entityes/components/Todos/todosTable";
+//import TodosTableProvider from "@/entityes/components/Todos/todosTable";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 //import TodosTable from "@/entityes/components/Todos/todosTable";
@@ -14,8 +14,13 @@ import { fetchGet } from "@/shared/utils/fetchers";
 
 import { Loader2 } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
+import dynamic from "next/dynamic";
 
 import { Suspense } from "react";
+
+const AddNewTodoDyn = dynamic(
+  () => import("@/entityes/components/newTodo/AddNewTodo"),
+);
 
 type Props = {
   params: Promise<{ date: string[] }>;
@@ -39,6 +44,10 @@ export async function generateMetadata(
   };
 }
 
+const TodosTableProviderDyn = dynamic(
+  () => import("@/entityes/components/Todos/todosTable"),
+);
+
 export default async function TodoOnDate({
   params,
 }: {
@@ -57,7 +66,7 @@ export default async function TodoOnDate({
           <Loader2 size={38} strokeWidth={2} className=" animate-spin" />
         }
       >
-        <AddNewTodo paramDate={date[0] as TDateISOString} />
+        <AddNewTodoDyn paramDate={date[0] as TDateISOString} />
       </Suspense>
     );
   }
@@ -84,7 +93,7 @@ export default async function TodoOnDate({
   return (
     // <HydrationBoundary state={dehydrate(queryClient)}>
     <Suspense fallback={<Loading />}>
-      <TodosTableProvider paramDate={date[0] as TDateISOString} />
+      <TodosTableProviderDyn paramDate={date[0] as TDateISOString} />
     </Suspense>
   );
 
