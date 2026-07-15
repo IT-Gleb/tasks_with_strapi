@@ -103,7 +103,7 @@ const BasketDrawer = () => {
           <Drawer.Dialog>
             <Drawer.Content
               placement="left"
-              className={`w-[90%] lg:w-[50%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
+              className={`w-[90%] xl:w-[70%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
             >
               <Drawer.Header>
                 <div className="w-full p-2 flex gap-x-2 items-center justify-between">

@@ -57,8 +57,9 @@ const BasketTable = memo(() => {
 
   return (
     <div className="px-4 mt-1">
-      <div className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
-        <div>В заказ</div>
+      <div className="w-full grid grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
+        <div className="text-xs whitespace-nowrap p-1 -rotate-45">№/№</div>
+        <div className="text-xs whitespace-nowrap p-1 -rotate-45">В заказ</div>
         <div>{isMobile ? "На-ие" : "Наименование"}</div>
         <div className="text-center">Цена</div>
         <div className="text-center">{isMobile ? "Кол-во" : "Количество"}</div>
@@ -68,8 +69,9 @@ const BasketTable = memo(() => {
         return (
           <div
             key={item.documentId}
-            className="w-full grid grid-cols-[60px_2fr_1fr_1fr_1fr] gap-2 items-center p-2 odd:bg-slate-200/50 dark:odd:bg-slate-700"
+            className="w-full grid grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center p-2 odd:bg-slate-100/50 dark:odd:bg-slate-700/50"
           >
+            <div className="text-center">{index + 1}.</div>
             <div className="w-fit mx-auto">
               <CheckItem
                 name={`selected-${index + 1}`}
