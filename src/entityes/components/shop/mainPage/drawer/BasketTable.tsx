@@ -1,11 +1,12 @@
 "use client";
 
-import { type TBasketItem, useBasket } from "@/shared/store/basketStore";
+import { useBasket } from "@/shared/store/basketStore";
 import { Checkbox } from "@heroui/react";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
 //import InBasket from "../gallery/InBasket";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
+import type { TBasketItem } from "@/shared/types/main_types";
 //import TotalOrderPrice from "./TotalOrderPrice";
 
 const CheckItem = ({
@@ -60,8 +61,10 @@ const BasketTable = () => {
   return (
     <div className="px-4 mt-1">
       <div className="w-full grid grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
-        <div className="text-xs whitespace-nowrap p-1 -rotate-45">№/№</div>
-        <div className="text-xs whitespace-nowrap p-1 -rotate-45">В заказ</div>
+        <div className="whitespace-nowrap p-1 scale-x-80 -rotate-45">№/№</div>
+        <div className=" whitespace-nowrap p-1 scale-x-80 -rotate-45">
+          В заказ
+        </div>
         <div>{isMobile ? "На-ие" : "Наименование"}</div>
         <div className="text-center">Цена</div>
         <div className="text-center">{isMobile ? "Кол-во" : "Количество"}</div>

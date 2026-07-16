@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { TGoodItem } from "../types/main_types";
+import type { TBasketItem } from "../types/main_types";
 import { createStore, get, set, del } from "idb-keyval";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -22,11 +22,6 @@ const MyStorage = {
   removeItem: async (nameKey: string) => {
     await del(nameKey, basketStore);
   },
-};
-
-export type TBasketItem = Pick<TGoodItem, "documentId" | "title" | "price"> & {
-  count: number;
-  inOrder: boolean;
 };
 
 export function isTBasketItem(param: unknown): param is TBasketItem {

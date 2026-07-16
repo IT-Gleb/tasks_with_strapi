@@ -4,6 +4,10 @@ import { Tabs } from "@heroui/react";
 import BasketTable from "./BasketTable";
 import { memo } from "react";
 import TotalOrderPrice from "./TotalOrderPrice";
+//import OrdersTable from "./OrdersTable";
+import dynamic from "next/dynamic";
+
+const OrdersTblDyn = dynamic(() => import("./OrdersTable"), { ssr: false });
 
 const BasketContentTabs = memo(() => {
   return (
@@ -27,7 +31,7 @@ const BasketContentTabs = memo(() => {
         <TotalOrderPrice />
       </Tabs.Panel>
       <Tabs.Panel className="pt-4" id="orders">
-        <p>This tab is also available for selection.</p>
+        <OrdersTblDyn />
       </Tabs.Panel>
     </Tabs>
   );

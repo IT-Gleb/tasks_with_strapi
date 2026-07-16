@@ -14,6 +14,7 @@ import BasketContentTabs from "./BasketContentTabs";
 
 import useBasketHydration from "@/shared/store/HydrationStore";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
+import ToOrderButton from "./ToOrderButton";
 
 export const BasketHydrated = ({ children }: { children: ReactNode }) => {
   const hydrate = useBasketHydration();
@@ -24,7 +25,7 @@ export const BasketHydrated = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
+const HydrateBasket = memo(({ children }: { children: ReactNode }) => {
   const { _hasHydrated, setData } = useBasket((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -65,9 +66,7 @@ const HydrateBasked = memo(({ children }: { children: ReactNode }) => {
 });
 
 const BasketDrawer = () => {
-  const { length, saveToBase, inOrder } = useBasket(
-    useShallow((state) => state),
-  );
+  const { length, saveToBase } = useBasket(useShallow((state) => state));
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [animation, setAnimation] = useState<string>("animate-From-left");
@@ -104,7 +103,7 @@ const BasketDrawer = () => {
   }, [length]);
 
   return (
-    <HydrateBasked>
+    <HydrateBasket>
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
         <Button
           isIconOnly
@@ -153,22 +152,14 @@ const BasketDrawer = () => {
               <Drawer.Footer className="p-2 flex flex-col gap-y-1 text-center place-content-center">
                 <GradientLine />
                 <div className="w-full p-1 flex-1">
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    className={"w-fit mx-auto"}
-                    isDisabled={!inOrder()}
-                  >
-                    <LucideListOrdered size={20} strokeWidth={2} />
-                    Заказать
-                  </Button>
+                  <ToOrderButton />
                 </div>
               </Drawer.Footer>
             </Drawer.Content>
           </Drawer.Dialog>
         </Drawer.Backdrop>
       </Drawer>
-    </HydrateBasked>
+    </HydrateBasket>
   );
 };
 

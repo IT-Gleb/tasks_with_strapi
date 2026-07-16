@@ -87,6 +87,11 @@ export type TGoodItem = {
   picture: TGoodItemPicture[];
 };
 
+export type TBasketItem = Pick<TGoodItem, "documentId" | "title" | "price"> & {
+  count: number;
+  inOrder: boolean;
+};
+
 export type TCategories = {
   id: number;
   title: string;
