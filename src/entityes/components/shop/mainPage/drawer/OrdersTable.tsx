@@ -1,9 +1,10 @@
 "use client";
 
 import { TOrder, useOrdersStorage } from "@/shared/store/orderStore";
+import { Accordion } from "@heroui/react";
 
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 function StatusMapper(param: TOrder): string {
   let res: string = "";
@@ -51,21 +52,61 @@ const OrdersTable = () => {
 
   return (
     <section>
-      <div className="w-full p-4 rounded-t-2xl grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center bg-slate-200 text-xs lg:text-sm font-bold">
+      <div className="w-full p-4 rounded-t-2xl grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center bg-slate-200 text-xs lg:text-sm font-bold">
         <div className="text-xs">№/№</div>
         <div>Наименование</div>
         <div>Статус</div>
+        <div>Дата/Время</div>
         <div>Цена</div>
       </div>
       {data !== null &&
         data?.map((order, index) => (
           <div
             key={order.id}
-            className="w-full grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 p-1"
+            className="w-full grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 p-1"
           >
             <div>{index + 1}</div>
-            <div>{order.title}</div>
+            <Accordion className={"w-full"}>
+              <Accordion.Item>
+                <Accordion.Heading>
+                  <Accordion.Trigger>
+                    {order.title}
+                    <Accordion.Indicator>
+                      <ChevronDown />
+                    </Accordion.Indicator>
+                  </Accordion.Trigger>
+                </Accordion.Heading>
+                <Accordion.Panel>
+                  <Accordion.Body>
+                    {order.items.map((itm, idx) => {
+                      return (
+                        <div
+                          className="grid grid-cols-[30px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-1 items-center text-xs p-1 odd:bg-slate-100 dark:odd:bg-slate-600"
+                          key={itm.documentId}
+                        >
+                          <div>{idx + 1}.</div>
+                          <div>{itm.title}</div>
+                          <div>{itm.count}</div>
+                          <div>
+                            {Intl.NumberFormat("ru-RU", {
+                              style: "currency",
+                              currency: "RUB",
+                            }).format(itm.price * itm.count)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </Accordion.Body>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
             <div>{StatusMapper(order)}</div>
+            <div className="text-xs text-center">
+              {Intl.DateTimeFormat("ru-RU", {
+                timeStyle: "short",
+                dateStyle: "short",
+              }).format(order.updatedAt)}
+            </div>
             <div>
               {Intl.NumberFormat("ru-RU", {
                 style: "currency",
