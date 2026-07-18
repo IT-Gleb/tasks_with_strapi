@@ -78,24 +78,34 @@ const OrdersTable = () => {
                 </Accordion.Heading>
                 <Accordion.Panel>
                   <Accordion.Body>
-                    {order.items.map((itm, idx) => {
-                      return (
-                        <div
-                          className="grid grid-cols-[30px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-1 items-center text-xs p-1 odd:bg-slate-100 dark:odd:bg-slate-600"
-                          key={itm.documentId}
-                        >
-                          <div>{idx + 1}.</div>
-                          <div>{itm.title}</div>
-                          <div>{itm.count}</div>
-                          <div>
-                            {Intl.NumberFormat("ru-RU", {
-                              style: "currency",
-                              currency: "RUB",
-                            }).format(itm.price * itm.count)}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <div className=" flex">
+                      <div className="w-fit flex flex-col items-center font-bold [&>div]:w-full [&>div]:p-2 [&>div]:border dark:[&>div]:border-yellow-200/35 bg-sky-500 dark:bg-sky-800 text-yellow-100 text-xs">
+                        <div>№/№</div>
+                        <div className="h-11">Наименование</div>
+                        <div>Количество</div>
+                        <div>Цена</div>
+                      </div>
+                      <div className=" flex items-start overflow-y-hidden overflow-x-auto touch-pan-x">
+                        {order.items.map((itm, idx) => {
+                          return (
+                            <div
+                              key={itm.documentId}
+                              className="min-w-40 text-xs [&>div]:p-2 [&>div]:place-content-center [&>div]:border dark:[&>div]:border-yellow-200/35"
+                            >
+                              <div>{idx + 1}.</div>
+                              <div className="h-11">{itm.title}</div>
+                              <div>{itm.count}</div>
+                              <div>
+                                {Intl.NumberFormat("ru-RU", {
+                                  style: "currency",
+                                  currency: "RUB",
+                                }).format(itm.price * itm.count)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </Accordion.Body>
                 </Accordion.Panel>
               </Accordion.Item>

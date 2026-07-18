@@ -79,7 +79,7 @@
 
 @layer theme {
   * {
-    @apply scrollbar-thin scrollbar-thumb-accent scrollbar-track-amber-200;
+    @apply scrollbar-thin scrollbar-thumb-accent scrollbar-track-slate-300;
   }
   .backlines {
     @apply bg-repeat bg-size-[6px_6px] lg:bg-size-[10px_10px] bg-[linear-gradient(rgba(125,125,125,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(155,125,125,0.1)_1px,transparent_1px)];

@@ -1,4 +1,5 @@
 "use client";
+
 import { stagger } from "motion";
 import * as motion from "motion/react-client";
 import { useMemo } from "react";
@@ -86,17 +87,15 @@ const HeroComp = ({
     <div className="mt-5 w-full min-h-100 bg-green-100 dark:bg-blue-950 transition-discrete duration-300 rounded-t-3xl overflow-hidden">
       <div className="w-full h-auto backlines relative z-1">
         <div className="absolute z-2 left-1 sm:left-10 top-10 flex gap-x-4 flex-nowrap items-center justify-evenly">
-          {img1
-            .map((item, index) => (
-              <RoundImage
-                key={item.documentId}
-                url={SERVER_URL + item.url}
-                borderColor="border-green-400/50 dark:border-blue-400/50"
-                index={index}
-                direction_animate="right"
-              />
-            ))
-            .reverse()}
+          {img1.map((item, index) => (
+            <RoundImage
+              key={item.documentId}
+              url={SERVER_URL + item.url}
+              borderColor="border-green-400/50 dark:border-blue-400/50"
+              index={index}
+              direction_animate="right"
+            />
+          ))}
         </div>
         <div className="ml-auto w-55 h-55 bg-radial-[at_100%_0%] from-green-500/30 dark:from-blue-300/25 to-transparent to-72%"></div>
         <motion.h4
