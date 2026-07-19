@@ -2,13 +2,8 @@
 
 import { useBasket } from "@/shared/store/basketStore";
 import { Badge, Button, Drawer, Typography } from "@heroui/react";
-import {
-  Cross,
-  Loader2,
-  LucideListOrdered,
-  ShoppingBasket,
-} from "lucide-react";
-import { memo, MouseEvent, ReactNode, useEffect, useState } from "react";
+import { Cross, Loader2, ShoppingBasket } from "lucide-react";
+import { MouseEvent, ReactNode, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
@@ -25,7 +20,7 @@ export const BasketHydrated = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-const HydrateBasket = memo(({ children }: { children: ReactNode }) => {
+const HydrateBasket = ({ children }: { children: ReactNode }) => {
   const { _hasHydrated, setData } = useBasket((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -63,7 +58,7 @@ const HydrateBasket = memo(({ children }: { children: ReactNode }) => {
   }
 
   return <>{children}</>;
-});
+};
 
 const BasketDrawer = () => {
   const { length, saveToBase } = useBasket(useShallow((state) => state));
