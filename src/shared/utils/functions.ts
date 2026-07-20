@@ -1,3 +1,4 @@
+import { TOrder } from "../store/orderStore";
 import {
   TDateISOString,
   TDateTimeISOString,
@@ -226,4 +227,30 @@ export function isGoodItemType(entity: unknown): entity is TGoodItem {
     "duscount" in entity &&
     "title" in entity
   );
+}
+
+export function StatusMapper(param: TOrder): string {
+  let res: string = "";
+
+  switch (param.status) {
+    case "created":
+      res = "Новый";
+      break;
+    case "cancelled":
+      res = "Отменен";
+      break;
+    case "delivered":
+      res = "В магазине";
+      break;
+    case "in-work":
+      res = "В обработке";
+      break;
+    case "success":
+      res = "Успешно выполнен";
+      break;
+    default:
+      res = "Новый";
+      break;
+  }
+  return res;
 }

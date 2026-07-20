@@ -66,7 +66,12 @@ const BasketDrawer = () => {
 
   const [animation, setAnimation] = useState<string>("animate-From-left");
   const [basketCount, setBasketCount] = useState<number>(length);
+  const [showButton, setShowButton] = useState<boolean>(true);
   //const hydrate = useBasketHydration();
+
+  const handlerTabs = (param: boolean) => {
+    setShowButton(param);
+  };
 
   const handlerClose = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
@@ -119,7 +124,7 @@ const BasketDrawer = () => {
           <Drawer.Dialog>
             <Drawer.Content
               placement="left"
-              className={`w-[90%] xl:w-[70%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
+              className={`w-[95%] xl:w-[70%] bg-white dark:bg-slate-900 z-100 flex flex-col pointer-events-auto ${animation}`}
             >
               <Drawer.Header>
                 <div className="w-full p-2 flex gap-x-2 items-center justify-between">
@@ -142,12 +147,12 @@ const BasketDrawer = () => {
                   e.nativeEvent.stopImmediatePropagation();
                 }}
               >
-                <BasketContentTabs />
+                <BasketContentTabs handler={handlerTabs} />
               </Drawer.Body>
               <Drawer.Footer className="p-2 flex flex-col gap-y-1 text-center place-content-center">
                 <GradientLine />
                 <div className="w-full p-1 flex-1">
-                  <ToOrderButton />
+                  {showButton && <ToOrderButton />}
                 </div>
               </Drawer.Footer>
             </Drawer.Content>
