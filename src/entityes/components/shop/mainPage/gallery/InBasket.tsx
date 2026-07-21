@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  isTBasketItem,
-  TBasketItem,
-  useBasket,
-} from "@/shared/store/basketStore";
-import { TGoodItem } from "@/shared/types/main_types";
+import { isTBasketItem, useBasket } from "@/shared/store/basketStore";
+import type { TBasketItem, TGoodItem } from "@/shared/types/main_types";
 import { Label, NumberField } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";

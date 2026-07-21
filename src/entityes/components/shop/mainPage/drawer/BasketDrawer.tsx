@@ -1,7 +1,7 @@
 "use client";
 
 import { useBasket } from "@/shared/store/basketStore";
-import { Badge, Button, Drawer, Typography } from "@heroui/react";
+import { Badge, Button, Drawer, Typography, Toast } from "@heroui/react";
 import { Cross, Loader2, ShoppingBasket } from "lucide-react";
 import { MouseEvent, ReactNode, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
@@ -104,6 +104,7 @@ const BasketDrawer = () => {
 
   return (
     <HydrateBasket>
+      <Toast.Provider placement="top" />
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
         <Button
           isIconOnly
