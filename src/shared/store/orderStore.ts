@@ -88,6 +88,19 @@ export const useOrdersStorage = () => {
             }
           },
         );
+        //Сортировка
+        if (result.length > 1) {
+          return result.sort((a, b) => {
+            const oneDate = new Date(a.createdAt);
+            const twoDate = new Date(b.createdAt);
+            if (oneDate > twoDate) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+        }
+        //--------------
         return result;
       } catch (err: unknown) {
         console.log((err as Error).message);

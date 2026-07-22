@@ -1,6 +1,6 @@
 "use client";
 
-import { Key, Tabs } from "@heroui/react";
+import { Button, Key, Tabs } from "@heroui/react";
 import BasketTable from "./BasketTable";
 import { memo, useState } from "react";
 import TotalOrderPrice from "./TotalOrderPrice";
@@ -19,7 +19,7 @@ const BasketContentTabs = memo(
         onSelectionChange={(key: Key) => {
           //console.log(key);
           setSelectedKey(key);
-          handler(selectedKey === "orders");
+          handler(key === "items");
         }}
       >
         <Tabs.ListContainer>
