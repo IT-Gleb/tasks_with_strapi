@@ -1,8 +1,8 @@
-import { TOrder } from "../store/orderStore";
 import {
   TDateISOString,
   TDateTimeISOString,
   TGoodItem,
+  TOrder,
 } from "../types/main_types";
 import { LimitSearch } from "./consts";
 
@@ -253,4 +253,12 @@ export function StatusMapper(param: TOrder): string {
       break;
   }
   return res;
+}
+
+export function orderDate(param: number | Date | string) {
+  const res = new Date(param);
+  return Intl.DateTimeFormat("ru-RU", {
+    timeStyle: "short",
+    dateStyle: "short",
+  }).format(res);
 }

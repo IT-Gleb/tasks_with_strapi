@@ -1,8 +1,8 @@
 "use client";
 
-import { type TOrder, useOrdersStorage } from "@/shared/store/orderStore";
-import { TBasketItem } from "@/shared/types/main_types";
-import { StatusMapper } from "@/shared/utils/functions";
+import { useOrdersStorage } from "@/shared/store/orderStore";
+import type { TBasketItem, TOrder } from "@/shared/types/main_types";
+import { orderDate, StatusMapper } from "@/shared/utils/functions";
 import { Accordion, Button, Popover, useMediaQuery } from "@heroui/react";
 
 import { useQuery } from "@tanstack/react-query";
@@ -141,10 +141,7 @@ const OrdersTable = () => {
               )}
               <div>{StatusMapper(order)}</div>
               <div className="text-xs text-center">
-                {Intl.DateTimeFormat("ru-RU", {
-                  timeStyle: "short",
-                  dateStyle: "short",
-                }).format(order.updatedAt)}
+                {orderDate(order.updatedAt)}
               </div>
               <div>
                 {Intl.NumberFormat("ru-RU", {

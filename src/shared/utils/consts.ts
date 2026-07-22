@@ -21,6 +21,7 @@ export const TodosLast20 =
 export const LimitSearch = 15;
 
 //Магазин
+export const SERVER_LOCAL_API = process.env.NEXT_PUBLIC_LOCAL_API_URL;
 const mainPageCategory =
   "main-page-shop?populate[GoodsZone][on][goods.goods-category][populate][CategoryComp][populate][good][populate][picture][populate]";
 export const shopPageSEO = "main-page-shop?pageSEO=1";

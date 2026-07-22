@@ -1,6 +1,6 @@
 import { useBasket } from "@/shared/store/basketStore";
-import { TOrder, useOrdersStorage } from "@/shared/store/orderStore";
-import { TBasketItem } from "@/shared/types/main_types";
+import { orderToServer, useOrdersStorage } from "@/shared/store/orderStore";
+import { TBasketItem, TOrder } from "@/shared/types/main_types";
 import { Button, toast } from "@heroui/react";
 import { LucideListOrdered, SquareCheck } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -45,6 +45,9 @@ const ToOrderButton = () => {
         indicator: <SquareCheck />,
         variant: "default",
       });
+
+      //Отправить заказ на сервер
+      orderToServer(newOrder);
     } catch (err: unknown) {
       console.log((err as Error).message);
     } finally {

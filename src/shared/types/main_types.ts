@@ -89,7 +89,7 @@ export type TGoodItem = {
 
 export type TBasketItem = Pick<TGoodItem, "documentId" | "title" | "price"> & {
   count: number;
-  inOrder: boolean;
+  inOrder?: boolean;
 };
 
 export type TCategories = {
@@ -130,4 +130,21 @@ export type THero = {
 export type THeroError = {
   error: boolean;
   message: string;
+};
+
+export type TOrderStatus =
+  | "created"
+  | "delivered"
+  | "in-work"
+  | "cancelled"
+  | "success";
+
+export type TOrder = {
+  id: string;
+  title: string | null;
+  createdAt: Date | number;
+  updatedAt: Date | number;
+  price: number;
+  status: TOrderStatus;
+  items: TBasketItem[];
 };
