@@ -229,6 +229,16 @@ export function isGoodItemType(entity: unknown): entity is TGoodItem {
   );
 }
 
+export function isOrderType(entity: unknown): entity is TOrder {
+  return (
+    typeof entity === "object" &&
+    entity !== null &&
+    "status" in entity &&
+    "price" in entity &&
+    "items" in entity
+  );
+}
+
 export function StatusMapper(param: TOrder): string {
   let res: string = "";
 

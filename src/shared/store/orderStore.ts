@@ -1,6 +1,7 @@
 import { TOrder, type TBasketItem } from "../types/main_types";
 import { get, set, del, createStore } from "idb-keyval";
-import { API_URL, SERVER_LOCAL_API, SERVER_URL } from "../utils/consts";
+import { SERVER_LOCAL_API } from "../utils/consts";
+import { isOrderType } from "../utils/functions";
 
 const ordersStore = "ordersStore";
 const ordersField = "ordersIds";
@@ -106,7 +107,7 @@ export const useOrdersStorage = () => {
         if (ids && ids.length > 0) {
           if (ids.includes(paramId)) {
             const idx = ids.indexOf(paramId);
-            console.log(idx);
+            //console.log(idx);
 
             ids.splice(idx, 1);
             await self.setAllOrdersIds(ids);
@@ -137,22 +138,23 @@ export async function orderToServer(paramNewOrder: TOrder) {
       signal: AbortSignal.timeout(5000),
       body: JSON.stringify(paramNewOrder),
     });
-    if (res.status !== 200) {
+    if (res.status > 299) {
       throw new Error("Не могу передать данные для сервера (новый заказ)");
     }
     //Обработка данных
     const _order = await res.json();
-    //console.log(_order.Order.data);
+
+    //console.log(_order.Order);
     const old_Id = _order.oldId;
 
     const order: TOrder = {
-      id: _order.Order.data.documentId,
-      title: _order.Order.data.title,
-      price: _order.Order.data.price,
-      status: _order.Order.data.s_status,
-      items: _order.Order.data.items,
-      createdAt: _order.Order.data.createdAt,
-      updatedAt: _order.Order.data.updatedAt,
+      id: _order.Order.documentId,
+      title: _order.Order.title,
+      price: _order.Order.price,
+      status: _order.Order.s_status,
+      items: _order.Order.items,
+      createdAt: _order.Order.createdAt,
+      updatedAt: _order.Order.updatedAt,
     };
 
     //console.log(order);
