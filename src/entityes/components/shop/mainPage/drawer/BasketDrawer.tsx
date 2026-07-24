@@ -10,6 +10,7 @@ import BasketContentTabs from "./BasketContentTabs";
 import useBasketHydration from "@/shared/store/HydrationStore";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ToOrderButton from "./ToOrderButton";
+import UpdateStatusInDB from "@/shared/store/UpdateStatusOrder";
 
 export const BasketHydrated = ({ children }: { children: ReactNode }) => {
   const hydrate = useBasketHydration();
@@ -160,6 +161,7 @@ const BasketDrawer = () => {
           </Drawer.Dialog>
         </Drawer.Backdrop>
       </Drawer>
+      <UpdateStatusInDB />
     </HydrateBasket>
   );
 };

@@ -3,7 +3,7 @@
 import { useOrdersStorage } from "@/shared/store/orderStore";
 import type { TBasketItem, TOrder } from "@/shared/types/main_types";
 import { orderDate, StatusMapper } from "@/shared/utils/functions";
-import { Accordion, Button, Popover, useMediaQuery } from "@heroui/react";
+import { Accordion, Button, cn, Popover, useMediaQuery } from "@heroui/react";
 
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpDown, ChevronDown, Loader2 } from "lucide-react";
@@ -22,10 +22,10 @@ const TableItemsOrder = ({ items }: { items: TBasketItem[] }) => {
           return (
             <div
               key={itm.documentId}
-              className="min-w-40 text-xs [&>div]:p-2 [&>div]:place-content-center [&>div]:border dark:[&>div]:border-yellow-200/35"
+              className="min-w-40 text-xs [&>div]:p-2 [&>div]:place-content-center [&>div]:border dark:[&>div]:border-yellow-200/35 no-underline"
             >
               <div>{idx + 1}.</div>
-              <div className="h-11">{itm.title}</div>
+              <div className="h-11 no-underline">{itm.title}</div>
               <div>{itm.count}</div>
               <div>
                 {Intl.NumberFormat("ru-RU", {
@@ -131,7 +131,16 @@ const OrdersTable = () => {
           data?.map((order, index) => (
             <div
               key={order.id}
-              className="w-full grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 p-1"
+              className={cn(
+                "w-full grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 p-1 items-center",
+                order.status === "in-work"
+                  ? "bg-slate-100/50 dark:bg-stone-900/50"
+                  : order.status === "success"
+                    ? "bg-sky-400/50 text-yellow-700 dark:text-yellow-100"
+                    : order.status === "cancelled"
+                      ? "bg-rose-400/50 text-yellow-100"
+                      : "",
+              )}
             >
               <div>{index + 1}</div>
               {isMobile ? (
