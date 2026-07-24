@@ -13,6 +13,7 @@ export const useOrdersStorage = () => {
       try {
         await set(param.id, param, ordersDB);
         await self.setOrdersId(param.id);
+        await self.checkIds();
       } catch (err: unknown) {
         console.log((err as Error).message);
       }
@@ -117,8 +118,28 @@ export const useOrdersStorage = () => {
         if (delItem) {
           await del(paramId, ordersDB);
         }
+        await self.checkIds();
       } catch (err: unknown) {
         console.log((err as Error).message);
+      }
+    },
+    checkIds: async (): Promise<void> => {
+      const ids = await self.getOrdersIds();
+      if (ids) {
+        //console.log(ids);
+
+        let not_nullIds: string[] = [];
+        await Promise.all(ids.map((item) => self.getOrder(item))).then(
+          (data) => {
+            not_nullIds = data
+              .filter((order) => order !== null)
+              .map((_order) => _order.id);
+          },
+        );
+        //console.log(nullIds);
+        if (not_nullIds.length !== ids.length) {
+          await self.setAllOrdersIds(not_nullIds);
+        }
       }
     },
     getMessage: function () {

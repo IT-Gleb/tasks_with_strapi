@@ -86,6 +86,7 @@ const BasketDrawer = () => {
 
   const handlerOpen = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
+
     saveToBase();
     setIsOpen(true);
   };
