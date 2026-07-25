@@ -47,7 +47,9 @@ const ItemsAsPopover = ({ paramOrder }: { paramOrder: TOrder }) => {
   const { title, items } = paramOrder;
   return (
     <Popover>
-      <Button variant="secondary">{title}</Button>
+      <Button variant="secondary" size="sm">
+        {title}
+      </Button>
       <Popover.Content className="min-w-75 max-w-86" placement="bottom">
         <Popover.Dialog>
           <Popover.Arrow />
@@ -124,14 +126,14 @@ const OrdersTable = () => {
         </Button>
       </div>
 
-      <div className="w-full p-4 rounded-t-2xl grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center bg-slate-200 text-xs lg:text-sm font-bold">
+      <div className="w-195 lg:w-full p-4 rounded-t-2xl grid grid-cols-[40px_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center bg-slate-200 text-xs lg:text-sm font-bold">
         <div className="text-xs">№/№</div>
         <div>Наименование</div>
         <div>Статус</div>
         <div>Дата/Время</div>
         <div>Цена</div>
       </div>
-      <div className="max-h-190 overflow-y-auto">
+      <div className="w-195 lg:w-full max-h-190 overflow-x-auto overflow-y-auto">
         {data !== null &&
           data?.map((order, index) => (
             <div

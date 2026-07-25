@@ -95,19 +95,21 @@ const UpdateStatusInDB = () => {
 
   useEffect(() => {
     let isWork: boolean = true;
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    (async function () {
-      const ids = await db.getOrdersIds();
+      (async function () {
+        const ids = await db.getOrdersIds();
 
-      if (ids && ids.length > 0) {
-        if (isWork) {
-          ids.forEach((order_id) => UpdateStatusOrder(order_id));
+        if (ids && ids.length > 0) {
+          if (isWork) {
+            ids.forEach((order_id) => UpdateStatusOrder(order_id));
+          }
         }
-      }
-    })();
-
-    setIsLoading(false);
+      })();
+    } finally {
+      setIsLoading(false);
+    }
 
     return () => {
       isWork = false;
