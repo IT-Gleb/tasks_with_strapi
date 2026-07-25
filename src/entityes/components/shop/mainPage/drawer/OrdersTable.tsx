@@ -111,6 +111,7 @@ const OrdersTable = () => {
 
   return (
     <section>
+      <UpdateStatusInDB key={randomKey} />
       <div className="p-1 place-content-center text-right text-xs">
         <Button
           size="sm"
@@ -146,7 +147,7 @@ const OrdersTable = () => {
                       : "",
               )}
             >
-              <div>{index + 1}</div>
+              <div className="text-center">{index + 1}.</div>
               {isMobile ? (
                 <ItemsAsPopover paramOrder={order} />
               ) : (
@@ -165,7 +166,6 @@ const OrdersTable = () => {
             </div>
           ))}
       </div>
-      <UpdateStatusInDB key={randomKey} />
     </section>
   );
 };

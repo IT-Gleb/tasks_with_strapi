@@ -4,8 +4,9 @@ import { TOrder } from "../types/main_types";
 import { useOrdersStorage } from "./orderStore";
 import { API_URL } from "../utils/consts";
 import { isOrderType } from "../utils/functions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
+import { Loader2 } from "lucide-react";
 
 function isOrderValid(
   paramOrder: TOrder,
@@ -90,9 +91,12 @@ async function UpdateStatusOrder(paramId: string) {
 
 const UpdateStatusInDB = () => {
   const db = useOrdersStorage();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isWork: boolean = true;
+    setIsLoading(true);
+
     (async function () {
       const ids = await db.getOrdersIds();
 
@@ -102,10 +106,21 @@ const UpdateStatusInDB = () => {
         }
       }
     })();
+
+    setIsLoading(false);
+
     return () => {
       isWork = false;
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-fit mx-auto">
+        <Loader2 size={16} className=" animate-spin" />
+      </div>
+    );
+  }
 
   return null;
 };

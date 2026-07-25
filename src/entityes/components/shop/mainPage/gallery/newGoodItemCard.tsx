@@ -64,8 +64,9 @@ const NewGoodItemCard = forwardRef(
           </span>
           <span
             className={cn(
-              " text-sm text-center line-through text-gray-600/75 dark:text-gray-300/75",
+              " text-sm text-center text-gray-600/75 dark:text-gray-300/75",
               index === activeIndex ? "text-white/80 dark:text-white/80" : "",
+              discount === 0 ? "" : "line-through",
             )}
           >
             &nbsp;
