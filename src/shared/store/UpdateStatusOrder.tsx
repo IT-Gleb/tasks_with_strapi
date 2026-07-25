@@ -7,12 +7,40 @@ import { isOrderType } from "../utils/functions";
 import { useEffect } from "react";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
+function isOrderValid(
+  paramOrder: TOrder,
+  paramDayValid: number = 1,
+): "valid" | "novalid" {
+  let res: "valid" | "novalid" = "novalid";
+
+  const currentDate = new Date();
+
+  const checkDate = new Date(paramOrder.createdAt);
+  checkDate.setDate(checkDate.getDate() + paramDayValid);
+
+  res = checkDate >= currentDate ? "valid" : "novalid";
+
+  return res;
+}
+
 async function getOrderFromDB(paramId: string) {
   const db = useOrdersStorage();
   let db_order: Partial<TOrder> | null = await db.getOrder(paramId);
 
   if (!isOrderType(db_order)) {
     console.log("Это не TOrder - ", db_order);
+    return null;
+  }
+  //Проверить на валидность заказа
+  if (
+    isOrderValid(db_order, 2) === "novalid" &&
+    db_order.status !== "success"
+  ) {
+    db.deleteOrder(db_order.id);
+    return null;
+  }
+
+  if (db_order.status === "cancelled" || db_order.status === "success") {
     return null;
   }
   return db_order as TOrder;
@@ -23,9 +51,6 @@ async function UpdateStatusOrder(paramId: string) {
   const _order = await getOrderFromDB(paramId);
 
   if (!_order) {
-    return;
-  }
-  if (_order.status === "cancelled" || _order.status === "success") {
     return;
   }
 

@@ -1,12 +1,14 @@
 "use client";
 
 import { useOrdersStorage } from "@/shared/store/orderStore";
+import UpdateStatusInDB from "@/shared/store/UpdateStatusOrder";
 import type { TBasketItem, TOrder } from "@/shared/types/main_types";
 import { orderDate, StatusMapper } from "@/shared/utils/functions";
 import { Accordion, Button, cn, Popover, useMediaQuery } from "@heroui/react";
 
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpDown, ChevronDown, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 const TableItemsOrder = ({ items }: { items: TBasketItem[] }) => {
   return (
@@ -84,6 +86,7 @@ const ItemsAsAccordion = ({ paramOrder }: { paramOrder: TOrder }) => {
 const OrdersTable = () => {
   const ordersSt = useOrdersStorage();
   const isMobile = useMediaQuery(" screen and (100px < width <= 1024px)");
+  const [randomKey, setRandomKey] = useState<string>(crypto.randomUUID());
 
   const { data, isFetching, error, refetch } = useQuery({
     queryKey: ["orders", 1],
@@ -102,6 +105,7 @@ const OrdersTable = () => {
   }
 
   const handlerUpdate = async () => {
+    setRandomKey(crypto.randomUUID());
     await refetch();
   };
 
@@ -161,6 +165,7 @@ const OrdersTable = () => {
             </div>
           ))}
       </div>
+      <UpdateStatusInDB key={randomKey} />
     </section>
   );
 };
