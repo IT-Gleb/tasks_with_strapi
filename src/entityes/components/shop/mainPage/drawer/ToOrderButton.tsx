@@ -14,45 +14,66 @@ const ToOrderButton = () => {
 
   const handlerButton = () => {
     setDisabled(true);
-    try {
-      const baskets: TBasketItem[] = mapToArray().filter(
-        (filtered) => filtered.inOrder === true,
-      );
-      const newOrder: TOrder = {
-        id: crypto.randomUUID(),
-        title: " new Order",
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        price: totalOrderPrice(),
-        status: "created",
-        items: baskets,
-      };
-      //Записать в заказ данные из корзины. Обновить данные в корзине.
-      ordersSt.addOrder(newOrder);
-      //Удалить из корзины товары, добавленные в заказ
-      baskets.forEach((item) => deleteItem(item));
-      //Записать в базу изменения
-      saveToBase();
+    const manageOrder = async (): Promise<boolean> => {
+      try {
+        const baskets: TBasketItem[] = mapToArray().filter(
+          (filtered) => filtered.inOrder === true,
+        );
+        const newOrder: TOrder = {
+          id: crypto.randomUUID(),
+          title: " new Order",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          price: totalOrderPrice(),
+          status: "created",
+          items: baskets,
+        };
+        //Записать в заказ данные из корзины. Обновить данные в корзине.
+        ordersSt.addOrder(newOrder);
+        //Удалить из корзины товары, добавленные в заказ
+        baskets.forEach((item) => deleteItem(item));
+        //Записать в базу изменения
+        saveToBase();
 
-      //Показать сообщение
-      toast("Заказ успешно создан", {
-        actionProps: {
-          children: "Закрыть",
-          onPress: () => toast.clear(),
-          variant: "tertiary",
-        },
-        description: "Заказ добавлен в очередь заказов магазина",
-        indicator: <SquareCheck />,
-        variant: "default",
-      });
+        //Показать сообщение
+        // toast("Заказ успешно создан", {
+        //   actionProps: {
+        //     children: "Закрыть",
+        //     onPress: () => toast.clear(),
+        //     variant: "tertiary",
+        //   },
+        //   description: "Заказ добавлен в очередь заказов магазина",
+        //   indicator: <SquareCheck />,
+        //   variant: "default",
+        // });
 
-      //Отправить заказ на сервер
-      orderToServer(newOrder);
-    } catch (err: unknown) {
-      console.log((err as Error).message);
-    } finally {
-      setDisabled(!inOrder());
-    }
+        //Отправить заказ на сервер
+        orderToServer(newOrder);
+        let tm = -1;
+        return new Promise<boolean>((resolve) => {
+          tm = window.setTimeout(() => {
+            resolve(true);
+          }, 1200);
+        }).then((resolve) => {
+          clearTimeout(tm);
+          tm = -1;
+          return true;
+        });
+      } catch (err: unknown) {
+        console.log((err as Error).message);
+        return new Promise<false>((reject) => {
+          reject(false);
+        }).catch((reject) => false);
+      } finally {
+        setDisabled(!inOrder());
+      }
+    };
+
+    toast.promise(manageOrder(), {
+      loading: "Формирую заказ...",
+      success: "Заказ добавлен в очередь заказов магазина...",
+      error: "Произошла ошибка!",
+    });
   };
 
   useEffect(() => {

@@ -8,6 +8,7 @@ import {
   List,
   ListCheck,
   ListEnd,
+  ListOrdered,
   SearchCheck,
   ShoppingBag,
 } from "lucide-react";
@@ -72,6 +73,10 @@ const BreadCrambs: FC = () => {
             title: "Витрина",
             Icon: <ShoppingBag size={14} />,
           });
+          break;
+        case "dashboard":
+          tmp.push({ title: "Управление", Icon: <ListOrdered size={14} /> });
+          tmp.push({ title: "Заказы", Icon: <ListOrdered size={14} /> });
           break;
         default:
           tmp.push({

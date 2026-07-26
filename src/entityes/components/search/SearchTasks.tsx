@@ -53,7 +53,7 @@ export default function SearchTasks() {
             autoComplete="off"
             minLength={3}
             maxLength={120}
-            className={` w-full outline-0 border-0 p-0.5 pl-2`}
+            className={` w-full outline-0 border-0 p-0.5 pl-2 bg-white`}
             placeholder="Найти задачу..."
             value={searchValue}
             onChange={handlerChange}

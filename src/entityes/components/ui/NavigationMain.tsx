@@ -18,7 +18,7 @@ const DbLink = ({
   children: ReactNode;
 }) => {
   const router = useRouter();
-  const getFromBase = useBasket((state) => state.getFromBase);
+  const loadFromBase = useBasket((state) => state.loadFromBase);
 
   const handlerDB = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
@@ -26,7 +26,7 @@ const DbLink = ({
       //console.log("Начинаю загрузку из базы...");
 
       (async function () {
-        await getFromBase();
+        await loadFromBase();
       })();
     } catch (err: unknown) {
       console.log((err as Error).message);
