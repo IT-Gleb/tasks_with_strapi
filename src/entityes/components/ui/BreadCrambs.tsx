@@ -11,6 +11,7 @@ import {
   ListOrdered,
   SearchCheck,
   ShoppingBag,
+  User2,
 } from "lucide-react";
 
 type TBreadCrambsProps = {
@@ -33,6 +34,10 @@ const BreadCrambs: FC = () => {
       switch (item) {
         case "":
           tmp[0] = { title: "Главная", path: "/", Icon: <Home size={14} /> };
+          break;
+        case "auth":
+          tmp.push({ title: "Авторизация", Icon: <User2 size={14} /> });
+          tmp.push({ title: "Проверка", Icon: <User2 size={14} /> });
           break;
         case "todos":
           tmp.push({
