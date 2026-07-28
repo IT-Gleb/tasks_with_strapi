@@ -17,7 +17,7 @@ const ManagerButton = () => {
     const url = SERVER_LOCAL_API + "/checkuser";
     //console.log(url);
 
-    const isOk = await query.fetchQuery({
+    const isToken = await query.fetchQuery({
       queryKey: ["manager", 1],
       queryFn: async () => {
         const res = await fetch(url, {
@@ -35,9 +35,9 @@ const ManagerButton = () => {
       staleTime: 10000,
     });
     // console.log(isOk);
-    if (isOk.ok) {
+    if (isToken.ok) {
       //cookiesList.getAll().map((i) => console.log(i.name, i.value));
-      setCookie(isOk.token);
+      setCookie(isToken.token);
     }
   };
 

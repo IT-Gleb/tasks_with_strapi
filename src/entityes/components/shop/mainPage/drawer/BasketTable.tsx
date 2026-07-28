@@ -81,7 +81,7 @@ const BasketTable = () => {
               <CheckItem
                 name={`selected-${index + 1}`}
                 index={index}
-                initialValue={item.inOrder}
+                initialValue={item.inOrder as boolean}
                 handler={handlerSelect}
               />
             </div>
