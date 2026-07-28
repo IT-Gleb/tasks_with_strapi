@@ -1,6 +1,6 @@
 "use client";
 
-import { setCookie } from "@/app/lib/actions";
+import { setAuthCookie } from "@/app/lib/actions";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import { SERVER_LOCAL_API } from "@/shared/utils/consts";
 import { Button } from "@heroui/react";
@@ -37,7 +37,7 @@ const ManagerButton = () => {
     // console.log(isOk);
     if (isToken.ok) {
       //cookiesList.getAll().map((i) => console.log(i.name, i.value));
-      setCookie(isToken.token);
+      setAuthCookie(isToken.token);
     }
   };
 

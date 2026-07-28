@@ -49,6 +49,9 @@ export async function POST(request: Request) {
       ok: true,
       token: manager.jwt as string,
     });
+    const expiresDate = new Date();
+    expiresDate.setHours(expiresDate.getHours() + 8);
+
     myResponse.cookies.set({
       name: "auth_token",
       value: manager.jwt as string,
@@ -57,6 +60,7 @@ export async function POST(request: Request) {
       sameSite: "lax",
       secure: false,
       maxAge: 60 * 60 * 8,
+      expires: expiresDate,
     });
 
     return myResponse;
