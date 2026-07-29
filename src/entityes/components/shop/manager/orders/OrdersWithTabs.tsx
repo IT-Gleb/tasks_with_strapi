@@ -18,7 +18,7 @@ import {
   CheckCheck,
   ListOrdered,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 import { useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -84,7 +84,7 @@ const StatusOptions = ({
     <select
       name={`status-${paramId}`}
       id={`status-${paramId}`}
-      className="p-1 border border-slate-600"
+      className="p-1 border rounded-md border-slate-600"
       value={option}
       onChange={handlerChange}
     >
@@ -99,7 +99,7 @@ const StatusOptions = ({
 
 const ItemsTable = ({ items }: { items: TBasketItem[] }) => {
   return (
-    <div className="ml-10 w-[85%] text-xs flex gap-0.5 py-1 shadow-xl dark:shadow-blue-950 rounded-s-lg">
+    <div className="ml-10 w-[85%] text-xs flex gap-0.5 py-1 shadow-lg dark:shadow-blue-950 rounded-s-lg">
       <div className="w-fit max-w-50 flex flex-col gap-1 [&>div]:p-1 uppercase bg-indigo-400/75 dark:bg-indigo-800/50 text-yellow-50 rounded-s-xl">
         <div>Наименование</div>
         <div>Количество</div>
@@ -154,7 +154,7 @@ const TblOrderRow = ({
     <div className="relative z-1">
       <div
         className={cn(
-          " text-xs p-1 odd:bg-slate-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200 z-3",
+          " text-xs p-1 odd:bg-stone-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200 z-3",
           className,
           currentStatus === "delivered" &&
             " border-b-slate-800 dark:border-b-slate-400",
@@ -205,10 +205,10 @@ const TblOrderRow = ({
 
       <div
         className={
-          (cn(" w-[90%] col-span-5 z-2"),
+          (cn(" w-[90%] col-span-5 z-2 transition-discrete "),
           showItems === true
-            ? "h-auto opacity-100 transition-discrete duration-500"
-            : "h-0 opacity-0 transition-discrete duration-300")
+            ? "h-auto opacity-100 duration-500"
+            : "h-0 opacity-0 duration-300")
         }
       >
         <ItemsTable items={items} />
@@ -231,18 +231,20 @@ const TabContent = ({
   const [razmer, setRazmer] = useState<number>(size);
 
   const handlerUpdate = async () => {
-    toast.promise(UpdateOrdersStatus(list), {
-      loading: "Отправляю...",
-      success: "Данные отправлены...",
-      error: "Ошибка передачи данных",
-    });
+    try {
+      toast.promise(UpdateOrdersStatus(list), {
+        loading: "Отправляю...",
+        success: "Данные отправлены...",
+        error: "Ошибка передачи данных",
+      });
 
-    clearList();
-    //console.log("before timeout");
-    await Wait(2000);
-    // console.log("after timeout");
-
-    window.location.reload();
+      clearList();
+      //console.log("before timeout");
+      await Wait(2000);
+      // console.log("after timeout");
+    } finally {
+      window.location.reload();
+    }
   };
 
   useMemo(() => {
@@ -271,14 +273,7 @@ const TabContent = ({
       </div>
       <p>text- {paramId}</p>
 
-      <footer
-        className={
-          (cn(" "),
-          paramId === "inWork"
-            ? "inline-block w-[90%] p-1 text-right"
-            : "hidden")
-        }
-      >
+      <footer className={cn("inline-block w-[90%] p-1 text-right ")}>
         <Button
           size="sm"
           variant="outline"
@@ -287,7 +282,7 @@ const TabContent = ({
           onPress={handlerUpdate}
         >
           {razmer > 0 ? <CheckCheck size={12} /> : <Activity size={12} />}
-          Применить
+          Изменить
         </Button>
       </footer>
     </Tabs.Panel>

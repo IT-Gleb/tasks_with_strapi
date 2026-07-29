@@ -3,6 +3,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getUserRole } from "./shared/utils/fetchers";
+import { TUserRole } from "./shared/types/main_types";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -14,12 +16,14 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   let cookieData: { token: string; expires: Date } = {
     token: "",
-    expires: new Date(0),
+    expires: new Date(Date.now()),
   };
   let token: string = "";
   // if (token_data !== "") {
   //   console.log(JSON.parse(token_data));
   // }
+
+  let userRole: TUserRole | null = "user";
 
   if (token_data !== "") {
     cookieData = JSON.parse(token_data);
@@ -32,6 +36,8 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
     token = cookieData.token;
+    userRole = await getUserRole(token);
+    //console.log("------UserRole-------", userRole);
   }
   // Выводим лог ТОЛЬКО при обращении к страницам, а не к API/картинкам
   // if (!pathname.startsWith("/_next") && !pathname.startsWith("/api")) {
@@ -45,8 +51,11 @@ export async function proxy(request: NextRequest) {
   // );
 
   if (pathname.startsWith("/dashboard")) {
-    if (token === "") {
+    if (token === "" || userRole === null || userRole === "user") {
       return NextResponse.redirect(new URL("/auth", request.url));
+    }
+    if (userRole === "manager") {
+      return NextResponse.next();
     }
   }
 

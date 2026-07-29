@@ -148,3 +148,5 @@ export type TOrder = {
   status: TOrderStatus;
   items: TBasketItem[];
 };
+
+export type TUserRole = "admin" | "manager" | "user";

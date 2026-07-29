@@ -1,5 +1,6 @@
 import { TListToModifyStatus } from "../store/ordersToModifyStore";
-import { TodosMax_prefix } from "./consts";
+import { TUserRole } from "../types/main_types";
+import { API_URL, TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function fetchGet<T>(url: string): Promise<T | null> {
@@ -103,5 +104,49 @@ export async function UpdateOrdersStatus(paramData: TListToModifyStatus[]) {
   } catch (err: unknown) {
     console.log((err as Error).message);
     return false;
+  }
+}
+
+//Получить роль пользователя
+
+export async function getUserRole(
+  paramToken: string,
+): Promise<TUserRole | null> {
+  const url = `${API_URL}/users/me?fields[0]=username`;
+  const query = getCacheQueryClient();
+  //console.log(url);
+
+  try {
+    const res = await query.fetchQuery<TUserRole | null>({
+      queryKey: ["user_role"],
+      queryFn: async () => {
+        const role = await fetch(url, {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${paramToken}`,
+          },
+          method: "GET",
+          signal: AbortSignal.timeout(5000),
+        });
+        if (role.ok) {
+          const result = await role.json();
+          //console.log("-----STRAPI ME-----", result);
+
+          return result.username as TUserRole;
+        }
+        return null;
+      },
+      retry: true,
+    });
+    //console.log("----role-----", res);
+
+    if (res !== null) {
+      return res;
+    }
+    return null;
+  } catch (err: unknown) {
+    console.log((err as Error).message);
+
+    return null;
   }
 }

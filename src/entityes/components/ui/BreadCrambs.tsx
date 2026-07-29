@@ -42,7 +42,6 @@ const BreadCrambs: FC = () => {
         case "todos":
           tmp.push({
             title: "Задачи",
-
             Icon: <List size={14} />,
           });
           break;
@@ -80,6 +79,11 @@ const BreadCrambs: FC = () => {
           });
           break;
         case "dashboard":
+          tmp.push({
+            title: "Магазин",
+            path: "/shop",
+            Icon: <ShoppingBag size={14} />,
+          });
           tmp.push({ title: "Управление", Icon: <ListOrdered size={14} /> });
           tmp.push({ title: "Заказы", Icon: <ListOrdered size={14} /> });
           break;
