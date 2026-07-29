@@ -9,7 +9,7 @@ import type {
 } from "@/shared/types/main_types";
 import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
 import { Wait } from "@/shared/utils/functions";
-import { Button, cn, Key, Tabs } from "@heroui/react";
+import { Button, cn, Key, Tabs, toast } from "@heroui/react";
 import {
   Check,
   X,
@@ -231,7 +231,11 @@ const TabContent = ({
   const [razmer, setRazmer] = useState<number>(size);
 
   const handlerUpdate = async () => {
-    UpdateOrdersStatus(list);
+    toast.promise(UpdateOrdersStatus(list), {
+      loading: "Отправляю...",
+      success: "Данные отправлены...",
+      error: "Ошибка передачи данных",
+    });
 
     clearList();
     //console.log("before timeout");

@@ -52,9 +52,14 @@ export async function POST(request: Request) {
     const expiresDate = new Date();
     expiresDate.setHours(expiresDate.getHours() + 8);
 
+    const token_data = {
+      token: manager.jwt as string,
+      expires: expiresDate,
+    };
+
     myResponse.cookies.set({
       name: "auth_token",
-      value: manager.jwt as string,
+      value: JSON.stringify(token_data),
       httpOnly: true,
       path: "/",
       sameSite: "lax",
@@ -64,6 +69,7 @@ export async function POST(request: Request) {
     });
 
     return myResponse;
+    //return myResponse;
   } catch (err: unknown) {
     console.log((err as Error).message);
     return NextResponse.json({ ok: false, token: null });

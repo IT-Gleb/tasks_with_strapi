@@ -69,7 +69,7 @@ export async function DeleteTodoQuery(paramKey: string, paramUrl: string) {
 export async function UpdateOrdersStatus(paramData: TListToModifyStatus[]) {
   const url = "/api/updateOrderStatus";
   if (paramData.length < 1) {
-    return;
+    return false;
   }
 
   const query = getCacheQueryClient();
@@ -95,8 +95,13 @@ export async function UpdateOrdersStatus(paramData: TListToModifyStatus[]) {
     if ("ok" in result && result.ok) {
       await query.invalidateQueries({ queryKey: ["ordersInWork", 1] });
       //console.log("invalidate");
+      return true;
+    }
+    if ("ok" in result && !result.ok) {
+      return false;
     }
   } catch (err: unknown) {
     console.log((err as Error).message);
+    return false;
   }
 }
