@@ -45,7 +45,7 @@ export const HydrationBasketStore = () => {
     if (hydrate) {
       useBasket
         .getState()
-        .getFromBase()
+        .loadFromBase()
         .then((data) => {
           if (data !== null) {
             setData(data);

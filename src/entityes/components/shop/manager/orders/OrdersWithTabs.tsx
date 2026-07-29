@@ -1,11 +1,14 @@
 "use client";
 
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
+import useOrdersListModify from "@/shared/store/ordersToModifyStore";
 import type {
   TBasketItem,
   TOrder,
   TOrderStatus,
 } from "@/shared/types/main_types";
+import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
+import { Wait } from "@/shared/utils/functions";
 import { Button, cn, Key, Tabs } from "@heroui/react";
 import {
   Check,
@@ -15,7 +18,9 @@ import {
   CheckCheck,
   ListOrdered,
 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 const tabsList = [
   {
@@ -94,7 +99,7 @@ const StatusOptions = ({
 
 const ItemsTable = ({ items }: { items: TBasketItem[] }) => {
   return (
-    <div className="ml-10 w-[90%] text-xs flex gap-0.5 py-1 shadow-xl rounded-s-lg">
+    <div className="ml-10 w-[85%] text-xs flex gap-0.5 py-1 shadow-xl dark:shadow-blue-950 rounded-s-lg">
       <div className="w-fit max-w-50 flex flex-col gap-1 [&>div]:p-1 uppercase bg-indigo-400/75 dark:bg-indigo-800/50 text-yellow-50 rounded-s-xl">
         <div>Наименование</div>
         <div>Количество</div>
@@ -104,7 +109,7 @@ const ItemsTable = ({ items }: { items: TBasketItem[] }) => {
         {items.map((itm) => (
           <div
             key={itm.documentId}
-            className="flex flex-col items-start gap-1 [&>div]:border [&>div]:w-50 [&>div]:p-1 [&>div]:border-slate-300 dark:[&>div]:border-slate-600"
+            className="flex flex-col items-start gap-1 [&>div]:border [&>div]:w-60 [&>div]:p-1 [&>div]:border-slate-300 dark:[&>div]:border-slate-600"
           >
             <div className=" line-clamp-1">{itm.title}</div>
             <div>{itm.count}</div>
@@ -131,24 +136,25 @@ const TblOrderRow = ({
   className: string;
 }) => {
   const { title, price, items, status, updatedAt } = paramOrder;
-  const [isModify, setIsModify] = useState<boolean>(false);
+
   const [currentStatus, setCurrentStatus] = useState<TOrderStatus>(status);
   const [showItems, setShowItems] = useState<boolean>(false);
+  const { addToList, removeFromList } = useOrdersListModify();
 
   const handlerModify = (param: boolean, paramStatus: TOrderStatus) => {
-    setIsModify(param);
+    //console.log(param);
+    param
+      ? addToList({ id: paramOrder.id, s_status: paramStatus })
+      : removeFromList(paramOrder.id);
+
     setCurrentStatus(paramStatus);
   };
 
-  const handlerButton = () => {
-    setIsModify(false);
-  };
-
   return (
-    <>
+    <div className="relative z-1">
       <div
         className={cn(
-          " text-xs p-1 odd:bg-slate-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200",
+          " text-xs p-1 odd:bg-slate-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200 z-3",
           className,
           currentStatus === "delivered" &&
             " border-b-slate-800 dark:border-b-slate-400",
@@ -166,6 +172,10 @@ const TblOrderRow = ({
             onPress={() => {
               setShowItems((prev) => !prev);
             }}
+            className={cn(
+              "dark:border-green-700",
+              showItems === true && "bg-stone-200 dark:bg-stone-700",
+            )}
           >
             <ListOrdered size={10} />
             {title}
@@ -191,35 +201,19 @@ const TblOrderRow = ({
             timeStyle: "medium",
           }).format(new Date(updatedAt))}
         </div>
-        <div className="text-center">
-          <Button
-            size="sm"
-            variant="outline"
-            isDisabled={!isModify}
-            className={"text-xs active:scale-80"}
-            onPress={handlerButton}
-          >
-            {isModify ? <CheckCheck size={12} /> : <Activity size={12} />}
-            Применить
-          </Button>
-        </div>
       </div>
-      {showItems && (
-        <div
-          className={cn(
-            " w-[90%] col-span-5 transition-discrete duration-300 ",
-            currentStatus === "delivered" &&
-              " border-b-slate-800 dark:border-b-slate-400",
-            currentStatus === "in-work" &&
-              "border-b border-b-sky-400 dark:border-b-sky-500",
-            currentStatus === "cancelled" && "border-b border-b-red-400",
-            currentStatus === "success" && "border-b border-b-green-400",
-          )}
-        >
-          <ItemsTable items={items} />
-        </div>
-      )}
-    </>
+
+      <div
+        className={
+          (cn(" w-[90%] col-span-5 z-2"),
+          showItems === true
+            ? "h-auto opacity-100 transition-discrete duration-500"
+            : "h-0 opacity-0 transition-discrete duration-300")
+        }
+      >
+        <ItemsTable items={items} />
+      </div>
+    </div>
   );
 };
 
@@ -231,17 +225,35 @@ const TabContent = ({
   orders: TOrder[];
 }) => {
   //console.log(orders);
+  const { size, list, clearList } = useOrdersListModify(
+    useShallow((state) => state),
+  );
+  const [razmer, setRazmer] = useState<number>(size);
+
+  const handlerUpdate = async () => {
+    UpdateOrdersStatus(list);
+
+    clearList();
+    //console.log("before timeout");
+    await Wait(2000);
+    // console.log("after timeout");
+
+    window.location.reload();
+  };
+
+  useMemo(() => {
+    setRazmer(size);
+  }, [size]);
 
   return (
     <Tabs.Panel id={paramId}>
-      <div className="max-w-125 sm:w-full sm:max-w-full overflow-auto">
-        <div className="w-210 p-3 rounded-t-2xl [&>div]:text-center grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
+      <div className="max-w-125 max-h-170 sm:w-full sm:max-w-full overflow-auto">
+        <div className="w-210 p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
           <div className=" -rotate-24 whitespace-nowrap text-center">№/№</div>
           <div>Заказ</div>
           <div>Цена</div>
           <div>Статус</div>
           <div>Дата</div>
-          <div>Действия</div>
         </div>
         {paramId === "inWork" &&
           orders.map((order, index) => (
@@ -249,11 +261,31 @@ const TabContent = ({
               key={order.id}
               paramOrder={order}
               index={index}
-              className="w-210 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
+              className="w-210 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
             />
           ))}
       </div>
       <p>text- {paramId}</p>
+
+      <footer
+        className={
+          (cn(" "),
+          paramId === "inWork"
+            ? "inline-block w-[90%] p-1 text-right"
+            : "hidden")
+        }
+      >
+        <Button
+          size="sm"
+          variant="outline"
+          isDisabled={razmer < 1}
+          className={"text-xs active:scale-80"}
+          onPress={handlerUpdate}
+        >
+          {razmer > 0 ? <CheckCheck size={12} /> : <Activity size={12} />}
+          Применить
+        </Button>
+      </footer>
     </Tabs.Panel>
   );
 };

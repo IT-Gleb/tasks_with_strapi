@@ -272,3 +272,15 @@ export function orderDate(param: number | Date | string) {
     dateStyle: "short",
   }).format(res);
 }
+
+export const Wait = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    let tm: any = setTimeout(() => {
+      if (tm) {
+        clearTimeout(tm);
+        tm = undefined;
+      }
+      resolve();
+    }, ms);
+  });
+};

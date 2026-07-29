@@ -13,7 +13,7 @@ type TDashBoardProps = {
 type TServerOrder = Pick<
   TOrder,
   "id" | "title" | "price" | "items" | "createdAt" | "updatedAt"
-> & { s_status: TOrderStatus };
+> & { documentId: string; s_status: TOrderStatus };
 
 const urlOrdersInWork = `${API_URL}/${ordersInWorkRequest}`;
 
@@ -41,7 +41,7 @@ async function getOrdersInWorkData(paramUrl: string) {
   if (data) {
     ordersInWork = data.data.map((item: TServerOrder) => {
       return {
-        id: item.id,
+        id: item.documentId,
         title: item.title,
         price: item.price,
         status: item.s_status,

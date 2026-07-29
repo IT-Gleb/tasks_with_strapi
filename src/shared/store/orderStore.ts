@@ -1,7 +1,6 @@
-import { TOrder, type TBasketItem } from "../types/main_types";
+import { TOrder } from "../types/main_types";
 import { get, set, del, createStore } from "idb-keyval";
 import { SERVER_LOCAL_API } from "../utils/consts";
-import { isOrderType } from "../utils/functions";
 
 const ordersStore = "ordersStore";
 const ordersField = "ordersIds";

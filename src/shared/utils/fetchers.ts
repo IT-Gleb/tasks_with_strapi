@@ -1,3 +1,4 @@
+import { TListToModifyStatus } from "../store/ordersToModifyStore";
 import { TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
@@ -16,6 +17,7 @@ export async function fetchGet<T>(url: string): Promise<T | null> {
     return null;
   }
 }
+
 export async function ModifyDataQuery(
   paramKey: string,
   paramUrl: string,
@@ -60,6 +62,41 @@ export async function DeleteTodoQuery(paramKey: string, paramUrl: string) {
       query.invalidateQueries({ queryKey: [paramKey] }),
     ]);
   } catch (err) {
+    console.log((err as Error).message);
+  }
+}
+
+export async function UpdateOrdersStatus(paramData: TListToModifyStatus[]) {
+  const url = "/api/updateOrderStatus";
+  if (paramData.length < 1) {
+    return;
+  }
+
+  const query = getCacheQueryClient();
+  try {
+    const result = await query.fetchQuery({
+      queryKey: ["updateOrders", paramData],
+      queryFn: async () => {
+        const res = await fetch(url, {
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          method: "POST",
+          signal: AbortSignal.timeout(5000),
+          body: JSON.stringify(paramData),
+        });
+        if (!res.ok) {
+          throw new Error("Ошибка передачи массива статусов заказов");
+        }
+        return await res.json();
+      },
+      retry: true,
+      retryDelay: 300,
+    });
+    //console.log(result);
+    if ("ok" in result && result.ok) {
+      await query.invalidateQueries({ queryKey: ["ordersInWork", 1] });
+      //console.log("invalidate");
+    }
+  } catch (err: unknown) {
     console.log((err as Error).message);
   }
 }
