@@ -1,5 +1,10 @@
 import { TListToModifyStatus } from "../store/ordersToModifyStore";
-import { TUserRole } from "../types/main_types";
+import {
+  TOrder,
+  TPageMeta,
+  TServerOrder,
+  TUserRole,
+} from "../types/main_types";
 import { API_URL, TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
@@ -113,6 +118,7 @@ export async function getUserRole(
   paramToken: string,
 ): Promise<TUserRole | null> {
   const url = `${API_URL}/users/me?fields[0]=username`;
+  // const url = `${API_URL}/users/me?populate=*`;
   const query = getCacheQueryClient();
   //console.log(url);
 
@@ -130,7 +136,7 @@ export async function getUserRole(
         });
         if (role.ok) {
           const result = await role.json();
-          //console.log("-----STRAPI ME-----", result);
+          //  console.log("-----STRAPI ME-----", result);
 
           return result.username as TUserRole;
         }
@@ -149,4 +155,38 @@ export async function getUserRole(
 
     return null;
   }
+}
+
+export async function getOrdersData(paramUrl: string, paramKey: string) {
+  // console.log(urlOrdersInWork);
+
+  let orders: TOrder[] = [];
+  let meta: Partial<TPageMeta> = {};
+  const query = getCacheQueryClient();
+  const data = await query.fetchQuery({
+    queryKey: [paramKey, 1],
+    queryFn: async () => {
+      const res = await fetch(paramUrl, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "GET",
+        signal: AbortSignal.timeout(5000),
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+      return null;
+    },
+  });
+
+  if (data) {
+    orders = data.data.map((item: TServerOrder) => {
+      return { ...item, id: item.documentId, status: item.s_status };
+    });
+
+    meta = data.meta;
+  }
+  return {
+    orders,
+    meta,
+  };
 }

@@ -150,3 +150,13 @@ export type TOrder = {
 };
 
 export type TUserRole = "admin" | "manager" | "user";
+
+export type TDashBoardProps = {
+  orders: TOrder[];
+  meta: Partial<TPageMeta>;
+};
+
+export type TServerOrder = Pick<
+  TOrder,
+  "id" | "title" | "price" | "items" | "createdAt" | "updatedAt"
+> & { documentId: string; s_status: TOrderStatus };
