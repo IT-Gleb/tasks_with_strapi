@@ -3,7 +3,7 @@
 import { TOrder } from "../types/main_types";
 import { useOrdersStorage } from "./orderStore";
 import { API_URL } from "../utils/consts";
-import { isOrderType } from "../utils/functions";
+import { isOrderType, Wait } from "../utils/functions";
 import { useEffect, useState } from "react";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import { Loader2 } from "lucide-react";
@@ -87,6 +87,8 @@ async function UpdateStatusOrder(paramId: string) {
     }
     //console.log(_order.status);
   }
+  //Задержка для повтора в цикле
+  await Wait(500);
 }
 
 const UpdateStatusInDB = () => {

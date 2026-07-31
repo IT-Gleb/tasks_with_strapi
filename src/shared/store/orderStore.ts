@@ -1,5 +1,5 @@
 import { TOrder } from "../types/main_types";
-import { get, set, del, createStore } from "idb-keyval";
+import { get, set, del, createStore, keys } from "idb-keyval";
 import { SERVER_LOCAL_API } from "../utils/consts";
 
 const ordersStore = "ordersStore";
@@ -11,7 +11,7 @@ export const useOrdersStorage = () => {
     addOrder: async (param: TOrder): Promise<void> => {
       try {
         await set(param.id, param, ordersDB);
-        await self.setOrdersId(param.id);
+        //await self.setOrdersId(param.id);
         await self.checkIds();
       } catch (err: unknown) {
         console.log((err as Error).message);
@@ -43,7 +43,10 @@ export const useOrdersStorage = () => {
 
     setOrdersId: async (paramId: string) => {
       try {
-        const ids = await self.getOrdersIds();
+        //const ids = await self.getOrdersIds();
+        const ids = (await keys(ordersDB)).filter(
+          (fltr) => fltr !== ordersField,
+        );
         if (ids === null) {
           await set(ordersField, [paramId], ordersDB);
           return;
@@ -51,7 +54,7 @@ export const useOrdersStorage = () => {
         if (!ids.includes(paramId)) {
           ids.push(paramId);
         }
-        await set(ordersField, ids.sort(), ordersDB);
+        await set(ordersField, ids, ordersDB);
       } catch (err: unknown) {
         console.log((err as Error).message);
       }
@@ -67,20 +70,25 @@ export const useOrdersStorage = () => {
 
     getOrders: async (): Promise<TOrder[] | null> => {
       try {
-        const ordersId = await self.getOrdersIds();
+        //const ordersId = await self.getOrdersIds();
+        const ordersId = (await keys(ordersDB)).filter(
+          (f) => f !== ordersField,
+        );
+        //console.log(ordersId);
+
         if (ordersId === null) {
           return null;
         }
         let result: TOrder[] = [];
-        await Promise.all(ordersId.map((item) => self.getOrder(item))).then(
-          (data) => {
-            if (data !== null) {
-              data
-                .filter((ord) => ord !== null)
-                .forEach((_ord) => result.push(_ord));
-            }
-          },
-        );
+        await Promise.all(
+          ordersId.map((item) => self.getOrder(item as string)),
+        ).then((data) => {
+          if (data !== null) {
+            data
+              .filter((ord) => ord !== null)
+              .forEach((_ord) => result.push(_ord));
+          }
+        });
         //Сортировка
         if (result.length > 1) {
           return result.sort((a, b) => {
@@ -103,43 +111,52 @@ export const useOrdersStorage = () => {
     },
     deleteOrder: async (paramId: string): Promise<void> => {
       try {
-        const ids = await self.getOrdersIds();
-        if (ids && ids.length > 0) {
-          if (ids.includes(paramId)) {
-            const idx = ids.indexOf(paramId);
-            //console.log(idx);
+        //Удалить из списка идентификаторов
+        // const ids = await self.getOrdersIds();
+        // if (ids && ids.length > 0) {
+        //   if (ids.includes(paramId)) {
+        //     const idx = ids.indexOf(paramId);
+        //     //console.log(idx);
 
-            ids.splice(idx, 1);
-            await self.setAllOrdersIds(ids);
-          }
-        }
+        //     ids.splice(idx, 1);
+        //     await self.setAllOrdersIds(ids);
+        //   }
+        // }
+        //Удалить сам заказ
         const delItem = await self.getOrder(paramId);
         if (delItem) {
           await del(paramId, ordersDB);
         }
+
         await self.checkIds();
       } catch (err: unknown) {
         console.log((err as Error).message);
       }
     },
     checkIds: async (): Promise<void> => {
-      const ids = await self.getOrdersIds();
-      if (ids) {
-        //console.log(ids);
+      //const ids = await self.getOrdersIds();
+      const ids = (await keys(ordersDB)).filter((f) => f !== ordersField);
+      //const ids_field = await self.getOrdersIds();
 
-        let not_nullIds: string[] = [];
-        await Promise.all(ids.map((item) => self.getOrder(item))).then(
-          (data) => {
-            not_nullIds = data
-              .filter((order) => order !== null)
-              .map((_order) => _order.id);
-          },
-        );
-        //console.log(nullIds);
-        if (not_nullIds.length !== ids.length) {
-          await self.setAllOrdersIds(not_nullIds);
-        }
-      }
+      await self.setAllOrdersIds(ids as string[]);
+
+      // if (ids) {
+      //   //console.log(ids);
+
+      //   let not_nullIds: string[] = [];
+      //   await Promise.all(
+      //     ids.map((item) => self.getOrder(item as string)),
+      //   ).then((data) => {
+      //     not_nullIds = data
+      //       .filter((order) => order !== null)
+      //       .map((_order) => _order.id);
+      //   });
+      //   //console.log(nullIds);
+      //   if (not_nullIds.length !== ids.length) {
+      //     await self.setAllOrdersIds(not_nullIds);
+      //   }
+      //Записать
+      //  }
     },
     getMessage: function () {
       console.log("Заказы и сохранение в базе...");
