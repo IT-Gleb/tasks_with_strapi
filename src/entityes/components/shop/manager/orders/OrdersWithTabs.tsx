@@ -116,7 +116,7 @@ const ItemsTable = memo(({ items }: { items: TBasketItem[] }) => {
         {items.map((itm) => (
           <div
             key={itm.documentId}
-            className="flex flex-col items-start gap-1 [&>div]:border [&>div]:w-60 [&>div]:p-1 [&>div]:border-slate-300 dark:[&>div]:border-slate-600"
+            className="flex flex-col items-start gap-0.5 [&>div]:rounded-lg [&>div]:border [&>div]:w-60 [&>div]:p-1.5 [&>div]:border-slate-300 dark:[&>div]:border-slate-600"
           >
             <div className=" line-clamp-1">{itm.title}</div>
             <div>{itm.count}</div>
@@ -159,7 +159,7 @@ const TblOrderRow = memo(
     };
 
     return (
-      <div className="relative z-1">
+      <div className="relative z-1 ">
         <div
           className={cn(
             " text-xs p-1 odd:bg-stone-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200 z-3",
@@ -267,7 +267,7 @@ const TabContent = ({
 
   return (
     <Tabs.Panel id={paramId}>
-      <div className="max-w-125 max-h-170 sm:w-full sm:max-w-full overflow-auto">
+      <div className="max-w-125 sm:w-full sm:max-w-full ">
         <div className="w-210 p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
           <div className=" -rotate-24 whitespace-nowrap text-center">№/№</div>
           <div>Заказ</div>
@@ -275,14 +275,16 @@ const TabContent = ({
           <div>Статус</div>
           <div>Дата</div>
         </div>
-        {orders.map((order, index) => (
-          <TblOrderRow
-            key={order.id}
-            paramOrder={order}
-            index={index}
-            className="w-210 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
-          />
-        ))}
+        <div className="w-full max-h-170 overflow-auto">
+          {orders.map((order, index) => (
+            <TblOrderRow
+              key={order.id}
+              paramOrder={order}
+              index={index}
+              className="w-210 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
+            />
+          ))}
+        </div>
       </div>
       {/* <p>text- {paramId}</p> */}
 
