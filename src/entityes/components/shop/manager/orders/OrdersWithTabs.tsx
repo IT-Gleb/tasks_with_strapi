@@ -24,6 +24,8 @@ import {
   CheckCheck,
   ListOrdered,
   Loader2,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 
 import { memo, useEffect, useMemo, useState } from "react";
@@ -87,6 +89,11 @@ const StatusOptions = ({
     handler(value !== selected, value as TOrderStatus);
   };
 
+  const ordStatus = useMemo(() => {
+    const indx = orderStatus.indexOf(selected);
+    return orderStatus.slice(indx, orderStatus.length);
+  }, []);
+
   return (
     <select
       name={`status-${paramId}`}
@@ -95,7 +102,7 @@ const StatusOptions = ({
       value={option}
       onChange={handlerChange}
     >
-      {orderStatus.map((opt) => (
+      {ordStatus.map((opt) => (
         <option key={opt} value={opt}>
           {orderStatusRus[opt]}
         </option>
@@ -242,7 +249,54 @@ const TabContent = ({
     useShallow((state) => state),
   );
   const [razmer, setRazmer] = useState<number>(size);
-  const { orders } = paramOrders;
+  //const [orders, setOrders] = useState<TOrder[]>(paramOrders.orders);
+  //-------------Сортировка данные----------------------
+  //Поле сортировки
+  const [sortField, setSoretField] = useState<keyof TOrder | null>(null);
+  const [sortKey, setSortKey] = useState<"asc" | "desc">("asc");
+
+  const sortDataSetup = (paramField: keyof TOrder) => {
+    setSortKey((prev) => (prev === "asc" ? "desc" : "asc"));
+    setSoretField(paramField);
+    //console.log(sortKey);
+  };
+
+  const handlerSort = (param: keyof TOrder) => {
+    sortDataSetup(param);
+  };
+
+  const sortedOrders = useMemo(() => {
+    if (sortField === null) {
+      return [...paramOrders.orders];
+    }
+    return [...paramOrders.orders].sort((a, b) => {
+      if (
+        typeof a[sortField as keyof TOrder] === "string" &&
+        typeof b[sortField as keyof TOrder] === "string"
+      ) {
+        const dt1 = a[sortField as keyof TOrder] as unknown as string;
+        const dt2 = b[sortField as keyof TOrder] as unknown as string;
+        //console.log("from Date ----");
+
+        if (dt1.toLowerCase().localeCompare(dt2.toLowerCase())) {
+          return sortKey === "asc" ? 1 : -1;
+        } else {
+          return sortKey === "asc" ? -1 : 1;
+        }
+      }
+      const num1 = a[sortField as keyof TOrder] as unknown as number;
+      const num2 = b[sortField as keyof TOrder] as unknown as number;
+      // console.log("---From number----");
+
+      if (num1 < num2) {
+        return sortKey === "asc" ? 1 : -1;
+      } else {
+        return sortKey === "asc" ? -1 : 1;
+      }
+    });
+  }, [sortField, sortKey, paramOrders.orders]);
+
+  //-------------Сортировка-----------------------
 
   const handlerUpdate = async () => {
     try {
@@ -254,7 +308,7 @@ const TabContent = ({
 
       clearList();
       //console.log("before timeout");
-      await Wait(2000);
+      await Wait(1000);
       // console.log("after timeout");
     } finally {
       window.location.reload();
@@ -271,12 +325,46 @@ const TabContent = ({
         <div className="w-210 p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
           <div className=" -rotate-24 whitespace-nowrap text-center">№/№</div>
           <div>Заказ</div>
-          <div>Цена</div>
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              className={"font-bold scale-90 active:scale-80"}
+              onPress={() => {
+                handlerSort("price");
+              }}
+            >
+              Цена
+              {sortField === "price" ? (
+                sortKey === "asc" ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )
+              ) : null}
+            </Button>
+          </div>
           <div>Статус</div>
-          <div>Дата</div>
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              className={"font-bold scale-90 active:scale-80"}
+              onPress={() => handlerSort("updatedAt")}
+            >
+              Дата
+              {sortField === "updatedAt" ? (
+                sortKey === "asc" ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )
+              ) : null}
+            </Button>
+          </div>
         </div>
         <div className="w-full max-h-170 overflow-auto">
-          {orders.map((order, index) => (
+          {sortedOrders.map((order, index) => (
             <TblOrderRow
               key={order.id}
               paramOrder={order}
