@@ -7,6 +7,7 @@ import type {
   TDashBoardProps,
   TOrder,
   TOrderStatus,
+  TPageMeta,
 } from "@/shared/types/main_types";
 import {
   API_URL,
@@ -28,8 +29,13 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { createContext, memo, useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
+import PaginationOrdersTable from "./PaginationOrdersTable";
+import {
+  PaginationProvider,
+  usePaginationContext,
+} from "@/shared/hooks/custom/UsePaginationContext";
 
 const tabsList = [
   {
@@ -381,16 +387,19 @@ const TabContent = ({
       {/* <p>text- {paramId}</p> */}
 
       <footer className={cn("inline-block w-[90%] p-1 text-right ")}>
-        <Button
-          size="sm"
-          variant="outline"
-          isDisabled={razmer < 1}
-          className={"text-xs active:scale-80"}
-          onPress={handlerUpdate}
-        >
-          {razmer > 0 ? <CheckCheck size={12} /> : <Activity size={12} />}
-          Изменить
-        </Button>
+        <div className="mt-2 flex gap-3 items-center justify-between p-1">
+          <PaginationOrdersTable paramMeta={paramOrders.meta as TPageMeta} />
+          <Button
+            size="sm"
+            variant="outline"
+            isDisabled={razmer < 1}
+            className={"text-xs active:scale-80"}
+            onPress={handlerUpdate}
+          >
+            {razmer > 0 ? <CheckCheck size={12} /> : <Activity size={12} />}
+            Изменить
+          </Button>
+        </div>
       </footer>
     </Tabs.Panel>
   );
@@ -405,8 +414,21 @@ const OrdersWithTabs = ({
   const [sectionKey, setSectionKey] = useState<Key>(tabsList[0].docId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ordersData, setOrdersData] = useState<TDashBoardProps>();
+  const { currentPage, handlerPage } = usePaginationContext();
+
+  //console.log(currentPage);
 
   //console.log(sectionKey);
+  useEffect(() => {
+    let isWork: boolean = true;
+    if (isWork) {
+      handlerPage(1);
+    }
+    return () => {
+      isWork = false;
+    };
+  }, [sectionKey]);
+
   useEffect(() => {
     let isWork: boolean = true;
 
@@ -419,10 +441,18 @@ const OrdersWithTabs = ({
             : "cancelledOrders";
         const url =
           sectionKey === tabsList[1].docId
-            ? `${API_URL}/${orderSuccessedRequest}`
-            : `${API_URL}/${ordersCancelledRequest}`;
+            ? `${API_URL}/${orderSuccessedRequest}`.replaceAll(
+                "%1",
+                `${currentPage}`,
+              )
+            : `${API_URL}/${ordersCancelledRequest}`.replaceAll(
+                "%1",
+                `${currentPage}`,
+              );
         try {
-          const tmpData = await getOrdersData(url, queryKey);
+          //console.log("Page- ", currentPage);
+
+          const tmpData = await getOrdersData(url, queryKey, currentPage);
           //console.log(tmpData);
 
           if (isWork) {
@@ -438,7 +468,7 @@ const OrdersWithTabs = ({
     return () => {
       isWork = false;
     };
-  }, [sectionKey]);
+  }, [sectionKey, currentPage]);
 
   return (
     <div className="w-full max-w-220 lg:-ml-2 py-2 px-1">

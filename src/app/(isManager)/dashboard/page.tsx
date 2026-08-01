@@ -1,11 +1,12 @@
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
+import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { API_URL, ordersInWorkRequest } from "@/shared/utils/consts";
 import { getOrdersData } from "@/shared/utils/fetchers";
 
 import { LoaderIcon } from "lucide-react";
 import { Suspense } from "react";
 
-const urlOrdersInWork = `${API_URL}/${ordersInWorkRequest}`;
+const urlOrdersInWork = `${API_URL}/${ordersInWorkRequest}`.replace("%1", "1");
 
 export default async function DashBoard() {
   const ordersInWork = await getOrdersData(urlOrdersInWork, "ordersInWork");
@@ -17,9 +18,11 @@ export default async function DashBoard() {
         </div>
       }
     >
-      <section className="w-full xl:w-340 mx-auto p-1">
-        <OrdersWithTabs ordersInWork={ordersInWork} />
-      </section>
+      <PaginationProvider>
+        <section className="w-full xl:w-340 mx-auto p-1">
+          <OrdersWithTabs ordersInWork={ordersInWork} />
+        </section>
+      </PaginationProvider>
     </Suspense>
   );
 }

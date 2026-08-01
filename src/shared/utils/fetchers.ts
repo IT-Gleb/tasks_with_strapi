@@ -157,14 +157,18 @@ export async function getUserRole(
   }
 }
 
-export async function getOrdersData(paramUrl: string, paramKey: string) {
+export async function getOrdersData(
+  paramUrl: string,
+  paramKey: string,
+  page: number = 1,
+) {
   // console.log(urlOrdersInWork);
 
   let orders: TOrder[] = [];
   let meta: Partial<TPageMeta> = {};
   const query = getCacheQueryClient();
   const data = await query.fetchQuery({
-    queryKey: [paramKey, 1],
+    queryKey: [paramKey, page],
     queryFn: async () => {
       const res = await fetch(paramUrl, {
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -176,6 +180,7 @@ export async function getOrdersData(paramUrl: string, paramKey: string) {
       }
       return null;
     },
+    // placeholderData: () => [],
   });
 
   if (data) {
