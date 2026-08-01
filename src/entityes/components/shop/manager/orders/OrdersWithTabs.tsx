@@ -222,7 +222,7 @@ const TblOrderRow = memo(
           className={
             (cn(" w-[90%] col-span-5 z-2 transition-discrete "),
             showItems === true
-              ? "h-auto opacity-100 duration-500"
+              ? "h-auto opacity-100 duration-500 pb-3"
               : "h-0 opacity-0 duration-300")
           }
         >
@@ -329,7 +329,9 @@ const TabContent = ({
             <Button
               variant="outline"
               size="sm"
-              className={"font-bold scale-90 active:scale-80"}
+              className={
+                "font-bold scale-90 active:scale-80 bg-stone-300 dark:bg-stone-700"
+              }
               onPress={() => {
                 handlerSort("price");
               }}
@@ -349,7 +351,9 @@ const TabContent = ({
             <Button
               variant="outline"
               size="sm"
-              className={"font-bold scale-90 active:scale-80"}
+              className={
+                "font-bold scale-90 active:scale-80 bg-stone-300 dark:bg-stone-700"
+              }
               onPress={() => handlerSort("updatedAt")}
             >
               Дата
