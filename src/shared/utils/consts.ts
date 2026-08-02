@@ -56,3 +56,4 @@ export const ordersCancelledRequest =
 //Получить общее количнство записей в meta - total
 export const ordersCountRequest =
   "orders?pagination[pageSize]=1&pagination[page]=1";
+export const managerInitRequest = "/dashboard?state=inwork&page=1";

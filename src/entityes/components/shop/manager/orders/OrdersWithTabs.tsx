@@ -34,11 +34,12 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import PaginationOrdersTable from "./PaginationOrdersTable";
 import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext";
+import { useRouter } from "next/navigation";
 
 const tabsList = [
   {
     id: 0,
-    docId: "inWork",
+    docId: "inwork",
     label: "Новые / в работе",
     mobileLabel: "В работе",
     icon: <Plus size={14} />,
@@ -418,61 +419,41 @@ const TabContent = ({
 };
 
 const OrdersWithTabs = ({
-  ordersInWork,
+  orders,
+  pageNumber,
 }: {
-  ordersInWork: TDashBoardProps;
+  orders: TDashBoardProps;
+  pageNumber: number;
 }) => {
   const isMobile = useIsMobile();
   const [sectionKey, setSectionKey] = useState<Key>(tabsList[0].docId);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [ordersData, setOrdersData] = useState<TDashBoardProps>(ordersInWork);
+  //const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [ordersData, setOrdersData] = useState<TDashBoardProps>(orders);
   const { currentPage, handlerPage } = usePaginationContext();
 
-  //console.log(currentPage);
+  const router = useRouter();
 
-  //console.log(sectionKey);
   useEffect(() => {
     let isWork: boolean = true;
-    if (isWork) {
-      handlerPage(1);
+    let url: string = "/dashboard?state=%1&page=%2";
+
+    switch (sectionKey) {
+      case tabsList[0].docId:
+        url = url.replace("%1", "inwork").replace("%2", String(currentPage));
+        break;
+      case tabsList[1].docId:
+        url = url.replace("%1", "successed").replace("%2", String(currentPage));
+        break;
+      case tabsList[2].docId:
+        url = url.replace("%1", "cancelled").replace("%2", String(currentPage));
+        break;
+      default:
+        url = url.replace("%1", "inwork").replace("%2", String(currentPage));
+        break;
     }
-    return () => {
-      isWork = false;
-    };
-  }, [sectionKey]);
 
-  useEffect(() => {
-    let isWork: boolean = true;
-
-    if (sectionKey === tabsList[1].docId || sectionKey === tabsList[2].docId) {
-      (async function () {
-        setIsLoading(true);
-        const queryKey =
-          sectionKey === tabsList[1].docId
-            ? "successedOrders"
-            : "cancelledOrders";
-        const url =
-          sectionKey === tabsList[1].docId
-            ? `${API_URL}/${orderSuccessedRequest}`
-                .replaceAll("%1", `${currentPage}`)
-                .replaceAll("%2", `${itemsOnPage}`)
-            : `${API_URL}/${ordersCancelledRequest}`
-                .replaceAll("%1", `${currentPage}`)
-                .replaceAll("%2", `${itemsOnPage}`);
-        try {
-          //console.log("Page- ", currentPage);
-
-          const tmpData = await getOrdersData(url, queryKey, currentPage);
-          //console.log(tmpData);
-
-          if (isWork) {
-            setOrdersData(tmpData);
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-      // console.log(sectionKey);
+    if (isWork) {
+      router.push(url);
     }
 
     return () => {
@@ -480,12 +461,25 @@ const OrdersWithTabs = ({
     };
   }, [sectionKey, currentPage]);
 
+  useEffect(() => {
+    let isWork: boolean = true;
+    if (isWork) {
+      setOrdersData(orders);
+    }
+    return () => {
+      isWork = false;
+    };
+  }, [orders]);
+
   return (
     <div className="w-full max-w-220 lg:-ml-2 py-2 px-1">
       <Tabs
         orientation={"horizontal"}
         selectedKey={sectionKey}
-        onSelectionChange={setSectionKey}
+        onSelectionChange={(key: Key) => {
+          handlerPage(1);
+          setSectionKey(key);
+        }}
       >
         <Tabs.ListContainer>
           <Tabs.List aria-label="Overflow options">
@@ -502,19 +496,14 @@ const OrdersWithTabs = ({
             })}
           </Tabs.List>
         </Tabs.ListContainer>
-        {isLoading && (
-          <div className="w-fit mx-auto p-2">
-            <Loader2 size={32} className=" animate-spin" />
-          </div>
-        )}
-        {!isLoading &&
-          tabsList.map((tb) => (
-            <TabContent
-              key={tb.id}
-              paramId={tb.docId}
-              paramOrders={ordersData as TDashBoardProps}
-            />
-          ))}
+
+        {tabsList.map((tb) => (
+          <TabContent
+            key={tb.id}
+            paramId={tb.docId}
+            paramOrders={ordersData as TDashBoardProps}
+          />
+        ))}
       </Tabs>
     </div>
   );

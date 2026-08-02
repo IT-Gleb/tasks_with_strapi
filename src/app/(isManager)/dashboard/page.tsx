@@ -1,21 +1,58 @@
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
+import { TOrdersState } from "@/shared/types/main_types";
 import {
   API_URL,
   itemsOnPage,
+  ordersCancelledRequest,
   ordersInWorkRequest,
+  orderSuccessedRequest,
 } from "@/shared/utils/consts";
 import { getOrdersData } from "@/shared/utils/fetchers";
 
 import { LoaderIcon } from "lucide-react";
+import { SearchParams } from "next/dist/server/request/search-params";
 import { Suspense } from "react";
 
-const urlOrdersInWork = `${API_URL}/${ordersInWorkRequest}`
-  .replace("%1", "1")
-  .replace("%2", `${itemsOnPage}`);
+export default async function DashBoard({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const data = await searchParams;
+  const page = data.page ?? "1";
+  const ordersState: TOrdersState = data.state as TOrdersState;
 
-export default async function DashBoard() {
-  const ordersInWork = await getOrdersData(urlOrdersInWork, "ordersInWork");
+  let url: string = "";
+  let queryKey: string = "";
+  switch (ordersState) {
+    case "inwork":
+      url = `${API_URL}/${ordersInWorkRequest}`
+        .replace("%1", page as string)
+        .replace("%2", `${itemsOnPage}`);
+      queryKey = "ordersInWork";
+      break;
+    case "cancelled":
+      url = `${API_URL}/${ordersCancelledRequest}`
+        .replace("%1", page as string)
+        .replace("%2", `${itemsOnPage}`);
+      queryKey = "ordersCancelled";
+      break;
+    case "successed":
+      url = `${API_URL}/${orderSuccessedRequest}`
+        .replace("%1", page as string)
+        .replace("%2", `${itemsOnPage}`);
+      queryKey = "ordersSuccessed";
+      break;
+    default:
+      url = `${API_URL}/${ordersInWorkRequest}`
+        .replace("%1", page as string)
+        .replace("%2", `${itemsOnPage}`);
+      queryKey = "ordersInWork";
+      break;
+  }
+
+  const orders = await getOrdersData(url, queryKey, Number(page));
   return (
     <Suspense
       fallback={
@@ -26,7 +63,7 @@ export default async function DashBoard() {
     >
       <PaginationProvider>
         <section className="w-full xl:w-340 mx-auto p-1">
-          <OrdersWithTabs ordersInWork={ordersInWork} />
+          <OrdersWithTabs orders={orders} pageNumber={Number(page)} />
         </section>
       </PaginationProvider>
     </Suspense>

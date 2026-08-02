@@ -2,12 +2,10 @@
 
 import { setAuthCookie } from "@/app/lib/actions";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
-import { SERVER_LOCAL_API } from "@/shared/utils/consts";
+import { managerInitRequest, SERVER_LOCAL_API } from "@/shared/utils/consts";
 import { Button } from "@heroui/react";
 import { User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-const toManager: string = "/dashboard";
 
 const ManagerButton = () => {
   const router = useRouter();
@@ -48,7 +46,7 @@ const ManagerButton = () => {
       size="sm"
       onPress={() => {
         handlerUserWithCookie();
-        router.push(toManager);
+        router.push(managerInitRequest);
         router.refresh();
       }}
       className={"w-8 h-8 scale-85 p-3 active:scale-70"}

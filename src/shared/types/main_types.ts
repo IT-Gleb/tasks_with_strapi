@@ -160,3 +160,5 @@ export type TServerOrder = Pick<
   TOrder,
   "id" | "title" | "price" | "items" | "createdAt" | "updatedAt"
 > & { documentId: string; s_status: TOrderStatus };
+
+export type TOrdersState = "inwork" | "successed" | "cancelled";
