@@ -46,12 +46,13 @@ export const bgColors: { light: string; dark: string }[] = [
 ];
 
 //Manager
+export const itemsOnPage = 25;
 export const ordersInWorkRequest =
   "orders?filters[s_status][$notIn][0]=success&filters[s_status][$notIn][1]=cancelled&sort[0]=updatedAt:desc";
 export const orderSuccessedRequest =
-  "orders?filters[s_status][$eq]=success&sort[0]=updatedAt:desc&pagination[page]=%1&pagination[pageSize]=25";
+  "orders?filters[s_status][$eq]=success&sort[0]=updatedAt:desc&pagination[page]=%1&pagination[pageSize]=%2";
 export const ordersCancelledRequest =
-  "orders?filters[s_status][$eq]=cancelled&sort[0]=updatedAt:desc&pagination[page]=%1&pagination[pageSize]=25";
+  "orders?filters[s_status][$eq]=cancelled&sort[0]=updatedAt:desc&pagination[page]=%1&pagination[pageSize]=%2";
 //Получить общее количнство записей в meta - total
 export const ordersCountRequest =
   "orders?pagination[pageSize]=1&pagination[page]=1";

@@ -11,6 +11,7 @@ import type {
 } from "@/shared/types/main_types";
 import {
   API_URL,
+  itemsOnPage,
   ordersCancelledRequest,
   orderSuccessedRequest,
 } from "@/shared/utils/consts";
@@ -29,13 +30,10 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-import { createContext, memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import PaginationOrdersTable from "./PaginationOrdersTable";
-import {
-  PaginationProvider,
-  usePaginationContext,
-} from "@/shared/hooks/custom/UsePaginationContext";
+import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext";
 
 const tabsList = [
   {
@@ -161,6 +159,7 @@ const TblOrderRow = memo(
     const [currentStatus, setCurrentStatus] = useState<TOrderStatus>(status);
     const [showItems, setShowItems] = useState<boolean>(false);
     const { addToList, removeFromList } = useOrdersListModify();
+    const { currentPage, pageSize } = usePaginationContext();
 
     const handlerModify = (param: boolean, paramStatus: TOrderStatus) => {
       //console.log(param);
@@ -185,7 +184,12 @@ const TblOrderRow = memo(
             currentStatus === "success" && "border-b border-b-green-400",
           )}
         >
-          <div className="text-right">{index + 1}.</div>
+          <div className="text-right">
+            {currentPage === 1
+              ? index + 1
+              : index + pageSize * (currentPage - 1) + 1}
+            .
+          </div>
           <div className=" whitespace-nowrap">
             <Button
               variant="outline"
@@ -194,8 +198,10 @@ const TblOrderRow = memo(
                 setShowItems((prev) => !prev);
               }}
               className={cn(
-                "dark:border-green-700",
+                " border-sky-500 ",
                 showItems === true && "bg-stone-200 dark:bg-stone-700",
+                paramOrder.status === "success" && "border-green-500",
+                paramOrder.status === "cancelled" && "border-rose-500",
               )}
             >
               <ListOrdered size={10} />
@@ -386,8 +392,8 @@ const TabContent = ({
       </div>
       {/* <p>text- {paramId}</p> */}
 
-      <footer className={cn("inline-block w-[90%] p-1 text-right ")}>
-        <div className="mt-2 flex gap-3 items-center justify-between p-1">
+      <footer className={cn("inline-block w-[90%] text-right ")}>
+        <div className="mt-3 flex gap-3 items-center justify-between p-1">
           <PaginationOrdersTable paramMeta={paramOrders.meta as TPageMeta} />
           <Button
             size="sm"
@@ -413,7 +419,7 @@ const OrdersWithTabs = ({
   const isMobile = useIsMobile();
   const [sectionKey, setSectionKey] = useState<Key>(tabsList[0].docId);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [ordersData, setOrdersData] = useState<TDashBoardProps>();
+  const [ordersData, setOrdersData] = useState<TDashBoardProps>(ordersInWork);
   const { currentPage, handlerPage } = usePaginationContext();
 
   //console.log(currentPage);
@@ -441,14 +447,12 @@ const OrdersWithTabs = ({
             : "cancelledOrders";
         const url =
           sectionKey === tabsList[1].docId
-            ? `${API_URL}/${orderSuccessedRequest}`.replaceAll(
-                "%1",
-                `${currentPage}`,
-              )
-            : `${API_URL}/${ordersCancelledRequest}`.replaceAll(
-                "%1",
-                `${currentPage}`,
-              );
+            ? `${API_URL}/${orderSuccessedRequest}`
+                .replaceAll("%1", `${currentPage}`)
+                .replaceAll("%2", `${itemsOnPage}`)
+            : `${API_URL}/${ordersCancelledRequest}`
+                .replaceAll("%1", `${currentPage}`)
+                .replaceAll("%2", `${itemsOnPage}`);
         try {
           //console.log("Page- ", currentPage);
 
@@ -502,9 +506,7 @@ const OrdersWithTabs = ({
             <TabContent
               key={tb.id}
               paramId={tb.docId}
-              paramOrders={
-                tb.id === 0 ? ordersInWork : (ordersData as TDashBoardProps)
-              }
+              paramOrders={ordersData as TDashBoardProps}
             />
           ))}
       </Tabs>

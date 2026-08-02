@@ -1,9 +1,11 @@
 "use client";
 
+import { itemsOnPage } from "@/shared/utils/consts";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 interface IPaginationContext {
   currentPage: number;
+  pageSize: number;
   handlerPage: (param: number) => void;
 }
 
@@ -19,6 +21,7 @@ interface IPaginationProviderProps {
 // 3. Создаем Провайдер
 export function PaginationProvider({ children }: IPaginationProviderProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize] = useState<number>(itemsOnPage);
 
   const handlerPage = (param: number) => {
     setCurrentPage(Math.abs(param));
@@ -26,7 +29,7 @@ export function PaginationProvider({ children }: IPaginationProviderProps) {
 
   // Мемоизируем объект. TS автоматически выведет тип ThemeContextType
   const contextValue = useMemo(
-    () => ({ currentPage, handlerPage }),
+    () => ({ currentPage, pageSize, handlerPage }),
     [currentPage],
   );
 
