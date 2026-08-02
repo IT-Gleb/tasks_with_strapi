@@ -36,11 +36,11 @@ export default function SearchTasks() {
   };
 
   return (
-    <div className="w-full p-1 flex gap-x-2 items-start bg-transparent ">
+    <div className="w-full p-1 flex gap-x-2 items-start bg-transparent z-3">
       {!isMobile && (
         <search
           role="search"
-          className={`sm:w-95 sm:max-w-100 xl:min-w-120 text-sm flex flex-row outline-0 overflow-hidden border border-stone-200 dark:border-stone-600 dark:outline-stone-500 rounded-s-lg focus-within:outline-2 focus-within:outline-accent focus-within:border-0`}
+          className={`z-4 sm:w-95 sm:max-w-100 xl:min-w-120 text-sm dark:text-black flex flex-row outline-0 overflow-hidden border border-stone-200 dark:border-stone-600 dark:outline-stone-500 rounded-s-lg focus-within:outline-2 focus-within:outline-accent focus-within:border-0`}
         >
           <span className="block w-8 h-8 bg-stone-200 dark:bg-stone-500 place-content-center">
             <Search size={14} strokeWidth={2} className="ml-1" />

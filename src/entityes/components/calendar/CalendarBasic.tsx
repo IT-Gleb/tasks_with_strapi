@@ -110,7 +110,7 @@ const CalendarBasic = memo(() => {
 
   return (
     <motion.div
-      className="w-fit mx-auto"
+      className="w-fit mx-auto z-4"
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.35 }}

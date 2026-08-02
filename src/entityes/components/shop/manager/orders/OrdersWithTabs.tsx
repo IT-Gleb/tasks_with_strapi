@@ -94,7 +94,13 @@ const StatusOptions = ({
   };
 
   const ordStatus = useMemo(() => {
-    const indx = orderStatus.indexOf(selected);
+    let indx = orderStatus.indexOf(selected);
+    selected === "success"
+      ? (indx -= 2)
+      : selected === "cancelled"
+        ? (indx -= 1)
+        : indx;
+
     return orderStatus.slice(indx, orderStatus.length);
   }, []);
 

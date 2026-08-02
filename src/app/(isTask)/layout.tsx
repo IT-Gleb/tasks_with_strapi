@@ -56,7 +56,8 @@ export default function RootLayout({
       className="light h-full antialiased"
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col px-2">
+      <body className="min-h-full flex flex-col px-2 relative">
+        <div className="hidden sm:block absolute z-0 top-0 left-0 w-full h-225 bg-green-500/50 dark:bg-chocolate/50 [clip-path:polygon(0_0,100%_0,100%_12%,0_60%)]"></div>
         <TanstaqProvider>
           <ThisThemeProvider>
             <HeaderLayout />

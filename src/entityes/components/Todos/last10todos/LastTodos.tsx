@@ -38,12 +38,12 @@ const LastTodos = memo(() => {
 
   return (
     <motion.div
-      className="w-fit mx-auto"
+      className="w-fit mx-auto bg-transparent"
       initial={{ x: 200, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.5 }}
     >
-      <Card className="w-full p-0 overflow-hidden bg-default-100/25 dark:bg-default-700/25">
+      <Card className="w-full p-0 overflow-hidden bg-transparent ">
         <Card.Header>
           <Card.Title className="flex flex-col gap-y-2 bg-rose-300/25 dark:bg-rose-700/50">
             <div className="flex gap-1 items-center flex-1 w-fit mx-auto px-3 pt-2">
@@ -59,7 +59,7 @@ const LastTodos = memo(() => {
           <ScrollShadow
             variant="fade"
             orientation="vertical"
-            className=" max-h-60 p-1"
+            className=" max-h-60 p-1 "
           >
             {!!todos && todos.data.length < 1 && (
               <motion.p
