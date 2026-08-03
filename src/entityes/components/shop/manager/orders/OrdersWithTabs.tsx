@@ -191,7 +191,7 @@ const TblOrderRow = memo(
             currentStatus === "success" && "border-b border-b-green-400",
           )}
         >
-          <div className="text-right">
+          <div className="hidden md:block text-right">
             {currentPage === 1
               ? index + 1
               : index + pageSize * (currentPage - 1) + 1}
@@ -215,7 +215,7 @@ const TblOrderRow = memo(
               {title}
             </Button>
           </div>
-          <div className="text-right">
+          <div className=" text-right">
             {Intl.NumberFormat("ru-RU", {
               style: "currency",
               currency: "RUB",
@@ -228,7 +228,7 @@ const TblOrderRow = memo(
               handler={handlerModify}
             />
           </div>
-          <div className="text-right whitespace-nowrap line-clamp-1">
+          <div className="hidden md:block text-right whitespace-nowrap line-clamp-1">
             {Intl.DateTimeFormat("ru-RU", {
               timeZone: "Europe/Moscow",
               dateStyle: "short",
@@ -340,9 +340,11 @@ const TabContent = ({
 
   return (
     <Tabs.Panel id={paramId}>
-      <div className="w-full">
-        <div className="w-full p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
-          <div className=" -rotate-24 whitespace-nowrap text-center">№/№</div>
+      <div className="w-full md:max-w-full">
+        <div className="w-full p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] md:grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
+          <div className="hidden md:block -rotate-24 whitespace-nowrap text-center">
+            №/№
+          </div>
           <div>Заказ</div>
           <div>
             <Button
@@ -366,7 +368,7 @@ const TabContent = ({
             </Button>
           </div>
           <div>Статус</div>
-          <div>
+          <div className="hidden md:block">
             <Button
               variant="outline"
               size="sm"
@@ -392,7 +394,7 @@ const TabContent = ({
               key={order.id}
               paramOrder={order}
               index={index}
-              className="w-full grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
+              className="w-full grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] md:grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
             />
           ))}
         </div>
@@ -425,12 +427,19 @@ const OrdersWithTabs = ({
   orders: TDashBoardProps;
   pageNumber: number;
 }) => {
+  const [Mounted, setMounted] = useState<boolean>(false);
   const isMobile = useIsMobile();
   const [sectionKey, setSectionKey] = useState<Key>(tabsList[0].docId);
   const [ordersData, setOrdersData] = useState<TDashBoardProps>(orders);
   const { currentPage, handlerPage } = usePaginationContext();
 
   const router = useRouter();
+
+  //------Рендер на клиенте------
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  //----------------------------
 
   useEffect(() => {
     let isWork: boolean = true;
@@ -469,6 +478,10 @@ const OrdersWithTabs = ({
       isWork = false;
     };
   }, [orders]);
+
+  if (!Mounted) {
+    return null;
+  }
 
   return (
     <div className="w-full lg:-ml-2 py-2 px-1">

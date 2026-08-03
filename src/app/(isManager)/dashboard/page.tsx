@@ -13,6 +13,7 @@ import { getOrdersData } from "@/shared/utils/fetchers";
 
 import { LoaderIcon } from "lucide-react";
 import { SearchParams } from "next/dist/server/request/search-params";
+//import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 export default async function DashBoard({
