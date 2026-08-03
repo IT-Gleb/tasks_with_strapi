@@ -340,8 +340,8 @@ const TabContent = ({
 
   return (
     <Tabs.Panel id={paramId}>
-      <div className="max-w-125 sm:w-full sm:max-w-full ">
-        <div className="w-210 p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
+      <div className="w-full">
+        <div className="w-full p-3 rounded-t-2xl [&>div]:text-center border-b border-b-slate-500 dark:border-b-slate-600 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center text-xs font-bold bg-slate-200 dark:bg-slate-900">
           <div className=" -rotate-24 whitespace-nowrap text-center">№/№</div>
           <div>Заказ</div>
           <div>
@@ -386,13 +386,13 @@ const TabContent = ({
             </Button>
           </div>
         </div>
-        <div className="w-full max-h-170 overflow-auto">
+        <div className="w-full max-h-170 overflow-y-auto">
           {sortedOrders.map((order, index) => (
             <TblOrderRow
               key={order.id}
               paramOrder={order}
               index={index}
-              className="w-210 grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
+              className="w-full grid grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
             />
           ))}
         </div>
@@ -471,7 +471,7 @@ const OrdersWithTabs = ({
   }, [orders]);
 
   return (
-    <div className="w-full max-w-220 lg:-ml-2 py-2 px-1">
+    <div className="w-full lg:-ml-2 py-2 px-1">
       <Tabs
         orientation={"horizontal"}
         selectedKey={sectionKey}

@@ -57,3 +57,5 @@ export const ordersCancelledRequest =
 export const ordersCountRequest =
   "orders?pagination[pageSize]=1&pagination[page]=1";
 export const managerInitRequest = "/dashboard?state=inwork&page=1";
+export const managerSearchRequest =
+  "/orders?filters[title][$containsi]=%1&sort[0]=updatedAt:desc&pagination[page]=%2&pagination[pageSize]=%3";

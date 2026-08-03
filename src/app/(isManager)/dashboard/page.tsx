@@ -1,4 +1,5 @@
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
+import InfoArea from "@/entityes/manager/InfoArea";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { TOrdersState } from "@/shared/types/main_types";
 import {
@@ -62,7 +63,8 @@ export default async function DashBoard({
       }
     >
       <PaginationProvider>
-        <section className="w-full xl:w-340 mx-auto p-1">
+        <section className="w-full p-1">
+          <InfoArea />
           <OrdersWithTabs orders={orders} pageNumber={Number(page)} />
         </section>
       </PaginationProvider>
