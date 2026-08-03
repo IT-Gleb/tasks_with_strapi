@@ -427,7 +427,6 @@ const OrdersWithTabs = ({
 }) => {
   const isMobile = useIsMobile();
   const [sectionKey, setSectionKey] = useState<Key>(tabsList[0].docId);
-  //const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ordersData, setOrdersData] = useState<TDashBoardProps>(orders);
   const { currentPage, handlerPage } = usePaginationContext();
 

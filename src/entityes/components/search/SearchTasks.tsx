@@ -6,13 +6,13 @@ import { ChangeEvent, useRef, useState } from "react";
 import SearchTasksPopover from "./SearchPopover";
 import { ParamsFromString } from "@/shared/utils/functions";
 import { useRouter } from "next/navigation";
-import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
+//import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
 export default function SearchTasks() {
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const router = useRouter();
 
   const handlerClear = () => {
@@ -36,8 +36,8 @@ export default function SearchTasks() {
   };
 
   return (
-    <div className="w-full p-1 flex gap-x-2 items-start bg-transparent z-3">
-      {!isMobile && (
+    <div className="ml-auto p-1 flex gap-x-2 items-start bg-transparent z-3">
+      <div className="hidden w-fit md:block">
         <search
           role="search"
           className={`z-4 sm:w-95 sm:max-w-100 xl:min-w-120 text-sm dark:text-black flex flex-row outline-0 overflow-hidden border border-stone-200 dark:border-stone-600 dark:outline-stone-500 rounded-s-lg focus-within:outline-2 focus-within:outline-accent focus-within:border-0`}
@@ -72,21 +72,23 @@ export default function SearchTasks() {
             <Cross size={18} strokeWidth={2} className=" rotate-45" />
           </Button>
         </search>
-      )}
-      {isMobile ? (
+      </div>
+
+      <div className="block w-fit md:hidden">
         <SearchTasksPopover />
-      ) : (
-        <Button
-          size="sm"
-          variant="primary"
-          className={" scale-80 place-content-center active:scale-70"}
-          isIconOnly={isMobile}
-          onClick={handlerSearch}
-        >
-          <Search size={14} />
-          Искать
-        </Button>
-      )}
+      </div>
+
+      <Button
+        size="sm"
+        variant="primary"
+        className={
+          " hidden md:flex gap-1 scale-80 items-center active:scale-70"
+        }
+        onClick={handlerSearch}
+      >
+        <Search size={14} />
+        Искать
+      </Button>
     </div>
   );
 }

@@ -12,12 +12,10 @@ export default function HeaderLayout() {
       <div className="w-full xl:max-w-240 xl:mx-auto flex items-center gap-4 justify-between flex-1">
         <NavigationMain />
 
-        <div className="w-fit lg:ml-auto">
-          <SearchTasks />
-        </div>
+        <SearchTasks />
 
         <ManagerButton />
-        <div className="h-7 w-10 p-1 rounded-xl bg-stone-200 dark:bg-default-hover flex items-center transition-all duration-300">
+        <div className="h-7 w-10 p-1 rounded-xl bg-stone-200 dark:bg-default-hover flex items-center transition-discrete duration-300">
           <span className="block scale-60 -ml-2 dark:ml-2">
             <ThemeButton />
           </span>
