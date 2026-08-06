@@ -189,7 +189,7 @@ export default function AddNewTodo({
         onSubmit={formSubmit}
         className="flex gap-4 flex-wrap items-center justify-between p-2"
       >
-        <div className="flex items-center gap-x-2 w-full border border-slate-200 dark:border-slate-600 rounded-s-md  focus-within:border-2 focus-within:border-accent ">
+        <div className="flex items-center gap-x-2 w-full border border-slate-200 dark:border-slate-600 rounded-s-md focus-within:bg-white focus-within:border-2 focus-within:border-accent ">
           <input
             ref={inputRef}
             autoFocus

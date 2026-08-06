@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Key, Tabs } from "@heroui/react";
+import { Key, Tabs } from "@heroui/react";
 import BasketTable from "./BasketTable";
 import { memo, useState } from "react";
 import TotalOrderPrice from "./TotalOrderPrice";

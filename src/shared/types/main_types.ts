@@ -162,3 +162,11 @@ export type TServerOrder = Pick<
 > & { documentId: string; s_status: TOrderStatus };
 
 export type TOrdersState = "inwork" | "successed" | "cancelled";
+
+export type TGeoData = {
+  country: string | "unknown";
+  region?: string | "unknown";
+  city: string | "unknown";
+  ip: string | "unknown";
+  state?: string | "unknown";
+};

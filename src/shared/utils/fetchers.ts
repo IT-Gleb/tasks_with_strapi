@@ -5,7 +5,7 @@ import {
   TServerOrder,
   TUserRole,
 } from "../types/main_types";
-import { API_URL, TodosMax_prefix } from "./consts";
+import { API_URL, SERVER_LOCAL_API, TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function fetchGet<T>(url: string): Promise<T | null> {

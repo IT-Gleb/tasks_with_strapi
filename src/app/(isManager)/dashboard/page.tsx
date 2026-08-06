@@ -1,6 +1,5 @@
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
 import InfoArea from "@/entityes/manager/InfoArea";
-import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { TOrdersState } from "@/shared/types/main_types";
 import {
@@ -9,47 +8,13 @@ import {
   ordersCancelledRequest,
   ordersInWorkRequest,
   orderSuccessedRequest,
-  SERVER_LOCAL_API,
-  SERVER_URL,
 } from "@/shared/utils/consts";
 import { getOrdersData } from "@/shared/utils/fetchers";
 
 import { LoaderIcon } from "lucide-react";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { headers } from "next/headers";
 
 import { Suspense } from "react";
-
-async function getLocalIp() {
-  const headersList = await headers();
-  const forwardedFor = headersList.get("x-forwarded-for");
-  let localIp = forwardedFor ? forwardedFor.split(",")[0].trim() : "0.0.0.0";
-  localIp = localIp.replace("::ffff:", "");
-
-  const query = getCacheQueryClient();
-  const data = await query.fetchQuery({
-    queryKey: ["geoFromIp"],
-    queryFn: async () => {
-      const res = await fetch(SERVER_LOCAL_API + "/geobyip", {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        method: "POST",
-        signal: AbortSignal.timeout(5000),
-        body: JSON.stringify({ localIp }),
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-      return {
-        state: "unknown",
-        city: "unknown",
-        country: "unknown",
-        region: "unknown",
-      };
-    },
-  });
-
-  return data;
-}
 
 export default async function DashBoard({
   searchParams,
@@ -91,7 +56,6 @@ export default async function DashBoard({
 
   const orders = await getOrdersData(url, queryKey, Number(page));
 
-  const ipData = await getLocalIp();
   //console.log("ipData -- ", ipData);
 
   return (
@@ -104,7 +68,7 @@ export default async function DashBoard({
     >
       <PaginationProvider>
         <section className="w-full p-1">
-          <InfoArea paramIpData={ipData} />
+          <InfoArea />
           <OrdersWithTabs orders={orders} pageNumber={Number(page)} />
         </section>
       </PaginationProvider>

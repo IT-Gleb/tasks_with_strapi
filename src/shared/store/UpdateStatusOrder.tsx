@@ -32,10 +32,9 @@ async function getOrderFromDB(paramId: string) {
     console.log("Это не TOrder - ", db_order);
     return null;
   }
-  //Проверить на валидность заказа
+  //Проверить на валидность заказа 3 дня хранить в локальной базе
   if (
-    isOrderValid(db_order, 2) === "novalid" &&
-    db_order.status !== "success"
+    isOrderValid(db_order, 3) === "novalid" //&& db_order.status !== "success"
   ) {
     db.deleteOrder(db_order.id);
     return null;

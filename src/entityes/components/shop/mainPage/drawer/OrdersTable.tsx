@@ -96,6 +96,7 @@ const OrdersTable = () => {
       return await ordersSt.getOrders();
     },
     refetchOnMount: "always",
+    refetchOnWindowFocus: "always",
   });
 
   if (isFetching) {

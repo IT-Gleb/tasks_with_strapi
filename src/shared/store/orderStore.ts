@@ -139,24 +139,6 @@ export const useOrdersStorage = () => {
       //const ids_field = await self.getOrdersIds();
 
       await self.setAllOrdersIds(ids as string[]);
-
-      // if (ids) {
-      //   //console.log(ids);
-
-      //   let not_nullIds: string[] = [];
-      //   await Promise.all(
-      //     ids.map((item) => self.getOrder(item as string)),
-      //   ).then((data) => {
-      //     not_nullIds = data
-      //       .filter((order) => order !== null)
-      //       .map((_order) => _order.id);
-      //   });
-      //   //console.log(nullIds);
-      //   if (not_nullIds.length !== ids.length) {
-      //     await self.setAllOrdersIds(not_nullIds);
-      //   }
-      //Записать
-      //  }
     },
     getMessage: function () {
       console.log("Заказы и сохранение в базе...");
