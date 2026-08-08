@@ -161,7 +161,7 @@ export type TServerOrder = Pick<
   "id" | "title" | "price" | "items" | "createdAt" | "updatedAt"
 > & { documentId: string; s_status: TOrderStatus };
 
-export type TOrdersState = "inwork" | "successed" | "cancelled";
+export type TOrdersState = "inwork" | "successed" | "cancelled" | "search";
 
 export type TGeoData = {
   country: string | "unknown";

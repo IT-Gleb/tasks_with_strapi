@@ -1,17 +1,19 @@
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
+import SearchOrdersTable from "@/entityes/components/shop/manager/orders/SearchOrdersTable";
 import InfoArea from "@/entityes/manager/InfoArea";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { TOrdersState } from "@/shared/types/main_types";
 import {
   API_URL,
   itemsOnPage,
+  managerSearchRequest,
   ordersCancelledRequest,
   ordersInWorkRequest,
   orderSuccessedRequest,
 } from "@/shared/utils/consts";
 import { getOrdersData } from "@/shared/utils/fetchers";
 
-import { LoaderIcon } from "lucide-react";
+import { Loader, LoaderIcon } from "lucide-react";
 import { SearchParams } from "next/dist/server/request/search-params";
 
 import { Suspense } from "react";
@@ -23,10 +25,12 @@ export default async function DashBoard({
 }) {
   const data = await searchParams;
   const page = data.page ?? "1";
+  const searchQuery = data.q ?? false;
   const ordersState: TOrdersState = data.state as TOrdersState;
 
   let url: string = "";
   let queryKey: string = "";
+
   switch (ordersState) {
     case "inwork":
       url = `${API_URL}/${ordersInWorkRequest}`
@@ -46,6 +50,17 @@ export default async function DashBoard({
         .replace("%2", `${itemsOnPage}`);
       queryKey = "ordersSuccessed";
       break;
+    case "search":
+      let search =
+        typeof searchQuery === "boolean" ? "" : (searchQuery as string);
+      search === "" ? "*" : search;
+
+      url = `${API_URL}${managerSearchRequest}`
+        .replace("%1", search)
+        .replace("%2", page as string)
+        .replace("%3", `${itemsOnPage}`);
+      queryKey = "ordersSearch-" + search;
+      break;
     default:
       url = `${API_URL}/${ordersInWorkRequest}`
         .replace("%1", page as string)
@@ -57,21 +72,33 @@ export default async function DashBoard({
   const orders = await getOrdersData(url, queryKey, Number(page));
 
   //console.log("ipData -- ", ipData);
+  //console.log(searchQuery, url);
+  //console.log("--orders--", orders);
 
   return (
-    <Suspense
-      fallback={
-        <div className="w-fit mx-auto">
-          <LoaderIcon size={32} className=" animate-spin" />
-        </div>
-      }
-    >
-      <PaginationProvider>
-        <section className="w-full p-1">
+    // <Suspense
+    //   fallback={
+    //     <div className="w-fit mx-auto">
+    //       <LoaderIcon size={32} className=" animate-spin" />
+    //     </div>
+    //   }
+    // >
+    <PaginationProvider>
+      <section className="w-full p-1">
+        <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
           <InfoArea />
-          <OrdersWithTabs orders={orders} pageNumber={Number(page)} />
-        </section>
-      </PaginationProvider>
-    </Suspense>
+        </Suspense>
+        <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
+          {ordersState !== "search" && typeof searchQuery === "boolean" && (
+            <OrdersWithTabs orders={orders} pageNumber={Number(page)} />
+          )}
+
+          {typeof searchQuery === "string" && ordersState === "search" && (
+            <SearchOrdersTable searchItems={orders} pageNumber={Number(page)} />
+          )}
+        </Suspense>
+      </section>
+    </PaginationProvider>
+    // </Suspense>
   );
 }

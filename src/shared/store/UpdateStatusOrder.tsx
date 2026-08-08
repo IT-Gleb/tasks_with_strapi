@@ -87,7 +87,7 @@ async function UpdateStatusOrder(paramId: string) {
     //console.log(_order.status);
   }
   //Задержка для повтора в цикле
-  await Wait(500);
+  await Wait(200);
 }
 
 const UpdateStatusInDB = () => {

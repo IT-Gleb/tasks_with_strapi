@@ -163,6 +163,7 @@ export async function getOrdersData(
   page: number = 1,
 ) {
   // console.log(urlOrdersInWork);
+  //console.log(paramUrl, paramKey);
 
   let orders: TOrder[] = [];
   let meta: Partial<TPageMeta> = {};
@@ -175,6 +176,8 @@ export async function getOrdersData(
         method: "GET",
         signal: AbortSignal.timeout(5000),
       });
+      //  console.log("---res.ok---", res.ok);
+
       if (res.ok) {
         return await res.json();
       }
@@ -183,9 +186,11 @@ export async function getOrdersData(
     // placeholderData: () => [],
   });
 
+  //console.log(data);
   if (data) {
     orders = data.data.map((item: TServerOrder) => {
-      return { ...item, id: item.documentId, status: item.s_status };
+      const { s_status: status, documentId: id, ...other } = item;
+      return { ...other, id, status };
     });
 
     meta = data.meta;

@@ -3,19 +3,17 @@
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 import useOrdersListModify from "@/shared/store/ordersToModifyStore";
 import type {
-  TBasketItem,
   TDashBoardProps,
   TOrder,
-  TOrderStatus,
   TPageMeta,
 } from "@/shared/types/main_types";
-import {
-  API_URL,
-  itemsOnPage,
-  ordersCancelledRequest,
-  orderSuccessedRequest,
-} from "@/shared/utils/consts";
-import { getOrdersData, UpdateOrdersStatus } from "@/shared/utils/fetchers";
+// import {
+//   API_URL,
+//   itemsOnPage,
+//   ordersCancelledRequest,
+//   orderSuccessedRequest,
+// } from "@/shared/utils/consts";
+import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
 import { Wait } from "@/shared/utils/functions";
 import { Button, cn, Key, Tabs, toast } from "@heroui/react";
 import {
@@ -24,17 +22,16 @@ import {
   Plus,
   Activity,
   CheckCheck,
-  ListOrdered,
-  Loader2,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import PaginationOrdersTable from "./PaginationOrdersTable";
 import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext";
 import { useRouter } from "next/navigation";
+import TblOrderRow from "./table/TableRow";
 
 const tabsList = [
   {
@@ -61,196 +58,6 @@ const tabsList = [
     icon: <X size={14} />,
   },
 ];
-
-const orderStatusRus: Record<TOrderStatus, string> = {
-  created: "Новый",
-  delivered: "В магазине",
-  "in-work": "В обработке",
-  cancelled: "Отменен",
-  success: "Готов",
-};
-
-const orderStatus: TOrderStatus[] = Object.keys(
-  orderStatusRus,
-) as TOrderStatus[];
-
-const StatusOptions = ({
-  paramId,
-  selected,
-  handler,
-}: {
-  paramId: string;
-  selected: TOrderStatus;
-  handler: (param: boolean, paramStatus: TOrderStatus) => void;
-}) => {
-  const [option, setOption] = useState<string>(
-    orderStatus.includes(selected) ? selected : "",
-  );
-
-  const handlerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
-    setOption(value); // Capture the chosen option value
-
-    handler(value !== selected, value as TOrderStatus);
-  };
-
-  const ordStatus = useMemo(() => {
-    let indx = orderStatus.indexOf(selected);
-    selected === "success"
-      ? (indx -= 2)
-      : selected === "cancelled"
-        ? (indx -= 1)
-        : indx;
-
-    return orderStatus.slice(indx, orderStatus.length);
-  }, []);
-
-  return (
-    <select
-      name={`status-${paramId}`}
-      id={`status-${paramId}`}
-      className="p-1 border rounded-md border-slate-600"
-      value={option}
-      onChange={handlerChange}
-    >
-      {ordStatus.map((opt) => (
-        <option key={opt} value={opt}>
-          {orderStatusRus[opt]}
-        </option>
-      ))}
-    </select>
-  );
-};
-
-const ItemsTable = memo(({ items }: { items: TBasketItem[] }) => {
-  return (
-    <div className="ml-10 w-[85%] text-xs flex gap-0.5 py-1 shadow-lg dark:shadow-slate-400 dark:bg-chocolate/25 rounded-s-lg">
-      <div className="w-fit max-w-50 flex flex-col gap-1 [&>div]:p-1 uppercase bg-indigo-400/75 dark:bg-indigo-800/50 text-yellow-50 rounded-s-xl">
-        <div>Наименование</div>
-        <div>Количество</div>
-        <div>Цена</div>
-      </div>
-      <div className="w-[75%] overflow-x-auto flex gap-0.5 items-center">
-        {items.map((itm) => (
-          <div
-            key={itm.documentId}
-            className="flex flex-col items-start gap-0.5 [&>div]:rounded-lg [&>div]:border [&>div]:w-60 [&>div]:p-1.5 [&>div]:border-slate-300 dark:[&>div]:border-slate-600"
-          >
-            <div className=" line-clamp-1">{itm.title}</div>
-            <div>{itm.count}</div>
-            <div>
-              {Intl.NumberFormat("ru-RU", {
-                style: "currency",
-                currency: "RUB",
-              }).format(itm.price)}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-});
-
-const TblOrderRow = memo(
-  ({
-    paramOrder,
-    index,
-    className,
-  }: {
-    paramOrder: TOrder;
-    index: number;
-    className: string;
-  }) => {
-    const { title, price, items, status, updatedAt } = paramOrder;
-
-    const [currentStatus, setCurrentStatus] = useState<TOrderStatus>(status);
-    const [showItems, setShowItems] = useState<boolean>(false);
-    const { addToList, removeFromList } = useOrdersListModify();
-    const { currentPage, pageSize } = usePaginationContext();
-
-    const handlerModify = (param: boolean, paramStatus: TOrderStatus) => {
-      //console.log(param);
-      param
-        ? addToList({ id: paramOrder.id, s_status: paramStatus })
-        : removeFromList(paramOrder.id);
-
-      setCurrentStatus(paramStatus);
-    };
-
-    return (
-      <div className="relative z-1 ">
-        <div
-          className={cn(
-            " text-xs p-1 odd:bg-stone-100/25 dark:odd:bg-stone-700/25 transition-discrete duration-200 z-3",
-            className,
-            currentStatus === "delivered" &&
-              " border-b-slate-800 dark:border-b-slate-400",
-            currentStatus === "in-work" &&
-              "border-b border-b-sky-400 dark:border-b-sky-500",
-            currentStatus === "cancelled" && "border-b border-b-red-400",
-            currentStatus === "success" && "border-b border-b-green-400",
-          )}
-        >
-          <div className="hidden md:block text-right">
-            {currentPage === 1
-              ? index + 1
-              : index + pageSize * (currentPage - 1) + 1}
-            .
-          </div>
-          <div className=" whitespace-nowrap">
-            <Button
-              variant="outline"
-              size="sm"
-              onPress={() => {
-                setShowItems((prev) => !prev);
-              }}
-              className={cn(
-                " border-sky-500 ",
-                showItems === true && "bg-stone-200 dark:bg-stone-700",
-                paramOrder.status === "success" && "border-green-500",
-                paramOrder.status === "cancelled" && "border-rose-500",
-              )}
-            >
-              <ListOrdered size={10} />
-              {title}
-            </Button>
-          </div>
-          <div className=" text-right">
-            {Intl.NumberFormat("ru-RU", {
-              style: "currency",
-              currency: "RUB",
-            }).format(price)}
-          </div>
-          <div className="text-center">
-            <StatusOptions
-              paramId={paramOrder.id}
-              selected={status}
-              handler={handlerModify}
-            />
-          </div>
-          <div className="hidden md:block text-right whitespace-nowrap line-clamp-1">
-            {Intl.DateTimeFormat("ru-RU", {
-              timeZone: "Europe/Moscow",
-              dateStyle: "short",
-              timeStyle: "medium",
-            }).format(new Date(updatedAt))}
-          </div>
-        </div>
-
-        <div
-          className={
-            (cn(" w-[90%] col-span-5 z-2 transition-discrete "),
-            showItems === true
-              ? "h-auto opacity-100 duration-500 pb-3"
-              : "h-0 opacity-0 duration-300")
-          }
-        >
-          <ItemsTable items={items} />
-        </div>
-      </div>
-    );
-  },
-);
 
 const TabContent = ({
   paramId,
@@ -297,10 +104,10 @@ const TabContent = ({
         const dt2 = b[sortField as keyof TOrder] as unknown as string;
         //console.log("from Date ----");
 
-        if (dt1.toLowerCase().localeCompare(dt2.toLowerCase())) {
-          return sortKey === "asc" ? 1 : -1;
+        if (sortKey === "asc") {
+          return dt1.toLowerCase().localeCompare(dt2.toLowerCase());
         } else {
-          return sortKey === "asc" ? -1 : 1;
+          return dt2.toLowerCase().localeCompare(dt1.toLowerCase());
         }
       }
       const num1 = a[sortField as keyof TOrder] as unknown as number;
@@ -436,7 +243,7 @@ const OrdersWithTabs = ({
   const router = useRouter();
 
   //------Рендер на клиенте------
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
   //----------------------------
