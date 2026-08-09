@@ -7,12 +7,7 @@ import type {
   TOrder,
   TPageMeta,
 } from "@/shared/types/main_types";
-// import {
-//   API_URL,
-//   itemsOnPage,
-//   ordersCancelledRequest,
-//   orderSuccessedRequest,
-// } from "@/shared/utils/consts";
+
 import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
 import { Wait } from "@/shared/utils/functions";
 import { Button, cn, Key, Tabs, toast } from "@heroui/react";

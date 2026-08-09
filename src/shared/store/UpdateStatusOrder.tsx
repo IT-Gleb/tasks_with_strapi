@@ -40,15 +40,16 @@ async function getOrderFromDB(paramId: string) {
     return null;
   }
 
-  if (db_order.status === "cancelled" || db_order.status === "success") {
-    return null;
-  }
+  // if (db_order.status === "cancelled" || db_order.status === "success") {
+  //   return null;
+  // }
   return db_order as TOrder;
 }
 
 async function UpdateStatusOrder(paramId: string) {
   const db = useOrdersStorage();
   const _order = await getOrderFromDB(paramId);
+  //console.log(_order);
 
   if (!_order) {
     return;
@@ -79,7 +80,9 @@ async function UpdateStatusOrder(paramId: string) {
   //Заменить статус
   if (server_order && server_order.data && _order) {
     //console.log(server_order);
+
     if (server_order.data.s_status !== _order.status) {
+      //console.log(server_order.data.s_status, _order.status);
       _order.status = server_order.data.s_status;
       await db.deleteOrder(_order.id);
       await db.addOrder(_order);

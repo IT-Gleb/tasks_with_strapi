@@ -1,20 +1,30 @@
 "use client";
 
-import { TDashBoardProps, TOrder } from "@/shared/types/main_types";
-import { Button, cn } from "@heroui/react";
-import { ChevronDown, ChevronUp, SearchCode } from "lucide-react";
+import { TDashBoardProps, TOrder, TPageMeta } from "@/shared/types/main_types";
+import { Button, cn, toast } from "@heroui/react";
+import {
+  CheckCheck,
+  ChevronDown,
+  ChevronUp,
+  SearchCode,
+  Activity,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import TblOrderRow from "./table/TableRow";
+import PaginationOrdersTable from "./PaginationOrdersTable";
+import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext";
+import useOrdersListModify from "@/shared/store/ordersToModifyStore";
+import { useShallow } from "zustand/shallow";
+import { Wait } from "@/shared/utils/functions";
+import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
 
 const urlCancel = "/dashboard?state=inwork&page=1";
 
 const TableHeader = ({
-  paramOrders,
   className = "",
   sortHandler,
 }: {
-  paramOrders: TOrder[];
   className: string;
   sortHandler: (sortField: keyof TOrder, sortKey: "asc" | "desc") => void;
 }) => {
@@ -117,25 +127,62 @@ const TableHeader = ({
 const SearchOrdersTable = ({
   searchItems,
   pageNumber = 1,
+  paramQuery,
 }: {
   searchItems: TDashBoardProps;
   pageNumber?: number;
+  paramQuery: string;
 }) => {
-  const { orders } = searchItems;
+  const { orders, meta } = searchItems;
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const router = useRouter();
   const [sortedOrders, setSortedOrders] = useState<TOrder[]>(orders);
+  const { currentPage, handlerPage } = usePaginationContext();
+  const { size, list, clearList } = useOrdersListModify(
+    useShallow((state) => state),
+  );
+  const dataRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    const url = `/dashboard?${paramQuery}&state=search&page=${currentPage}`;
+    //console.log("---w----", pageNumber, url);
+    let isWork: boolean = true;
+
+    if (isWork) {
+      router.push(url);
+      dataRef.current?.scroll(0, 0);
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [currentPage]);
+
+  useEffect(() => {
+    let isWork: boolean = true;
+    if (isWork) {
+      setSortedOrders(orders);
+    }
+    return () => {
+      isWork = false;
+    };
+  }, [orders]);
 
   if (!isMounted) {
     return null;
   }
 
   const handlerCancel = () => {
-    router.push(urlCancel);
+    try {
+      //handlerPage(1);
+      router.replace(urlCancel);
+    } finally {
+      router.refresh();
+    }
   };
 
   const sortOrders = (param: keyof TOrder | null, sortKey: "asc" | "desc") => {
@@ -171,6 +218,23 @@ const SearchOrdersTable = ({
     setSortedOrders(tmp);
   };
 
+  const handlerUpdate = async () => {
+    try {
+      toast.promise(UpdateOrdersStatus(list), {
+        loading: "Отправляю...",
+        success: "Данные отправлены...",
+        error: "Ошибка передачи данных",
+      });
+
+      clearList();
+      //console.log("before timeout");
+      await Wait(1000);
+      // console.log("after timeout");
+    } finally {
+      window.location.reload();
+    }
+  };
+
   return (
     <section className="h-full min-h-80 flex flex-col">
       <header className="text-right p-2 text-xs">
@@ -187,11 +251,10 @@ const SearchOrdersTable = ({
 
       <main className="flex-1">
         <TableHeader
-          paramOrders={orders}
           sortHandler={sortOrders}
           className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] md:grid-cols-[35px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 xl:gap-4 items-center"
         />
-        <div className="w-full max-h-160 overflow-y-auto">
+        <div ref={dataRef} className="w-full max-h-160 overflow-y-auto">
           {sortedOrders.map((item, index) => {
             return (
               <TblOrderRow
@@ -204,7 +267,19 @@ const SearchOrdersTable = ({
           })}
         </div>
       </main>
-      <footer className="p-2">Пагинация</footer>
+      <footer className="mt-2 p-2 flex gap-2 items-center justify-between">
+        <PaginationOrdersTable paramMeta={meta as TPageMeta} />
+        <Button
+          size="sm"
+          variant="outline"
+          isDisabled={size < 1}
+          className={"text-xs active:scale-80"}
+          onPress={handlerUpdate}
+        >
+          {size > 0 ? <CheckCheck size={12} /> : <Activity size={12} />}
+          Изменить
+        </Button>
+      </footer>
     </section>
   );
 };

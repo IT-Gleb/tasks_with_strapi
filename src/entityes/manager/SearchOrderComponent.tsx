@@ -33,10 +33,10 @@ const SearchOrderInput = () => {
     setSearchNum("");
 
     router.push(url);
-    const tmp = setTimeout(() => {
-      clearTimeout(tmp);
-      window.location.reload();
-    }, 1000);
+    // const tmp = setTimeout(() => {
+    //   clearTimeout(tmp);
+    //   window.location.reload();
+    // }, 1000);
   }
 
   const handlerRun = () => {

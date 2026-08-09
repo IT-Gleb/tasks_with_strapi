@@ -18,6 +18,8 @@ import { SearchParams } from "next/dist/server/request/search-params";
 
 import { Suspense } from "react";
 
+//export const dynamic = "force-dynamic";
+
 export default async function DashBoard({
   searchParams,
 }: {
@@ -94,7 +96,11 @@ export default async function DashBoard({
           )}
 
           {typeof searchQuery === "string" && ordersState === "search" && (
-            <SearchOrdersTable searchItems={orders} pageNumber={Number(page)} />
+            <SearchOrdersTable
+              searchItems={orders}
+              pageNumber={Number(page)}
+              paramQuery={`q=${data.q as string}`}
+            />
           )}
         </Suspense>
       </section>
