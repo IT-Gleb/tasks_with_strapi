@@ -287,6 +287,16 @@ const OrdersWithTabs = ({
 
   return (
     <div className="w-full lg:-ml-2 py-2 px-1">
+      <div className="p-2 text-right">
+        <Button
+          size="sm"
+          variant="outline"
+          className={"scale-90 active:scale-80"}
+          onPress={() => window.location.reload()}
+        >
+          Обновить
+        </Button>
+      </div>
       <Tabs
         orientation={"horizontal"}
         selectedKey={sectionKey}

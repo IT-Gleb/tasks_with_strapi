@@ -18,8 +18,7 @@ import useOrdersListModify from "@/shared/store/ordersToModifyStore";
 import { useShallow } from "zustand/shallow";
 import { Wait } from "@/shared/utils/functions";
 import { UpdateOrdersStatus } from "@/shared/utils/fetchers";
-
-const urlCancel = "/dashboard?state=inwork&page=1";
+import { managerInitRequest } from "@/shared/utils/consts";
 
 const TableHeader = ({
   className = "",
@@ -137,7 +136,7 @@ const SearchOrdersTable = ({
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const router = useRouter();
   const [sortedOrders, setSortedOrders] = useState<TOrder[]>(orders);
-  const { currentPage, handlerPage } = usePaginationContext();
+  const { currentPage } = usePaginationContext();
   const { size, list, clearList } = useOrdersListModify(
     useShallow((state) => state),
   );
@@ -179,9 +178,11 @@ const SearchOrdersTable = ({
   const handlerCancel = () => {
     try {
       //handlerPage(1);
-      router.replace(urlCancel);
+      router.replace(managerInitRequest);
     } finally {
-      router.refresh();
+      if (currentPage !== 1) {
+        window.location.reload();
+      }
     }
   };
 

@@ -1,3 +1,4 @@
+import GetOrdersCount from "@/entityes/components/shop/manager/orders/GetOrdersCount";
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
 import SearchOrdersTable from "@/entityes/components/shop/manager/orders/SearchOrdersTable";
 import InfoArea from "@/entityes/manager/InfoArea";
@@ -86,7 +87,11 @@ export default async function DashBoard({
     //   }
     // >
     <PaginationProvider>
-      <section className="w-full p-1">
+      <section className="w-full">
+        <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
+          <GetOrdersCount />
+        </Suspense>
+
         <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
           <InfoArea />
         </Suspense>
