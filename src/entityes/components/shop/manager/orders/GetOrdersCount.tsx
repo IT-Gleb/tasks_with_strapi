@@ -4,19 +4,25 @@ import { fetchGet } from "@/shared/utils/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 
+type TStatOrders = {
+  total: number;
+  inWork: number;
+  successed: number;
+  cancelled: number;
+};
+type TStatOrdersError = {
+  message: string;
+};
+
 const GetOrdersCount = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["orders_stat", 1],
     queryFn: async () => {
-      return await fetchGet<{
-        total: number;
-        inWork: number;
-        successed: number;
-        cancelled: number;
-      }>("/api/OrdersStat");
+      return await fetchGet<TStatOrders | TStatOrdersError>("/api/OrdersStat");
     },
     retry: 2,
     retryDelay: 500,
+    refetchOnWindowFocus: "always",
   });
 
   if (isLoading) {
@@ -27,13 +33,20 @@ const GetOrdersCount = () => {
     );
   }
 
-  if (isError) {
+  if (isError || (data !== undefined && data !== null && "message" in data)) {
     return (
-      <div className="w-fit mx-auto p-2">
+      <div className="w-fit mx-auto p-2 text-xs">
         <p>Ошибка при получении статистики</p>
+        <p>
+          {isError === false && data !== null && "message" in data
+            ? data?.message
+            : ""}
+        </p>
       </div>
     );
   }
+
+  //console.log(data);
 
   return (
     <div className="flex gap-x-2 items-center justify-between p-2 text-xs bg-sky-100 dark:bg-slate-700">
