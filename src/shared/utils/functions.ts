@@ -284,3 +284,7 @@ export const Wait = (ms: number): Promise<void> => {
     }, ms);
   });
 };
+
+export function getRandomId() {
+  return crypto.randomUUID();
+}

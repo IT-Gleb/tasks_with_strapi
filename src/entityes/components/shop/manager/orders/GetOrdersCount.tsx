@@ -49,7 +49,7 @@ const GetOrdersCount = () => {
   //console.log(data);
 
   return (
-    <div className="flex gap-x-2 items-center justify-between p-2 text-xs bg-sky-100 dark:bg-slate-700">
+    <div className=" flex gap-x-2 items-center justify-between p-2 text-xs bg-sky-100 dark:bg-slate-700">
       <span>
         Всего: <span className="text-sm font-semibold">{data?.total}</span>{" "}
       </span>

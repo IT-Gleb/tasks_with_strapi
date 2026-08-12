@@ -1,7 +1,7 @@
-import GetOrdersCount from "@/entityes/components/shop/manager/orders/GetOrdersCount";
 import OrdersWithTabs from "@/entityes/components/shop/manager/orders/OrdersWithTabs";
 import SearchOrdersTable from "@/entityes/components/shop/manager/orders/SearchOrdersTable";
-import InfoArea from "@/entityes/manager/InfoArea";
+
+import SearchOrderInput from "@/entityes/manager/SearchOrderComponent";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { TOrdersState } from "@/shared/types/main_types";
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/shared/utils/consts";
 import { getOrdersData } from "@/shared/utils/fetchers";
 
-import { Loader, LoaderIcon } from "lucide-react";
+import { Loader } from "lucide-react";
 import { SearchParams } from "next/dist/server/request/search-params";
 
 import { Suspense } from "react";
@@ -89,11 +89,7 @@ export default async function DashBoard({
     <PaginationProvider>
       <section className="w-full">
         <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
-          <GetOrdersCount />
-        </Suspense>
-
-        <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
-          <InfoArea />
+          <SearchOrderInput />
         </Suspense>
         <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
           {ordersState !== "search" && typeof searchQuery === "boolean" && (

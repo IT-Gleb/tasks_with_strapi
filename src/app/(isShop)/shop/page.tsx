@@ -4,6 +4,8 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import type { THero, THeroError, THeroImage } from "@/shared/types/main_types";
 import { API_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
+import { Loader } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function ShopPage() {
   const query = getCacheQueryClient();
@@ -28,12 +30,16 @@ export default async function ShopPage() {
 
   return (
     <>
-      <HeroComp
-        text={result?.data.HelloText as string}
-        paramTopImages={result?.data.topImages as THeroImage[]}
-        paramBottomImages={result?.data.bottomImages as THeroImage[]}
-      />
-      <MainPageShopProvider />
+      <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
+        <HeroComp
+          text={result?.data.HelloText as string}
+          paramTopImages={result?.data.topImages as THeroImage[]}
+          paramBottomImages={result?.data.bottomImages as THeroImage[]}
+        />
+      </Suspense>
+      <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
+        <MainPageShopProvider />
+      </Suspense>
     </>
   );
 }

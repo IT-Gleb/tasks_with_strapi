@@ -4,7 +4,7 @@ import { API_URL, bgGradients } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 import TitleComponent from "./TitleComponent";
 import { Loader2 } from "lucide-react";
@@ -22,6 +22,15 @@ const MainPageShopProvider = () => {
     },
   });
   const [categories, setCategories] = useState<TCategories[]>([]);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useLayoutEffect(() => {
+    setIsMounted(true);
+
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
 
   //Конвертируем данные в TCategories[]
   useEffect(() => {
@@ -40,6 +49,10 @@ const MainPageShopProvider = () => {
       isWork = false;
     };
   }, [data]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   if (isLoading) {
     return (

@@ -2,7 +2,7 @@
 
 import { stagger } from "motion";
 import * as motion from "motion/react-client";
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { THeroImage } from "@/shared/types/main_types";
 import { SERVER_URL } from "@/shared/utils/consts";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
@@ -67,6 +67,7 @@ const HeroComp = ({
   paramTopImages: THeroImage[];
   paramBottomImages: THeroImage[];
 }) => {
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const isMobile = useIsMobile();
 
   const img1 = useMemo<THeroImage[]>(() => {
@@ -82,6 +83,17 @@ const HeroComp = ({
     }
     return paramBottomImages;
   }, [isMobile]);
+
+  useLayoutEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="mt-5 w-full min-h-100 bg-green-100 dark:bg-blue-950 transition-discrete duration-300 rounded-t-3xl overflow-hidden">

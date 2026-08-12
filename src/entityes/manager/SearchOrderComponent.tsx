@@ -113,7 +113,7 @@ const SearchOrderInput = () => {
   return (
     <div
       title="Искать"
-      className="flex gap-x-0 items-center border border-slate-200/50 rounded-lg p-1.5 [&>button]:bg-slate-300 focus-within:[&>button]:bg-green-500 focus-within:border focus-within:border-green-400 relative before:content-[attr(title)] before:absolute before:left-4 before:-top-2.5 before:z-1 before:text-[0.6rem]/[calc(1/0.6)rem] before:text-slate-300 focus-within:before:text-green-600 before:bg-white dark:before:bg-default"
+      className="ml-auto mt-5 w-full max-w-xs flex gap-x-0 items-center border border-slate-200/50 rounded-lg p-1.5 [&>button]:bg-slate-300 focus-within:[&>button]:bg-green-500 focus-within:border focus-within:border-green-400 relative before:content-[attr(title)] before:absolute before:left-4 before:-top-2.5 before:z-1 before:text-[0.6rem]/[calc(1/0.6)rem] before:text-slate-300 focus-within:before:text-green-600 before:bg-white dark:before:bg-default"
     >
       <span className="place-self-start">ord-</span>
       <div className="text-sm flex flex-col gap-y-1 items-center">

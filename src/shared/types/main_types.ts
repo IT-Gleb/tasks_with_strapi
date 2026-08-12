@@ -170,3 +170,10 @@ export type TGeoData = {
   ip: string | "unknown";
   state?: string | "unknown";
 };
+
+export type TPieData = {
+  total: number;
+  inWork: number;
+  cancelled: number;
+  successed: number;
+};
