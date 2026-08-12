@@ -8,11 +8,12 @@ import { fetchGet } from "@/shared/utils/fetchers";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import type { TPieData } from "@/shared/types/main_types";
+import Top10Goods from "./Top10Goods";
 
 const items = [
   { id: getRandomId(), label: "Всего заказов", itemId: "allOrders" },
   { id: getRandomId(), label: "Средний чек", itemId: "aovOrders" },
-  { id: getRandomId(), label: "10 самых", itemId: "10Goods" },
+  { id: getRandomId(), label: "Top-10", itemId: "top10" },
 ];
 
 const ReportsProvider = () => {
@@ -51,6 +52,7 @@ const ReportsProvider = () => {
             {item.itemId === "allOrders" && (
               <AllOrdersPie param={allOrdersdata} />
             )}
+            {item.itemId === "top10" && <Top10Goods />}
             <p>{item.label} panel content.</p>
           </Tabs.Panel>
         ))}
