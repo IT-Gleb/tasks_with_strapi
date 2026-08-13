@@ -4,6 +4,10 @@ import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsPara
 import { Button } from "@heroui/react";
 import { ChartBar } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
+import Top10Chart from "./charts/Top10chart";
+import { TTop10Data } from "@/shared/types/main_types";
+import Top10ChartInfoTable from "./charts/Top10ChartInfoTable";
+import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
 const selItems = [
   { label: "Один день", value: "1 day" },
@@ -35,7 +39,7 @@ const SelectPeriod = () => {
 
   return (
     <label className="text-xs flex gap-x-3 items-center">
-      <span className="text-xs font-semibold">Данные за период:</span>
+      <span className="text-xs font-semibold">Данные за :</span>
       <select
         name="sPeriod"
         id="sPeriod"
@@ -60,8 +64,10 @@ const SelectPeriod = () => {
 };
 
 const SelCheck = () => {
-  const [checked, setChecked] = useState<boolean>(false);
-  const { setAll } = useReportsURLParamsContext();
+  const { all, setAll } = useReportsURLParamsContext();
+  const [checked, setChecked] = useState<boolean>(
+    all === "true" ? true : false,
+  );
 
   const handlerChecked = (evt: ChangeEvent<HTMLInputElement>) => {
     const { checked } = evt.currentTarget;
@@ -71,7 +77,7 @@ const SelCheck = () => {
 
   return (
     <label className="flex gap-x-3 items-center text-xs">
-      <span className="font-semibold">Использовать отмененные</span>
+      <span className="font-semibold">Включить отмененные</span>
       <input
         type="checkbox"
         name="selCheck"
@@ -88,9 +94,10 @@ const Top10Goods = ({
   data,
   handler,
 }: {
-  data: any[];
+  data: TTop10Data;
   handler: () => Promise<void>;
 }) => {
+  const isMobile = useIsMobile();
   const { state, all, period, setState, handlerUrl } =
     useReportsURLParamsContext();
 
@@ -118,26 +125,19 @@ const Top10Goods = ({
           size="sm"
           variant="outline"
           className={"scale-90 active:scale-80 dark:border-slate-300/50"}
+          isIconOnly={isMobile ? true : false}
           onPress={handler}
         >
           <ChartBar size={16} />
-          Получить
+          {isMobile ? "" : "Получить"}
         </Button>
       </header>
       <main className="flex-1">
         {data.length < 1 && <div className="w-fit mx-auto p-2">Нет данных</div>}
         {data.length > 0 && (
-          <div className="ml-auto w-fit p-2 rounded-2xl overflow-x-hidden bg-yellow-200/25 shadow">
-            {data.map((item, index) => (
-              <div
-                key={item.id}
-                className="w-full max-w-sm grid grid-cols-[30px_minmax(0,0.9fr)_50px] gap-x-2 items-center text-xs "
-              >
-                <span>{index + 1}.</span>
-                <span>{item.title}</span>
-                <span className="text-right">{item.total}</span>
-              </div>
-            ))}
+          <div className="flex flex-wrap gap-x-2 items-start justify-between">
+            <Top10Chart data={data} className="flex-1" />
+            <Top10ChartInfoTable data={data} />
           </div>
         )}
       </main>

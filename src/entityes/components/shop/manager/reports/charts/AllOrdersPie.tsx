@@ -23,22 +23,22 @@ const PieChart = ({ data }: { data: TPieData }) => {
       total: {
         label: "Всего: " + data.total,
         value: data.total,
-        bgColor: "#fed7aa",
+        bgColor: "#fed7aa90",
       },
       success: {
         label: "Готово: " + data.successed,
         value: data.successed,
-        bgColor: "#bbf7d0",
+        bgColor: "#bbf7d090",
       },
       cancelled: {
         label: "Отменено: " + data.cancelled,
         value: data.cancelled,
-        bgColor: "#fecaca",
+        bgColor: "#fecaca90",
       },
       inWork: {
         label: "В работе: " + data.inWork,
         value: data.inWork,
-        bgColor: "#bfdbfe",
+        bgColor: "#bfdbfe90",
       },
     };
   }, [data]);

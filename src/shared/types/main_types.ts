@@ -177,3 +177,11 @@ export type TPieData = {
   cancelled: number;
   successed: number;
 };
+
+export type TTop10 = {
+  id: string;
+  title: string;
+  total: number;
+};
+
+export type TTop10Data = TTop10[];

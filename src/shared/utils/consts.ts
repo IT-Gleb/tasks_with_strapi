@@ -60,3 +60,16 @@ export const ordersCountRequest =
 export const managerInitRequest = "/dashboard?state=inwork&page=1";
 export const managerSearchRequest =
   "/orders?filters[title][$containsi]=%1&sort[0]=updatedAt:desc&pagination[page]=%2&pagination[pageSize]=%3";
+
+export const bgTop10ChartColors = [
+  "#7dd3fc90",
+  "#22c55e90",
+  "#4ade8090",
+  "#34d39990",
+  "#6ee7b790",
+  "#a7f3d090",
+  "#fed7aa90",
+  "#fdba7490",
+  "#fecaca90",
+  "#fca5a590",
+];
