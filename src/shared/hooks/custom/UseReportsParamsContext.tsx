@@ -5,7 +5,7 @@ import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 interface IParamsState {
   period: string;
   all: "true" | "false";
-  state: "top10" | string;
+  state: "top10" | "aov" | string;
   urlParams: string;
   hasURLParams: string;
   handlerUrl: () => void;
@@ -23,9 +23,9 @@ interface IReportsContextProps {
 
 // 3. Создаем Провайдер
 export function ReportsURLStateProvider({ children }: IReportsContextProps) {
-  const [state, setState] = useState<"top10" | string>("top10");
+  const [state, setState] = useState<"top10" | "aov" | string>("top10");
   const [all, setAll] = useState<"true" | "false">("false");
-  const [period, setPeriod] = useState<string>("3 day");
+  const [period, setPeriod] = useState<string>("3 days");
   const [urlParams, setUrlParams] = useState<string>(`state=${state}`);
   const [hasURLParams, setHasURLParams] = useState<string>("");
 
@@ -59,7 +59,7 @@ export function ReportsURLStateProvider({ children }: IReportsContextProps) {
 }
 
 // 4. Создаем кастомный хук
-export function useReportsParamsContext(): IParamsState {
+export function useReportsURLParamsContext(): IParamsState {
   const context = useContext(ReportsContext);
 
   // Благодаря этой проверке TS понимает, что context не может быть undefined ниже по коду
