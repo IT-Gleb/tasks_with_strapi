@@ -29,5 +29,7 @@ export async function POST(request: Request) {
     signal: AbortSignal.timeout(10000),
   }).then((data) => data.json());
 
+  //console.log(res);
+
   return NextResponse.json(res);
 }

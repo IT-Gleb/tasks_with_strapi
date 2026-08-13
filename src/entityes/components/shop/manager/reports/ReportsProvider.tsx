@@ -7,9 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchGet } from "@/shared/utils/fetchers";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { TPieData } from "@/shared/types/main_types";
+import type { TPieData, TTop10Data } from "@/shared/types/main_types";
 import Top10Goods from "./Top10Goods";
 import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsParamsContext";
+import AovOrders from "./AovOrders";
 
 const items = [
   { id: getRandomId(), label: "Всего заказов", itemId: "allOrders" },
@@ -19,7 +20,8 @@ const items = [
 
 const ReportsProvider = () => {
   const [selKey, setSelKey] = useState<Key>(items[0].itemId);
-  const [top10data, setTop10Data] = useState<any[]>([]);
+  const [top10data, setTop10Data] = useState<TTop10Data>([]);
+  const [aovOrdersData, setAovOrdersData] = useState<any>(null);
   const { hasURLParams } = useReportsURLParamsContext();
 
   const { data: allOrdersdata, isLoading } = useQuery({
@@ -32,6 +34,23 @@ const ReportsProvider = () => {
     enabled: selKey === items[0].itemId,
   });
 
+  //-----AOV--------------
+  const { data: aovData, isLoading: isLoading3 } = useQuery({
+    queryKey: ["aovOrders", hasURLParams],
+    queryFn: async () => {
+      return await fetch("/api/top10", {
+        headers: { "content-type": "application/json; charset=utf-8" },
+        method: "POST",
+        signal: AbortSignal.timeout(5000),
+        body: JSON.stringify({ query: hasURLParams }),
+      }).then((data) => data.json());
+    },
+    //refetchOnMount: "always",
+    //refetchOnWindowFocus: "always",
+    enabled: selKey === items[1].itemId,
+  });
+
+  //---top10----
   const {
     data: top10,
     isLoading: isLoading2,
@@ -74,7 +93,27 @@ const ReportsProvider = () => {
     };
   }, [top10]);
 
-  if (isLoading || isLoading2) {
+  //----Aov data-----
+  useEffect(() => {
+    let isWork: boolean = true;
+    //console.log(aovData);
+
+    if (typeof aovData === "object") {
+      if ("status" in aovData) {
+        if (aovData.status === "ok" && "average" in aovData.data) {
+          if (isWork) {
+            setAovOrdersData(aovData.data);
+          }
+        }
+      }
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [aovData]);
+
+  if (isLoading || isLoading2 || isLoading3) {
     return <Loader size={36} className="mx-auto animate-spin" />;
   }
   //console.log(allOrdersdata);
@@ -98,10 +137,10 @@ const ReportsProvider = () => {
             {item.itemId === "allOrders" && (
               <AllOrdersPie param={allOrdersdata} />
             )}
+            {item.itemId === "aovOrders" && <AovOrders data={aovOrdersData} />}
             {item.itemId === "top10" && (
               <Top10Goods data={top10data} handler={handlerTop10} />
             )}
-            <p>{item.label} panel content.</p>
           </Tabs.Panel>
         ))}
       </Tabs>
