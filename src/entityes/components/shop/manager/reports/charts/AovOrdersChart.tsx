@@ -99,6 +99,7 @@ const AovOrdersChart = ({
           },
           yCount: {
             type: "linear",
+            beginAtZero: true,
             position: "right",
             ticks: {
               callback: function (value) {
@@ -120,7 +121,11 @@ const AovOrdersChart = ({
                 let value = context.parsed.y; // Получаем числовое значение по оси Y
                 if (context.datasetIndex === 0) {
                   let zak = " заказ";
-                  switch (value) {
+                  const len =
+                    value !== null && String(value).length > 1
+                      ? Number(String(value)[String(value).length - 1])
+                      : value;
+                  switch (len) {
                     case 1:
                       zak = " заказ";
                       break;

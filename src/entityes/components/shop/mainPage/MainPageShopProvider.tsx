@@ -15,11 +15,13 @@ import NewGalleryGoods from "./gallery/newGalleryGoods";
 const url: string = `${API_URL}/main-page-shop`;
 
 const MainPageShopProvider = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["main-page-shop", 1],
     queryFn: async () => {
       return await fetchGet<{ data: TCategories[] }>(url);
     },
+    //refetchInterval: 20000,
+    //refetchIntervalInBackground: true,
   });
   const [categories, setCategories] = useState<TCategories[]>([]);
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -59,6 +61,12 @@ const MainPageShopProvider = () => {
       <div className="w-fit mx-auto mt-5 text-green-300 dark:text-default">
         <Loader2 size={44} strokeWidth={2} className=" animate-spin" />
       </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-fit mx-auto p-2">Ошибка при получении данных...</div>
     );
   }
 

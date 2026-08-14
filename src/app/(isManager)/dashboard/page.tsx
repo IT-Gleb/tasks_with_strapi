@@ -79,13 +79,6 @@ export default async function DashBoard({
   //console.log("--orders--", orders);
 
   return (
-    // <Suspense
-    //   fallback={
-    //     <div className="w-fit mx-auto">
-    //       <LoaderIcon size={32} className=" animate-spin" />
-    //     </div>
-    //   }
-    // >
     <PaginationProvider>
       <section className="w-full">
         <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
@@ -106,6 +99,5 @@ export default async function DashBoard({
         </Suspense>
       </section>
     </PaginationProvider>
-    // </Suspense>
   );
 }

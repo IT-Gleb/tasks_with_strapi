@@ -27,6 +27,12 @@ import PaginationOrdersTable from "./PaginationOrdersTable";
 import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext";
 import { useRouter } from "next/navigation";
 import TblOrderRow from "./table/TableRow";
+import { useQuery } from "@tanstack/react-query";
+import {
+  API_URL,
+  itemsOnPage,
+  ordersInWorkRequest,
+} from "@/shared/utils/consts";
 
 const tabsList = [
   {
@@ -237,6 +243,20 @@ const OrdersWithTabs = ({
 
   const router = useRouter();
 
+  const url = `${API_URL}/${ordersInWorkRequest.replace("%1", "1").replace("%2", String(itemsOnPage))}`;
+  const { data, isError } = useQuery({
+    queryKey: ["ordersInWork"],
+    queryFn: async () => {
+      return await fetch(url, {
+        headers: { "content-type": "application/json; charset=utf-8" },
+        method: "GET",
+        signal: AbortSignal.timeout(5000),
+      }).then((data) => data.json());
+    },
+    refetchInterval: 20000,
+    refetchIntervalInBackground: true,
+  });
+
   //------Рендер на клиенте------
   useLayoutEffect(() => {
     setMounted(true);
@@ -281,8 +301,32 @@ const OrdersWithTabs = ({
     };
   }, [orders]);
 
+  //Обновление в фоне
+  useEffect(() => {
+    let isWork: boolean = true;
+    //console.log(data);
+
+    if (data) {
+      if (isWork) {
+        setOrdersData({ orders: data.data, meta: data.meta });
+      }
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, [data]);
+
   if (!Mounted) {
     return null;
+  }
+
+  if (isError) {
+    return (
+      <div className="w-fit mx-auto p-2">
+        Ошибка при получении текущих заказов!
+      </div>
+    );
   }
 
   return (
