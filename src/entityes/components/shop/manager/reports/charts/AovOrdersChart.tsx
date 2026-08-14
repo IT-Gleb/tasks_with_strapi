@@ -38,12 +38,16 @@ const AovOrdersChart = ({
             label: "Количество",
             data: chartData.map((item) => item.order_count),
             fill: true,
-            backgroundColor: "#7dd3fc",
+            backgroundColor: "#fef08a80",
+            borderColor: "#6366f190",
+            pointBackgroundColor: "#6366f1",
             // backgroundColor: "#000000",
             tension: 0.18,
-            pointRadius: isMobile ? 4 : 10,
-            pointHoverRadius: isMobile ? 8 : 15,
-            order: 2,
+            pointRadius: isMobile ? 4 : 8,
+            pointHoverRadius: isMobile ? 7 : 12,
+
+            order: 1,
+            yAxisID: "yCount",
           },
           {
             //type: "line",
@@ -51,7 +55,11 @@ const AovOrdersChart = ({
             data: chartData.map((item) => item.total_day_price),
             //fill: false,
             backgroundColor: "#22c55e90",
-            order: 1,
+            borderColor: "#ca8a04",
+            borderWidth: 2,
+
+            order: 2,
+            yAxisID: "y",
 
             //tension: 0.1,
           },
@@ -71,10 +79,30 @@ const AovOrdersChart = ({
             // },
             ticks: {
               callback: function (value, index, ticks) {
+                // Получаем доступ ко всем датасетам чарта
+                // const datasets = this.chart.data.datasets;
+
+                // if (datasets[1].data.includes(value as number)) {
+                //   //console.log(value);
+
+                //   return "abc " + value; // Возвращает отформатированную строку
+                // }
+                // if (datasets[0].data.includes(Number(value))) {
                 return Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
                 }).format(Number(value)); // Возвращает отформатированную строку
+                // }
+                //return value;
+              },
+            },
+          },
+          yCount: {
+            type: "linear",
+            position: "right",
+            ticks: {
+              callback: function (value) {
+                return value;
               },
             },
           },
@@ -90,6 +118,23 @@ const AovOrdersChart = ({
             callbacks: {
               label: function (context) {
                 let value = context.parsed.y; // Получаем числовое значение по оси Y
+                if (context.datasetIndex === 0) {
+                  let zak = " заказ";
+                  switch (value) {
+                    case 1:
+                      zak = " заказ";
+                      break;
+                    case 2:
+                    case 3:
+                    case 4:
+                      zak = " заказа";
+                      break;
+                    default:
+                      zak = " заказов";
+                      break;
+                  }
+                  return "Количество - " + value + zak;
+                }
                 if (context.datasetIndex === 1) {
                   return (
                     "Выручка: " +
