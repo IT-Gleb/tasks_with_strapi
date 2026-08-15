@@ -243,17 +243,18 @@ const OrdersWithTabs = ({
 
   const router = useRouter();
 
-  const url = `${API_URL}/${ordersInWorkRequest.replace("%1", "1").replace("%2", String(itemsOnPage))}`;
+  const url = "/api/ordersInwork";
   const { data, isError } = useQuery({
     queryKey: ["ordersInWork"],
     queryFn: async () => {
       return await fetch(url, {
         headers: { "content-type": "application/json; charset=utf-8" },
-        method: "GET",
+        method: "POST",
         signal: AbortSignal.timeout(5000),
+        body: JSON.stringify({ page: currentPage }),
       }).then((data) => data.json());
     },
-    refetchInterval: 20000,
+    refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
 
@@ -307,15 +308,17 @@ const OrdersWithTabs = ({
     //console.log(data);
 
     if (data) {
-      if (isWork) {
-        setOrdersData({ orders: data.data, meta: data.meta });
+      if (isWork && !("status" in data)) {
+        if (sectionKey === tabsList[0].docId) {
+          setOrdersData(data as TDashBoardProps);
+        }
       }
     }
 
     return () => {
       isWork = false;
     };
-  }, [data]);
+  }, [data, sectionKey]);
 
   if (!Mounted) {
     return null;

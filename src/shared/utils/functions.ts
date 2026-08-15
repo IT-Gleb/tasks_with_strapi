@@ -288,3 +288,31 @@ export const Wait = (ms: number): Promise<void> => {
 export function getRandomId() {
   return crypto.randomUUID();
 }
+
+export function ordersToWordRus(param: number) {
+  let res = "заказов";
+  const stringNumber = String(param);
+
+  const id =
+    stringNumber.length > 1
+      ? Number(stringNumber.slice(stringNumber.length - 2, 2))
+      : Number(stringNumber[stringNumber.length - 1]);
+  if (id > 9 && id < 21) {
+    return res;
+  }
+  switch (id) {
+    case 1:
+      res = "заказ";
+      break;
+    case 2:
+    case 3:
+    case 4:
+      res = "заказа";
+      break;
+    default:
+      res = "заказов";
+      break;
+  }
+
+  return res;
+}

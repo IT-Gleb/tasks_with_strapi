@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef } from "react";
 import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables, LineController } from "chart.js";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
+import { ordersToWordRus } from "@/shared/utils/functions";
+import type { TAovArray } from "@/shared/types/main_types";
 
 ChartJS.register(LineController, ...registerables);
 
@@ -12,7 +14,7 @@ const AovOrdersChart = ({
   chartData,
   className,
 }: {
-  chartData: any[];
+  chartData: TAovArray;
   className: string;
 }) => {
   //console.log(chartData);
@@ -36,7 +38,7 @@ const AovOrdersChart = ({
           {
             type: "line",
             label: "Количество",
-            data: chartData.map((item) => item.order_count),
+            data: chartData.map((item) => Number(item.order_count)),
             fill: true,
             backgroundColor: "#fef08a80",
             borderColor: "#6366f190",
@@ -120,25 +122,9 @@ const AovOrdersChart = ({
               label: function (context) {
                 let value = context.parsed.y; // Получаем числовое значение по оси Y
                 if (context.datasetIndex === 0) {
-                  let zak = " заказ";
-                  const len =
-                    value !== null && String(value).length > 1
-                      ? Number(String(value)[String(value).length - 1])
-                      : value;
-                  switch (len) {
-                    case 1:
-                      zak = " заказ";
-                      break;
-                    case 2:
-                    case 3:
-                    case 4:
-                      zak = " заказа";
-                      break;
-                    default:
-                      zak = " заказов";
-                      break;
-                  }
-                  return "Количество - " + value + zak;
+                  return "Количество - " + value !== null
+                    ? value + " " + ordersToWordRus(value as number)
+                    : "";
                 }
                 if (context.datasetIndex === 1) {
                   return (

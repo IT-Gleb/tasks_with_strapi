@@ -185,3 +185,11 @@ export type TTop10 = {
 };
 
 export type TTop10Data = TTop10[];
+
+export type TAov = {
+  order_count: string;
+  order_date: string;
+  total_day_price: number;
+};
+
+export type TAovArray = TAov[];
