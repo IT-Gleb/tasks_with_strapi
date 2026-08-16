@@ -4,28 +4,31 @@ import type { TValues } from "@/shared/types/main_types";
 import { useEffect, useMemo, useRef } from "react";
 import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables } from "chart.js";
-import { CompareArraysAddValue, formatDate } from "@/shared/utils/functions";
+import {
+  CompareArraysAddValue,
+  formatDate,
+  getAllDates,
+  normaliziedFromDate,
+  sortByDate,
+  sortByStringDate,
+} from "@/shared/utils/functions";
 
 ChartJS.register(...registerables);
-
-const sortByDate = (a: TValues, b: TValues) => {
-  const dt1 = new Date(a.order_date);
-  const dt2 = new Date(b.order_date);
-  if (dt1 < dt2) {
-    return -1;
-  } else if (dt1 === dt2) {
-    return 0;
-  } else {
-    return 1;
-  }
-};
 
 const CancelledSuccessChart = ({ data }: { data: TValues[] }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const Chart = useRef<ChartJS | null>(null);
 
-  const success = data.filter((i) => i.status === "success").sort(sortByDate);
-  let cancelled = data.filter((i) => i.status === "cancelled");
+  const labels = getAllDates(data).sort(sortByStringDate);
+  let success = data.filter((i) => i.status === "success").sort(sortByDate);
+  success = normaliziedFromDate(labels, success, "order_date", {
+    order_date: "",
+    order_count: "0",
+    total_day_price: 0,
+    status: "success",
+  });
+
+  let cancelled = data.filter((i) => i.status === "cancelled").sort(sortByDate);
 
   cancelled = CompareArraysAddValue<TValues>(success, cancelled, "order_date", {
     order_date: "",
@@ -33,6 +36,15 @@ const CancelledSuccessChart = ({ data }: { data: TValues[] }) => {
     total_day_price: 0,
     status: "cancelled",
   }).sort(sortByDate);
+
+  // console.log(
+  //   "---labels---",
+  //   labels.length,
+  //   "---success---",
+  //   success.length,
+  //   "---cancelled---",
+  //   cancelled.length,
+  // );
   //console.log("---Successed---", success);
 
   //console.log("---Cancelled---", cancelled);
@@ -41,7 +53,7 @@ const CancelledSuccessChart = ({ data }: { data: TValues[] }) => {
     return {
       type: "bar",
       data: {
-        labels: success.map((item) => formatDate(item.order_date)),
+        labels: labels.map((item) => formatDate(item)),
         datasets: [
           {
             type: "bar",

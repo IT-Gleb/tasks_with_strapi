@@ -96,7 +96,7 @@ const CancelledOrdersTable = ({ data }: { data: TValues[] }) => {
           <span>Количество</span>
           <span>Сумма</span>
         </div>
-        <div className="w-full md:max-w-[75%] mx-auto max-h-100 overflow-y-auto">
+        <div className="w-full md:max-w-[75%] mx-auto max-h-90 overflow-y-auto">
           <ul className="w-full ">
             {Object.values(sameData).map((item, index) => {
               for (const key of Object.keys(item)) {

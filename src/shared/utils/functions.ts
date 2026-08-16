@@ -3,6 +3,7 @@ import {
   TDateTimeISOString,
   TGoodItem,
   TOrder,
+  TValues,
 } from "../types/main_types";
 import { LimitSearch } from "./consts";
 
@@ -332,12 +333,96 @@ export function ordersToWordRus(param: number) {
   return res;
 }
 
+export function getAllDates(param: TValues[]) {
+  const dates = new Set<string>();
+  param
+    .filter((i) => i.status === "success" || i.status === "cancelled")
+    .forEach((item) => dates.add(item.order_date));
+  return Array.from(dates).sort((a, b) => {
+    const dt1 = new Date(a);
+    const dt2 = new Date(b);
+    if (dt1 > dt2) {
+      return 1;
+    } else if (dt1 === dt2) {
+      return 0;
+    } else {
+      return -1;
+    }
+  });
+}
+
+export const sortByDate = (a: TValues, b: TValues) => {
+  const dt1 = new Date(a.order_date);
+  const dt2 = new Date(b.order_date);
+  if (dt1 < dt2) {
+    return -1;
+  } else if (dt1 === dt2) {
+    return 0;
+  } else {
+    return 1;
+  }
+};
+
+export const sortByStringDate = (a: string, b: string) => {
+  const dt1 = new Date(a);
+  const dt2 = new Date(b);
+  if (dt1 < dt2) {
+    return -1;
+  } else if (dt1 === dt2) {
+    return 0;
+  } else {
+    return 1;
+  }
+};
+
+//Нормализуем массив по датам если данных за дату нет - прописываем 0
+export function normaliziedFromDate<T>(
+  dates: string[],
+  arr: T[],
+  field: keyof T,
+  value: T,
+) {
+  const normalDates = new Set<string>();
+  const w_map = new Map<string, T>();
+  dates.forEach((item) => normalDates.add(item));
+  arr.forEach((i) => w_map.set(i[field] as string, i));
+
+  const sortByDateT = (a: T, b: T) => {
+    const dt1 = new Date(a[field] as string);
+    const dt2 = new Date(b[field] as string);
+    if (dt1 < dt2) {
+      return -1;
+    } else if (dt1 === dt2) {
+      return 0;
+    } else {
+      return 1;
+    }
+  };
+
+  for (const key of normalDates) {
+    if (!w_map.has(key)) {
+      w_map.set(key, { ...value, [field]: key });
+    }
+  }
+  //console.log(normalDates);
+
+  let res = Array.from(w_map)
+    .map((i) => i[1])
+    .sort(sortByDateT);
+
+  if (res.length > dates.length) {
+    res.length = dates.length;
+  }
+
+  return res;
+}
+
 //Сравниваем 2 массива по полю и по большему если данных во 2-м меньше добавляем 0
-export function CompareArraysAddValue<T>(
+export function CompareArraysAddValue<T extends Object>(
   arr1: T[],
   arr2: T[],
   compareField: keyof T,
-  value: T, //Значение для давление  в случае отсутствия данных
+  value: T, //Значение для добавления  в случае отсутствия данных
 ) {
   // const temp_a = arr1.length >= arr2.length ? arr1 : arr2;
 
@@ -353,7 +438,8 @@ export function CompareArraysAddValue<T>(
   for (let key of new_S) {
     if (!data_s.has(key)) {
       //const o_date = key;
-      data_s.set(key, { ...value, order_date: key });
+
+      data_s.set(key, { ...value, [compareField]: key });
     }
   }
 
