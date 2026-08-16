@@ -1,13 +1,14 @@
 "use client";
 
 import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsParamsContext";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { SelCheck, SelectPeriod } from "./components/SelAndCheck";
 import CalculatePeriod from "./components/CalculatePeriod";
 import AovOrdersChart from "./charts/AovOrdersChart";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 import { cn } from "@heroui/styles";
 import { TAovArray } from "@/shared/types/main_types";
+import { formatCurrency, formatDate } from "@/shared/utils/functions";
 
 const minValue = 3000;
 const averageValue = 9000;
@@ -27,7 +28,7 @@ const AovOrders = ({
     useReportsURLParamsContext();
   const [aData, setAData] = useState<TAovArray>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setState("aov");
     handlerUrl();
   }, []);
@@ -48,7 +49,13 @@ const AovOrders = ({
     if (data !== null && data !== undefined) {
       if (data.massiv !== undefined && data.massiv.length > 0) {
         if (isWork) {
-          setAData(data.massiv);
+          // console.log("---DATA MASSIV---", data.massiv.length);
+          const notZero = data.massiv.filter(
+            (item) => Number(item.order_count) > 0 && item.total_day_price > 0,
+          );
+          //  console.log("---Not ZERO---", notZero);
+
+          setAData(notZero);
         }
       }
     }
@@ -68,7 +75,7 @@ const AovOrders = ({
         <SelCheck />
       </header>
       <main className="w-full pt-4 place-content-center flex-1 flex flex-col justify-evenly">
-        <div className="flex items-start justify-between gap-x-2">
+        <div className="my-1 flex items-end justify-between gap-x-2">
           <span>
             <span>Средний чек:</span>{" "}
             <span
@@ -77,10 +84,7 @@ const AovOrders = ({
                 isMobile ? "text-xl" : "text-3xl",
               )}
             >
-              {Intl.NumberFormat("ru-RU", {
-                style: "currency",
-                currency: "RUB",
-              }).format(data?.average as number)}
+              {formatCurrency(data?.average as number)}
             </span>
           </span>
           <span>
@@ -91,10 +95,7 @@ const AovOrders = ({
                 isMobile ? "text-lg" : "text-2xl",
               )}
             >
-              {Intl.NumberFormat("ru-RU", {
-                style: "currency",
-                currency: "RUB",
-              }).format(data?.total as number)}
+              {formatCurrency(data?.total as number)}
             </span>
           </span>
           <span>
@@ -106,11 +107,40 @@ const AovOrders = ({
             </span>
           </span>
         </div>
-        {data !== undefined && data !== null && (
-          <AovOrdersChart chartData={data.massiv as any[]} className="flex-1" />
+        {aData.length > 0 && (
+          <AovOrdersChart chartData={aData} className="flex-1" />
         )}
       </main>
       <footer className="w-full p-2 border rounded-sm">
+        <div className="p-2 flex gap-x-5 items-center justify-evenly">
+          <div className="flex gap-x-3 items-center">
+            <div className="w-5 h-3 bg-rose-400/60 rounded-sm"></div>
+            <span>
+              Меньше{" "}
+              <span className="font-semibold">{formatCurrency(minValue)}</span>
+            </span>
+          </div>
+          <div className="flex gap-x-3 items-center">
+            <div className="w-5 h-3 bg-sky-400/60 rounded-sm"></div>
+            <span>
+              От:{" "}
+              <span className=" font-semibold">{formatCurrency(minValue)}</span>{" "}
+              До:{" "}
+              <span className=" font-semibold">
+                {formatCurrency(averageValue)}
+              </span>
+            </span>
+          </div>
+          <div className="flex gap-x-3 items-center">
+            <div className="w-5 h-3 bg-green-400/60 rounded-sm"></div>
+            <span>
+              Больше:{" "}
+              <span className=" font-semibold">
+                {formatCurrency(averageValue)}
+              </span>
+            </span>
+          </div>
+        </div>
         {aData && (
           <ul className="w-full max-w-lg mx-auto p-1 bg-amber-50/50 dark:bg-amber-600/50 overflow-hidden rounded-lg">
             <li className="p-2 bg-amber-300 dark:bg-amber-600/50 rounded-t-lg grid grid-cols-[40px_30px_minmax(0,1.2fr)_minmax(0,0.5fr)_minmax(0,1fr)] items-center gap-2 text-[0.65rem]/[0.75rem] font-semibold ">
@@ -132,7 +162,7 @@ const AovOrders = ({
                     </span>
                     <div
                       className={cn(
-                        "w-5 h-3",
+                        "w-5 h-3 rounded-sm",
                         item.total_day_price < minValue ? "bg-red-400" : "",
                         item.total_day_price >= minValue &&
                           item.total_day_price < averageValue
@@ -144,9 +174,7 @@ const AovOrders = ({
                       )}
                     ></div>
                     <span className="text-center">
-                      {Intl.DateTimeFormat("ru-RU", {
-                        dateStyle: "medium",
-                      }).format(new Date(item.order_date))}
+                      {formatDate(new Date(item.order_date))}
                     </span>
                     <span className="text-right">
                       <span className="text-md font-semibold">
@@ -155,10 +183,7 @@ const AovOrders = ({
                     </span>
                     <span className="text-right">
                       <span className="text-md font-semibold">
-                        {Intl.NumberFormat("ru-RU", {
-                          style: "currency",
-                          currency: "RUB",
-                        }).format(item.total_day_price)}
+                        {formatCurrency(item.total_day_price)}
                       </span>
                     </span>
                   </li>

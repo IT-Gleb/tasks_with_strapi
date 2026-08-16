@@ -273,6 +273,21 @@ export function orderDate(param: number | Date | string) {
   }).format(res);
 }
 
+export function formatDate(param: number | string | Date) {
+  const res = new Date(param);
+  return Intl.DateTimeFormat("ru-RU", {
+    //timeStyle: "short",
+    timeZone: "Europe/Moscow",
+    dateStyle: "medium",
+  }).format(res);
+}
+export function formatCurrency(param: number | string) {
+  return Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: "RUB",
+  }).format(param as number);
+}
+
 export const Wait = (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     let tm: any = setTimeout(() => {
@@ -315,4 +330,32 @@ export function ordersToWordRus(param: number) {
   }
 
   return res;
+}
+
+//Сравниваем 2 массива по полю и по большему если данных во 2-м меньше добавляем 0
+export function CompareArraysAddValue<T>(
+  arr1: T[],
+  arr2: T[],
+  compareField: keyof T,
+  value: T, //Значение для давление  в случае отсутствия данных
+) {
+  // const temp_a = arr1.length >= arr2.length ? arr1 : arr2;
+
+  const new_S = new Set<string>();
+  const data_s = new Map<string, T>();
+
+  //Добавили уникальность поля
+  arr1.sort().forEach((item) => new_S.add(item[compareField] as string));
+  //Добавить в мап для поиска
+  arr2.sort().forEach((item) => data_s.set(item[compareField] as string, item));
+
+  //поиск по массиву
+  for (let key of new_S) {
+    if (!data_s.has(key)) {
+      //const o_date = key;
+      data_s.set(key, { ...value, order_date: key });
+    }
+  }
+
+  return Array.from(data_s).map((item) => item[1]);
 }

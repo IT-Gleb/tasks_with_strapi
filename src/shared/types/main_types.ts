@@ -193,3 +193,10 @@ export type TAov = {
 };
 
 export type TAovArray = TAov[];
+
+export type TValues = {
+  order_count: string;
+  order_date: string;
+  status: "success" | "cancelled";
+  total_day_price: number;
+};

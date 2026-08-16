@@ -2,7 +2,6 @@
 
 import { Description, Link } from "@heroui/react";
 import { ListCheck, ShoppingBag } from "lucide-react";
-import BreadCrambs from "./BreadCrambs";
 import { useBasket } from "@/shared/store/basketStore";
 
 import { memo, MouseEvent, ReactNode } from "react";
@@ -45,12 +44,9 @@ const DbLink = ({
 const NavigationMain = memo(({ className = "" }: { className?: string }) => {
   return (
     <nav
-      className={`w-full xl:w-250 mx-auto flex flex-col gap-2 items-start ${className}`}
+      className={`w-fit xl:w-250 xl:mx-auto flex flex-col gap-2 items-start ${className}`}
     >
-      <div
-        role="presentation"
-        className="w-full flex flex-row gap-x-3 items-center "
-      >
+      <div role="presentation" className="flex flex-row gap-x-3 items-center ">
         <Link
           href={"/shop"}
           className={
@@ -79,8 +75,6 @@ const NavigationMain = memo(({ className = "" }: { className?: string }) => {
           </Description>
         </Link>
       </div>
-
-      <BreadCrambs />
     </nav>
   );
 });

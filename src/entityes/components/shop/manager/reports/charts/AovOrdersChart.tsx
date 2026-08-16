@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 import type { ChartConfiguration, ChartItem } from "chart.js";
 import { Chart as ChartJS, registerables, LineController } from "chart.js";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
-import { ordersToWordRus } from "@/shared/utils/functions";
+import { formatDate, ordersToWordRus } from "@/shared/utils/functions";
 import type { TAovArray } from "@/shared/types/main_types";
 
 ChartJS.register(LineController, ...registerables);
@@ -28,11 +28,7 @@ const AovOrdersChart = ({
       type: "bar",
       data: {
         //labels: data.map((item) => item.title),
-        labels: chartData.map((item) =>
-          Intl.DateTimeFormat("ru-RU", { dateStyle: "medium" }).format(
-            new Date(item.order_date),
-          ),
-        ),
+        labels: chartData.map((item) => formatDate(new Date(item.order_date))),
         // yLabels: chartData.map((item) => item.order_count),
         datasets: [
           {

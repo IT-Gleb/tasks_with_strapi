@@ -1,6 +1,7 @@
 "use client";
 
 import SearchTasks from "./search/SearchTasks";
+import BreadCrambs from "./ui/BreadCrambs";
 import ManagerButton from "./ui/buttons/ManagerButton";
 import ThemeButton from "./ui/buttons/ThemeButton";
 import GradientLine from "./ui/gradients/GradientLine";
@@ -20,6 +21,9 @@ export default function HeaderLayout() {
             <ThemeButton />
           </span>
         </div>
+      </div>
+      <div className=" max-w-240 md:mx-auto">
+        <BreadCrambs />
       </div>
 
       <div className="w-full ">

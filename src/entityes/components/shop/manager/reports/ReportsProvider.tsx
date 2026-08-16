@@ -5,18 +5,25 @@ import { Key, Tabs } from "@heroui/react";
 import AllOrdersPie from "./charts/AllOrdersPie";
 import { useQuery } from "@tanstack/react-query";
 import { fetchGet } from "@/shared/utils/fetchers";
-import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader, Loader2 } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
 import type { TPieData, TTop10Data } from "@/shared/types/main_types";
-import Top10Goods from "./Top10Goods";
+//import Top10Goods from "./Top10Goods";
 import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsParamsContext";
-import AovOrders from "./AovOrders";
+//import AovOrders from "./AovOrders";
+import dynamic from "next/dynamic";
+//import CancelledOrdersReport from "./CancelledOrdersReport";
 
 const items = [
-  { id: getRandomId(), label: "Всего заказов", itemId: "allOrders" },
+  { id: getRandomId(), label: "Всего", itemId: "allOrders" },
   { id: getRandomId(), label: "Средний чек", itemId: "aovOrders" },
   { id: getRandomId(), label: "Top-10", itemId: "top10" },
+  { id: getRandomId(), label: "Отмененные", itemId: "cancelledOrders" },
 ];
+
+const CancelledOrdersReport = dynamic(() => import("./CancelledOrdersReport"));
+const AovOrders = dynamic(() => import("./AovOrders"));
+const Top10Goods = dynamic(() => import("./Top10Goods"));
 
 const ReportsProvider = () => {
   const [selKey, setSelKey] = useState<Key>(items[0].itemId);
@@ -67,7 +74,7 @@ const ReportsProvider = () => {
     },
     //refetchOnMount: "always",
     //refetchOnWindowFocus: "always",
-    enabled: selKey === items[2].itemId,
+    enabled: selKey === items[2].itemId ? true : false,
   });
 
   const handlerTop10 = async () => {
@@ -81,8 +88,10 @@ const ReportsProvider = () => {
     if (typeof top10 === "object") {
       if ("status" in top10) {
         if (top10.status === "ok") {
-          if (isWork) {
-            setTop10Data(top10.data);
+          if (isWork && top10.data) {
+            if (top10.data.length > 0) {
+              setTop10Data(top10.data);
+            }
           }
         }
       }
@@ -137,9 +146,32 @@ const ReportsProvider = () => {
             {item.itemId === "allOrders" && (
               <AllOrdersPie param={allOrdersdata} />
             )}
-            {item.itemId === "aovOrders" && <AovOrders data={aovOrdersData} />}
+            {item.itemId === "aovOrders" && (
+              <Suspense
+                fallback={
+                  <Loader size={36} className="w-fit mx-auto animate-spin" />
+                }
+              >
+                <AovOrders data={aovOrdersData} />
+              </Suspense>
+            )}
             {item.itemId === "top10" && (
-              <Top10Goods data={top10data} handler={handlerTop10} />
+              <Suspense
+                fallback={
+                  <Loader size={36} className="w-fit mx-auto animate-spin" />
+                }
+              >
+                <Top10Goods data={top10data} handler={handlerTop10} />
+              </Suspense>
+            )}
+            {item.itemId === "cancelledOrders" && (
+              <Suspense
+                fallback={
+                  <Loader size={36} className="w-fit mx-auto animate-spin" />
+                }
+              >
+                <CancelledOrdersReport />
+              </Suspense>
             )}
           </Tabs.Panel>
         ))}

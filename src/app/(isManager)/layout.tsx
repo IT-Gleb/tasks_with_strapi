@@ -15,6 +15,7 @@ import ThemeButton from "@/entityes/components/ui/buttons/ThemeButton";
 import DrawerBasket from "@/entityes/components/shop/mainPage/drawer/DrawerBasket";
 import { type TShopPageSEO } from "@/shared/types/main_types";
 import { Toast } from "@heroui/react";
+import BreadCrambs from "@/entityes/components/ui/BreadCrambs";
 
 //import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
 
@@ -52,7 +53,7 @@ async function RootLayout({
           <ThisThemeProvider>
             <Toast.Provider placement="top" />
             <div className="w-full fixed z-50 bg-default dark:bg-slate-900 min-h-(--minHeaderH) flex flex-col pt-2">
-              <div className="w-full lg:max-w-240 lg:mx-auto flex-1 flex flex-row gap-x-5 items-center justify-evenly">
+              <div className=" lg:max-w-240 lg:mx-auto flex-1 flex flex-row gap-x-5 items-center justify-between ">
                 <NavigationMain />
                 <DrawerBasket />
 
@@ -60,6 +61,10 @@ async function RootLayout({
                   <ThemeButton />
                 </div>
               </div>
+              <div className="max-w-240 md:ml-[15%] xl:ml-[30%]">
+                <BreadCrambs />
+              </div>
+
               <GradientLine />
             </div>
             <div className="mt-(--minHeaderH) w-full flex flex-row flex-nowrap flex-1">

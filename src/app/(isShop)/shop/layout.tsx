@@ -16,6 +16,7 @@ import DrawerBasket from "@/entityes/components/shop/mainPage/drawer/DrawerBaske
 import { type TShopPageSEO } from "@/shared/types/main_types";
 import { Toast } from "@heroui/react";
 import ManagerButton from "@/entityes/components/ui/buttons/ManagerButton";
+import BreadCrambs from "@/entityes/components/ui/BreadCrambs";
 
 //import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
 
@@ -60,6 +61,9 @@ export default function RootLayout({
                 <div className="w-18 h-11 px-1 py-0.5 rounded-2xl overflow-hidden duration-300 transition-discrete bg-slate-300/75 dark:bg-slate-800 place-content-center pl-1 dark:pl-7 scale-65">
                   <ThemeButton />
                 </div>
+              </div>
+              <div className="max-w-240 md:ml-[15%] xl:ml-[30%]">
+                <BreadCrambs />
               </div>
               <GradientLine />
             </div>

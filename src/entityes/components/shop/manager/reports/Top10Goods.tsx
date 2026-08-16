@@ -3,7 +3,7 @@
 import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsParamsContext";
 import { Button } from "@heroui/react";
 import { ChartBar } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import Top10Chart from "./charts/Top10chart";
 import { TTop10Data } from "@/shared/types/main_types";
 import Top10ChartInfoTable from "./charts/Top10ChartInfoTable";
@@ -21,8 +21,9 @@ const Top10Goods = ({
   const isMobile = useIsMobile();
   const { state, all, period, setState, handlerUrl } =
     useReportsURLParamsContext();
+  const [t10data, sett10Data] = useState<TTop10Data>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setState("top10");
     handlerUrl();
   }, []);
@@ -36,6 +37,23 @@ const Top10Goods = ({
       isWork = false;
     };
   }, [state, all, period]);
+
+  //Проверить что данные - те которые нужны
+  useEffect(() => {
+    let isWork: boolean = true;
+    //console.log(data);
+
+    if (data && data.length > 0) {
+      if ("id" in data[0] && "title" in data[0]) {
+        if (isWork) {
+          sett10Data(data);
+        }
+      }
+    }
+    return () => {
+      isWork = false;
+    };
+  }, [data]);
 
   return (
     <section className="min-h-100 flex flex-col">
@@ -58,8 +76,8 @@ const Top10Goods = ({
         {data.length < 1 && <div className="w-fit mx-auto p-2">Нет данных</div>}
         {data.length > 0 && (
           <div className="flex flex-wrap gap-x-2 items-start justify-between">
-            <Top10Chart data={data} className="flex-1" />
-            <Top10ChartInfoTable data={data} />
+            <Top10Chart data={t10data} className="flex-1" />
+            <Top10ChartInfoTable data={t10data} />
           </div>
         )}
       </main>

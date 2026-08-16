@@ -29,8 +29,15 @@ export async function POST(request: Request) {
       Authorization: `Bearer ${token}`,
     },
     method: "GET",
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(10000),
   }).then((data) => data.json());
+
+  if (res.data === null) {
+    return NextResponse.json({
+      orders: [],
+      meta: { pagination: { page: 1, pageSize: itemsOnPage, pageCount: 1 } },
+    });
+  }
 
   return NextResponse.json({ orders: res.data, meta: res.meta });
 }
