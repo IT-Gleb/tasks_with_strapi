@@ -1,90 +1,73 @@
 "use client";
 
+import { gifImages } from "@/shared/utils/consts";
 import { Button } from "@heroui/react";
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useReducer, useState } from "react";
 
-const images = [
-  { src: "/images/form_manager/back_with_mafon.gif", duration: 5000 },
-  { src: "/images/form_manager/men_hiered.gif", duration: 5000 },
-  { src: "/images/form_manager/men_visibility.gif", duration: 5000 },
-  { src: "/images/form_manager/men_button.gif", duration: 5000 },
-];
+const gifBack = "/images/form_manager/back_with_mafon.gif";
 
 type TImagesState = {
   step: number;
   imageSrc: string;
-  duration: number;
+  //duration: number;
 };
 
 type TAction =
-  | { type: "initial" }
   | { type: "wait" }
   | { type: "hired" }
   | { type: "button" }
   | { type: "next" }
-  | { type: "setStep"; payload: { step: number; duration: number } };
+  | { type: "setStep"; payload: { step: number; imageSrc: string } };
 
 const InitState: TImagesState = {
-  step: 1,
-  imageSrc: images[1].src,
-  duration: images[1].duration,
+  step: 0,
+  imageSrc: gifImages[0],
 };
 
 const ImageReducer = (state: TImagesState, action: TAction): TImagesState => {
   switch (action.type) {
-    case "initial":
-      return {
-        ...state,
-        step: 1,
-        imageSrc: images[1].src,
-        duration: images[1].duration,
-      };
     case "wait":
       return {
         ...state,
-        step: 1,
-        imageSrc: images[1].src,
-        duration: images[1].duration,
+        step: 0,
+        imageSrc: gifImages[0],
       };
     case "hired":
       return {
         ...state,
-        step: 2,
-        imageSrc: images[2].src,
-        duration: images[2].duration,
+        step: 1,
+        imageSrc: gifImages[1],
       };
     case "button":
       return {
         ...state,
-        step: 3,
-        imageSrc: images[3].src,
-        duration: images[3].duration,
+        step: 2,
+        imageSrc: gifImages[2],
       };
     case "next":
       let t_step = state.step + 1;
-      if (t_step > images.length - 1) {
-        t_step = 1;
+      if (t_step > gifImages.length - 1) {
+        t_step = 0;
       }
       return {
         ...state,
         step: t_step,
-        imageSrc: images[t_step].src,
-        duration: images[t_step].duration,
+        imageSrc: gifImages[t_step],
       };
 
     case "setStep": {
+      let t_step = Math.abs(action.payload.step);
+      t_step > gifImages.length - 1
+        ? (t_step = 0)
+        : t_step < 0
+          ? (t_step = 0)
+          : t_step;
+
       return {
         ...state,
-        step: action.payload.step,
-        imageSrc: images[action.payload.step].src,
-        duration: action.payload.duration,
+        step: t_step,
+        imageSrc: gifImages[t_step],
       };
     }
     default: {
@@ -98,7 +81,6 @@ const ImageReducer = (state: TImagesState, action: TAction): TImagesState => {
 const ComponentMayjor = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [state, dispath] = useReducer(ImageReducer, InitState);
-  const timer = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     setIsMounted(true);
@@ -107,23 +89,6 @@ const ComponentMayjor = () => {
       setIsMounted(false);
     };
   }, []);
-
-  // useEffect(() => {
-  //   //let tmp_id = state.step;
-
-  //   timer.current = window.setTimeout(() => {
-  //     dispath({ type: "next" });
-  //   }, state.duration);
-
-  //   return () => {
-  //     //console.log("---return timeout---");
-
-  //     if (timer.current !== null) {
-  //       clearTimeout(timer.current);
-  //     }
-  //     timer.current = null;
-  //   };
-  // }, [state]);
 
   if (!isMounted) {
     return null;
@@ -136,7 +101,8 @@ const ComponentMayjor = () => {
         <div className=" relative z-0">
           <div className="w-full max-w-120 max-h-90 z-1 object-cover">
             <img
-              src={images[0].src}
+              key={gifBack}
+              src={gifBack}
               alt=""
               loading="eager"
               fetchPriority="high"
@@ -144,7 +110,7 @@ const ComponentMayjor = () => {
               className="block w-full h-full"
             />
           </div>
-          {state.step > 0 && (
+          {state.step >= 0 && (
             <div className=" absolute top-0 left-0 w-full max-w-120 max-h-90 z-2 object-cover">
               <img
                 key={state.imageSrc}
@@ -165,7 +131,7 @@ const ComponentMayjor = () => {
           }}
         >
           <fieldset className="p-2 mt-6 flex flex-col gap-y-10 items-center border border-accent">
-            <legend className=" text-accent text-xs">Авторизация</legend>
+            <legend className=" text-accent text-xs"> Авторизация </legend>
             <label htmlFor="emailinput">
               <input
                 type="e-mail"

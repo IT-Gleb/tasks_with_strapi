@@ -1,14 +1,12 @@
 import ComponentMayjor from "@/entityes/components/auth/ComponentMayjor";
 import { Metadata } from "next";
+import { preload } from "react-dom";
 import Link from "next/link";
+import { gifImages } from "@/shared/utils/consts";
 
 export const metadata: Metadata = {
   title: "Страница авторизации",
-  archives: [
-    "/images/form_manager/men_hiered.gif",
-    "/images/form_manager/men_visibility.gif",
-    "/images/form_manager/men_button.gif",
-  ],
+
   other: {
     // Вручную добавляем линк в head
     rel: "preload",
@@ -19,6 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthPage() {
+  gifImages.forEach((item) =>
+    preload(item, { as: "image", type: "image/gif" }),
+  );
+
   return (
     <section className="w-full p-1">
       <ComponentMayjor />

@@ -12,7 +12,7 @@ import NavigationMain from "@/entityes/components/ui/NavigationMain";
 import FooterLayout from "@/entityes/components/FooterLayout";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ThemeButton from "@/entityes/components/ui/buttons/ThemeButton";
-import DrawerBasket from "@/entityes/components/shop/mainPage/drawer/DrawerBasket";
+//import DrawerBasket from "@/entityes/components/shop/mainPage/drawer/DrawerBasket";
 import { type TShopPageSEO } from "@/shared/types/main_types";
 import { Toast } from "@heroui/react";
 import BreadCrambs from "@/entityes/components/ui/BreadCrambs";
@@ -55,7 +55,7 @@ async function RootLayout({
             <div className="w-full fixed z-50 bg-default dark:bg-slate-900 min-h-(--minHeaderH) flex flex-col pt-2">
               <div className=" lg:max-w-240 lg:mx-auto flex-1 flex flex-row gap-x-5 items-center justify-between ">
                 <NavigationMain />
-                <DrawerBasket />
+                {/* <DrawerBasket /> */}
 
                 <div className="w-18 h-11 px-1 py-0.5 rounded-2xl overflow-hidden duration-300 transition-discrete bg-slate-300/75 dark:bg-slate-800 place-content-center pl-1 dark:pl-7 scale-65">
                   <ThemeButton />

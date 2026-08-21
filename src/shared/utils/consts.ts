@@ -73,3 +73,10 @@ export const bgTop10ChartColors = [
   "#fecaca90",
   "#fca5a590",
 ];
+
+//-----------AUTH------------------------
+export const gifImages = [
+  "/images/form_manager/men_hiered.gif",
+  "/images/form_manager/men_visibility.gif",
+  "/images/form_manager/men_button.gif",
+];
