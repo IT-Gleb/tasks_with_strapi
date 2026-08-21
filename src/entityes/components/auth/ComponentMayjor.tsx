@@ -1,7 +1,7 @@
 "use client";
 
 import { gifImages } from "@/shared/utils/consts";
-import { Button } from "@heroui/react";
+import { Button, cn } from "@heroui/react";
 
 import { useEffect, useLayoutEffect, useReducer, useState } from "react";
 
@@ -130,14 +130,23 @@ const ComponentMayjor = () => {
             e.preventDefault();
           }}
         >
-          <fieldset className="p-2 mt-6 flex flex-col gap-y-10 items-center border border-accent">
-            <legend className=" text-accent text-xs"> Авторизация </legend>
+          <fieldset className="group p-2 mt-6 flex flex-col gap-y-10 items-center border border-stone-200 dark:border-stone-600 focus-within:border-accent">
+            <legend
+              className={cn(
+                " text-xs",
+                state.step === 1 || state.step === 2
+                  ? "text-accent"
+                  : "text-stone-300 dark:text-stone-600",
+              )}
+            >
+              &nbsp;Авторизация&nbsp;{" "}
+            </legend>
             <label htmlFor="emailinput">
               <input
                 type="e-mail"
                 name="emailinput"
                 id="emailinput"
-                className="p-1 w-full max-w-xs outline-0 border focus:border-accent"
+                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent"
                 placeholder="e-mail ..."
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => dispath({ type: "hired" })}
@@ -148,7 +157,7 @@ const ComponentMayjor = () => {
                 type="password"
                 name="pass1"
                 id="pass1"
-                className="p-1 w-full max-w-xs outline-0 border focus:border-accent"
+                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent"
                 placeholder="Пароль ..."
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => dispath({ type: "button" })}
