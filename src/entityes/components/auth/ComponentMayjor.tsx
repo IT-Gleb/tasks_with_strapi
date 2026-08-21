@@ -12,9 +12,9 @@ import {
 
 const images = [
   { src: "/images/form_manager/back_with_mafon.gif", duration: 5000 },
-  { src: "/images/form_manager/men_visibility.gif", duration: 4400 },
   { src: "/images/form_manager/men_hiered.gif", duration: 5000 },
-  { src: "/images/form_manager/body_2.gif", duration: 5000 },
+  { src: "/images/form_manager/men_visibility.gif", duration: 5000 },
+  { src: "/images/form_manager/men_button.gif", duration: 5000 },
 ];
 
 type TImagesState = {
@@ -25,7 +25,9 @@ type TImagesState = {
 
 type TAction =
   | { type: "initial" }
-  | { type: "visibility" }
+  | { type: "wait" }
+  | { type: "hired" }
+  | { type: "button" }
   | { type: "next" }
   | { type: "setStep"; payload: { step: number; duration: number } };
 
@@ -40,16 +42,30 @@ const ImageReducer = (state: TImagesState, action: TAction): TImagesState => {
     case "initial":
       return {
         ...state,
-        step: 0,
-        imageSrc: images[0].src,
-        duration: images[0].duration,
+        step: 1,
+        imageSrc: images[1].src,
+        duration: images[1].duration,
       };
-    case "visibility":
+    case "wait":
       return {
         ...state,
         step: 1,
         imageSrc: images[1].src,
         duration: images[1].duration,
+      };
+    case "hired":
+      return {
+        ...state,
+        step: 2,
+        imageSrc: images[2].src,
+        duration: images[2].duration,
+      };
+    case "button":
+      return {
+        ...state,
+        step: 3,
+        imageSrc: images[3].src,
+        duration: images[3].duration,
       };
     case "next":
       let t_step = state.step + 1;
@@ -67,13 +83,15 @@ const ImageReducer = (state: TImagesState, action: TAction): TImagesState => {
       return {
         ...state,
         step: action.payload.step,
+        imageSrc: images[action.payload.step].src,
         duration: action.payload.duration,
       };
     }
-    default:
+    default: {
       // Exhaustiveness check: Ensures all switch cases are handled
-      //const _exhaustiveCheck: never = action;
+      const _exhaustiveCheck: never = action;
       return state;
+    }
   }
 };
 
@@ -90,22 +108,22 @@ const ComponentMayjor = () => {
     };
   }, []);
 
-  useEffect(() => {
-    //let tmp_id = state.step;
+  // useEffect(() => {
+  //   //let tmp_id = state.step;
 
-    timer.current = window.setTimeout(() => {
-      dispath({ type: "next" });
-    }, state.duration);
+  //   timer.current = window.setTimeout(() => {
+  //     dispath({ type: "next" });
+  //   }, state.duration);
 
-    return () => {
-      //console.log("---return timeout---");
+  //   return () => {
+  //     //console.log("---return timeout---");
 
-      if (timer.current !== null) {
-        clearTimeout(timer.current);
-      }
-      timer.current = null;
-    };
-  }, [state]);
+  //     if (timer.current !== null) {
+  //       clearTimeout(timer.current);
+  //     }
+  //     timer.current = null;
+  //   };
+  // }, [state]);
 
   if (!isMounted) {
     return null;
@@ -140,19 +158,38 @@ const ComponentMayjor = () => {
             </div>
           )}
         </div>
-        <div className="p-2 mt-6 flex gap-x-10 items-center w-fit mx-auto">
-          <Button size="sm" onPress={() => dispath({ type: "visibility" })}>
-            Предыдущая
-          </Button>
-          <Button
-            size="sm"
-            onPress={() => {
-              dispath({ type: "next" });
-            }}
-          >
-            Следуюшая
-          </Button>
-        </div>
+        <form
+          className=" w-fit mx-auto text-xs"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <fieldset className="p-2 mt-6 flex flex-col gap-y-10 items-center border border-accent">
+            <legend className=" text-accent text-xs">Авторизация</legend>
+            <label htmlFor="emailinput">
+              <input
+                type="e-mail"
+                name="emailinput"
+                id="emailinput"
+                className="p-1 w-full max-w-xs outline-0 border focus:border-accent"
+                placeholder="e-mail ..."
+                onBlur={() => dispath({ type: "wait" })}
+                onFocus={() => dispath({ type: "hired" })}
+              />
+            </label>
+            <label htmlFor="pass1">
+              <input
+                type="password"
+                name="pass1"
+                id="pass1"
+                className="p-1 w-full max-w-xs outline-0 border focus:border-accent"
+                placeholder="Пароль ..."
+                onBlur={() => dispath({ type: "wait" })}
+                onFocus={() => dispath({ type: "button" })}
+              />
+            </label>
+          </fieldset>
+        </form>
       </main>
       <footer></footer>
     </article>
