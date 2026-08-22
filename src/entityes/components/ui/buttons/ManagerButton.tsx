@@ -10,34 +10,34 @@ import { useRouter } from "next/navigation";
 const ManagerButton = () => {
   const router = useRouter();
 
-  const handlerUserWithCookie = async () => {
-    const query = getCacheQueryClient();
-    const url = SERVER_LOCAL_API + "/checkuser";
-    //console.log(url);
+  // const handlerUserWithCookie = async () => {
+  //   const query = getCacheQueryClient();
+  //   const url = SERVER_LOCAL_API + "/checkuser";
+  //   //console.log(url);
 
-    const isToken = await query.fetchQuery({
-      queryKey: ["manager", 1],
-      queryFn: async () => {
-        const res = await fetch(url, {
-          headers: { "content-type": "application/json; charset=utf-8" },
-          method: "POST",
-          signal: AbortSignal.timeout(5000),
-          body: JSON.stringify({}),
-          credentials: "include",
-        });
+  //   const isToken = await query.fetchQuery({
+  //     queryKey: ["manager", 1],
+  //     queryFn: async () => {
+  //       const res = await fetch(url, {
+  //         headers: { "content-type": "application/json; charset=utf-8" },
+  //         method: "POST",
+  //         signal: AbortSignal.timeout(5000),
+  //         body: JSON.stringify({}),
+  //         credentials: "include",
+  //       });
 
-        const result = await res.json();
-        return result;
-        //console.log(user);
-      },
-      staleTime: 10000,
-    });
-    // console.log(isOk);
-    if (isToken.ok) {
-      //cookiesList.getAll().map((i) => console.log(i.name, i.value));
-      setAuthCookie(isToken.token);
-    }
-  };
+  //       const result = await res.json();
+  //       return result;
+  //       //console.log(user);
+  //     },
+  //     staleTime: 10000,
+  //   });
+  //   // console.log(isOk);
+  //   if (isToken.ok) {
+  //     //cookiesList.getAll().map((i) => console.log(i.name, i.value));
+  //     setAuthCookie(isToken.token);
+  //   }
+  // };
 
   return (
     <Button
@@ -45,7 +45,7 @@ const ManagerButton = () => {
       variant="outline"
       size="sm"
       onPress={() => {
-        handlerUserWithCookie();
+        // handlerUserWithCookie();
         router.push(managerInitRequest);
         router.refresh();
       }}

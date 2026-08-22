@@ -62,3 +62,42 @@ export async function getLocalIp(): Promise<TGeoData> {
 
   return data;
 }
+
+export async function handlerUserWithCookie(data: {
+  email: string;
+  pass: string;
+  age: string;
+}) {
+  "use server";
+
+  const query = getCacheQueryClient();
+  const url = SERVER_LOCAL_API + "/checkuser";
+  //console.log(url);
+
+  const isToken = await query.fetchQuery({
+    queryKey: ["manager", 1],
+    queryFn: async () => {
+      const res = await fetch(url, {
+        headers: { "content-type": "application/json; charset=utf-8" },
+        method: "POST",
+        signal: AbortSignal.timeout(5000),
+        body: JSON.stringify({ email: data.email, password: data.pass }),
+        credentials: "include",
+      });
+
+      const result = await res.json();
+      return result;
+      //console.log(user);
+    },
+    staleTime: 10000,
+  });
+  //console.log(isToken);
+  if (isToken.ok) {
+    //cookiesList.getAll().map((i) => console.log(i.name, i.value));
+    //console.log(isToken.ok, isToken.token);
+
+    await setAuthCookie(isToken.token);
+    return { status: "ok" };
+  }
+  return { status: "error" };
+}

@@ -1,9 +1,21 @@
 "use client";
 
-import { gifImages } from "@/shared/utils/consts";
+import { handlerUserWithCookie } from "@/app/lib/actions";
+import { gifImages, managerInitRequest } from "@/shared/utils/consts";
+import { Wait } from "@/shared/utils/functions";
 import { Button, cn } from "@heroui/react";
+import { Loader, Server } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { useEffect, useLayoutEffect, useReducer, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useState,
+  useMemo,
+  useRef,
+} from "react";
 
 const gifBack = "/images/form_manager/back_with_mafon.gif";
 
@@ -78,9 +90,61 @@ const ImageReducer = (state: TImagesState, action: TAction): TImagesState => {
   }
 };
 
+const InitFormState = {
+  status: "null",
+};
+
+async function checkManager(
+  prevState: { status: string },
+  ActionPayload: FormData,
+) {
+  // const rnd = Math.floor(Math.random() * 10);
+  //console.log(ActionPayload);
+  const email = ActionPayload.get("emailinput") ?? "noemail";
+  const password = ActionPayload.get("pass1") ?? "nopassword";
+  const age = ActionPayload.get("ageId") ?? "";
+
+  if ((age as string).length > 0) {
+    return { status: "error" };
+  }
+
+  const res = await handlerUserWithCookie({
+    email: email as string,
+    pass: password as string,
+    age: age as string,
+  });
+
+  await Wait(3000);
+  return res.status === "ok" ? { status: "ok" } : { status: "error" };
+}
+
 const ComponentMayjor = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [state, dispath] = useReducer(ImageReducer, InitState);
+  const [currentState, dispatchAction, isPending] = useActionState(
+    checkManager,
+    InitFormState,
+  );
+  const [formError, setFormError] = useState<string>("");
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const router = useRouter();
+
+  useMemo(() => {
+    switch (currentState.status) {
+      case "error": {
+        setFormError("Ошибка! Проверьте данные... или повторите позже.");
+        break;
+      }
+      case "ok": {
+        setFormError("Ok");
+        break;
+      }
+      default: {
+        setFormError("");
+        break;
+      }
+    }
+  }, [currentState]);
 
   useLayoutEffect(() => {
     setIsMounted(true);
@@ -89,6 +153,14 @@ const ComponentMayjor = () => {
       setIsMounted(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (currentState.status === "ok") {
+      //console.log("---Route---");
+
+      router.push(managerInitRequest);
+    }
+  }, [currentState]);
 
   if (!isMounted) {
     return null;
@@ -125,10 +197,13 @@ const ComponentMayjor = () => {
           )}
         </div>
         <form
+          ref={formRef}
           className=" w-fit mx-auto text-xs"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
+          action={dispatchAction}
+          // onSubmit={(e) => {
+          //   e.preventDefault();
+          //   //handlerFormAction();
+          // }}
         >
           <fieldset className="group p-2 mt-6 flex flex-col gap-y-10 items-center border border-stone-200 dark:border-stone-600 focus-within:border-accent">
             <legend
@@ -143,13 +218,17 @@ const ComponentMayjor = () => {
             </legend>
             <label htmlFor="emailinput">
               <input
-                type="e-mail"
+                type="email"
                 name="emailinput"
                 id="emailinput"
-                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent"
+                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent disabled:text-stone-500/50"
                 placeholder="e-mail ..."
+                disabled={isPending}
                 onBlur={() => dispath({ type: "wait" })}
-                onFocus={() => dispath({ type: "hired" })}
+                onFocus={() => {
+                  dispath({ type: "hired" });
+                  InitFormState.status = "null";
+                }}
               />
             </label>
             <label htmlFor="pass1">
@@ -157,12 +236,56 @@ const ComponentMayjor = () => {
                 type="password"
                 name="pass1"
                 id="pass1"
-                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent"
+                className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent disabled:text-stone-500/50"
                 placeholder="Пароль ..."
+                disabled={isPending}
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => dispath({ type: "button" })}
               />
             </label>
+            <label htmlFor="afeId" className=" hidden">
+              <input
+                type="text"
+                name="ageId"
+                id="ageId"
+                className=" p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent disabled:text-stone-500/50"
+                placeholder="Возраст..."
+                disabled={isPending}
+              />
+            </label>
+
+            {currentState.status !== "null" && (
+              <span
+                className={cn(
+                  "p-1 text-xs uppercase",
+                  currentState.status === "ok"
+                    ? "text-success"
+                    : "text-red-500",
+                )}
+              >
+                {formError}
+              </span>
+            )}
+
+            <Button
+              size="sm"
+              variant="outline"
+              type="submit"
+              isDisabled={isPending}
+              className={cn(
+                "place-self-end ml-auto text-xs scale-90 active:scale-80 ",
+                state.step === 1 || state.step === 2
+                  ? "border-accent"
+                  : "border-stone-300 dark:border-stone-600",
+              )}
+            >
+              {isPending ? (
+                <Loader size={14} className=" animate-spin" />
+              ) : (
+                <Server size={14} />
+              )}
+              {isPending ? "Обмен данными..." : "Подтвердить"}
+            </Button>
           </fieldset>
         </form>
       </main>

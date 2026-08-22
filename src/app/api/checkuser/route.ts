@@ -14,6 +14,10 @@ type TUserWithJWT = {
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const data = await request.json();
+  if (!("email" in data) || !("password" in data)) {
+    return NextResponse.json({ ok: false, token: null });
+  }
   let manager: Partial<TUserWithJWT> = {};
   const url = `${API_URL}/auth/local`;
 
@@ -21,15 +25,24 @@ export async function POST(request: Request) {
     headers: { "Content-Type": "application/json; charset=utf-8" },
     method: "POST",
     signal: AbortSignal.timeout(5000),
+    // body: JSON.stringify({
+    //   identifier: "manager@test.ru",
+    //   password: "Test12345",
+    // }),
     body: JSON.stringify({
-      identifier: "manager@test.ru",
-      password: "Test12345",
+      identifier: data.email,
+      password: data.password,
     }),
     credentials: "include",
   });
 
   try {
     manager = await res.json();
+    console.log(manager);
+    if (!("user" in manager)) {
+      throw new Error("Данные по пользователю - не получены!");
+    }
+
     // const cookieStore = await cookies();
     // cookieStore.set({
     //   name: "auth_token",
