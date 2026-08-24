@@ -103,10 +103,11 @@ async function checkManager(
   const email = ActionPayload.get("emailinput") ?? "noemail";
   const password = ActionPayload.get("pass1") ?? "nopassword";
   const age = ActionPayload.get("ageId") ?? "";
+  //const age = "abc";
 
-  if ((age as string).length > 0) {
-    return { status: "error" };
-  }
+  // if ((age as string).length > 0) {
+  //   return { status: "error" };
+  // }
 
   const res = await handlerUserWithCookie({
     email: email as string,
@@ -114,7 +115,7 @@ async function checkManager(
     age: age as string,
   });
 
-  await Wait(3000);
+  await Wait(1200);
   return res.status === "ok" ? { status: "ok" } : { status: "error" };
 }
 
@@ -236,8 +237,9 @@ const ComponentMayjor = () => {
                 type="password"
                 name="pass1"
                 id="pass1"
+                minLength={8}
                 className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent disabled:text-stone-500/50"
-                placeholder="Пароль ..."
+                placeholder="Пароль(от 8-ми символов) ..."
                 disabled={isPending}
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => dispath({ type: "button" })}

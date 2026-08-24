@@ -2,9 +2,22 @@
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import { TGeoData } from "@/shared/types/main_types";
 import { SERVER_LOCAL_API } from "@/shared/utils/consts";
+import * as z from "zod";
 //Server actions
 
 import { cookies, headers } from "next/headers";
+
+const managerValidate = z.object({
+  email: z
+    .email({ message: "Не верный  e-mail" })
+    .min(86, { message: "E-mail - минимум 6 символов." }),
+  pass: z.coerce
+    .string()
+    .nonempty()
+    .min(8, { message: "Минимум 8 символов" })
+    .max(16, { message: "Максимум - 16 символов" }),
+  age: z.string().trim().max(0, { message: "Поле не должно быть заполненным" }),
+});
 
 //Установить куку с токеном для manager
 export async function setAuthCookie(token: string) {
@@ -69,6 +82,15 @@ export async function handlerUserWithCookie(data: {
   age: string;
 }) {
   "use server";
+  try {
+    await managerValidate.parseAsync(data);
+  } catch (err: unknown) {
+    if (err instanceof z.ZodError) {
+      console.log(err.issues);
+
+      return { status: "error" };
+    }
+  }
 
   const query = getCacheQueryClient();
   const url = SERVER_LOCAL_API + "/checkuser";

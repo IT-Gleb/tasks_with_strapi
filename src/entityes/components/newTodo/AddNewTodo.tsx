@@ -9,8 +9,8 @@ import {
   TodosMax,
   TodosMax_prefix,
 } from "@/shared/utils/consts";
-import { Button, Surface } from "@heroui/react";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { Button } from "@heroui/react";
+import { useMutation } from "@tanstack/react-query";
 import { Cross, ListIndentIncrease, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
