@@ -242,7 +242,10 @@ const ComponentMayjor = () => {
                 placeholder="Пароль(от 8-ми символов) ..."
                 disabled={isPending}
                 onBlur={() => dispath({ type: "wait" })}
-                onFocus={() => dispath({ type: "button" })}
+                onFocus={() => {
+                  dispath({ type: "button" });
+                  InitFormState.status = "null";
+                }}
               />
             </label>
             <label htmlFor="afeId" className=" hidden">

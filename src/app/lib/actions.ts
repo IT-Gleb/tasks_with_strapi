@@ -10,7 +10,7 @@ import { cookies, headers } from "next/headers";
 const managerValidate = z.object({
   email: z
     .email({ message: "Не верный  e-mail" })
-    .min(86, { message: "E-mail - минимум 6 символов." }),
+    .min(6, { message: "E-mail - минимум 6 символов." }),
   pass: z.coerce
     .string()
     .nonempty()
