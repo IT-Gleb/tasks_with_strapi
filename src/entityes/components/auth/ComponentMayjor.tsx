@@ -224,11 +224,13 @@ const ComponentMayjor = () => {
                 id="emailinput"
                 className="p-1 w-full max-w-xs outline-0 border dark:border-stone-600 focus:border-accent disabled:text-stone-500/50"
                 placeholder="e-mail ..."
+                minLength={6}
                 disabled={isPending}
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => {
                   dispath({ type: "hired" });
                   InitFormState.status = "null";
+                  currentState.status = "null";
                 }}
               />
             </label>
@@ -245,6 +247,7 @@ const ComponentMayjor = () => {
                 onFocus={() => {
                   dispath({ type: "button" });
                   InitFormState.status = "null";
+                  currentState.status = "null";
                 }}
               />
             </label>

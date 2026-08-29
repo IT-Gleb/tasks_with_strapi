@@ -64,6 +64,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json(resObj);
   } catch (err: unknown) {
-    return NextResponse.json({ message: (err as Error).message });
+    return NextResponse.json({
+      message: (err as Error).message,
+      meta: { pagination: { page: 1, pagesSize: 0, total: 0 } },
+    });
   }
 }
