@@ -61,7 +61,7 @@ async function RootLayout({
                   <ThemeButton />
                 </div>
               </div>
-              <div className="max-w-240 md:ml-[15%] xl:ml-[30%]">
+              <div className="w-fit mx-auto">
                 <BreadCrambs />
               </div>
 

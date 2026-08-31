@@ -2,21 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+
+const KrasnodarData = {
+  latitude: 45.036029,
+  longitude: 38.974494,
+}; //Krasnodar
 
 const GetCity = () => {
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const [currPosition, setCurrPosition] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
   const [geoLoading, setGeoLoading] = useState<boolean>(false);
-
-  if (!("navigator" in window)) {
-    return null;
-  }
-  if (!("geolocation" in navigator)) {
-    return null;
-  }
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["geoLocation", 1],
@@ -42,6 +41,9 @@ const GetCity = () => {
 
   useEffect(() => {
     let isWork: boolean = true;
+    if (!isMounted) {
+      return;
+    }
     setGeoLoading(true);
 
     navigator.geolocation.getCurrentPosition(
@@ -55,7 +57,7 @@ const GetCity = () => {
         }
       },
       () => {
-        setCurrPosition(null);
+        setCurrPosition(KrasnodarData);
         console.log("error geo");
         setGeoLoading(false);
       },
@@ -69,7 +71,25 @@ const GetCity = () => {
     return () => {
       isWork = false;
     };
+  }, [isMounted]);
+
+  useLayoutEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+    };
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  if (!("navigator" in window)) {
+    return null;
+  }
+  if (!("geolocation" in navigator)) {
+    return null;
+  }
 
   //console.log(currPosition);
   if (isLoading || geoLoading) {
@@ -92,17 +112,25 @@ const GetCity = () => {
     return null;
   }
 
+  //console.log(data);
+
   return (
     <div
       suppressHydrationWarning
-      title="Ваше местоположение"
-      className="mt-2 flex flex-col items-start text-xs p-1 pt-3 relative before:content-[attr(title)] before:absolute before:left-2 before:-top-2.5 before:text-xs before:p-1 before:text-indigo-400 "
+      title="Ваше местоположение:"
+      className="mt-2 flex gap-2 items-start text-xs font-['Tahoma'] p-1 pt-3 relative before:content-[attr(title)] before:absolute before:left-2 before:-top-2.5 before:text-xs before:p-1 before:text-indigo-400 "
     >
-      <span>Страна: {data?.country}</span>
-      <span>Округ: {data?.region}</span>
-      <span>Регион: {data?.state}</span>
-      <span>
+      <span className="ml-5">
         Город: <span className=" font-semibold uppercase">{data?.city}</span>
+      </span>
+      <span>
+        Страна: <span className="font-semibold uppercase">{data?.country}</span>
+      </span>
+      <span>
+        Округ: <span className="text-muted">{data?.region}</span>
+      </span>
+      <span>
+        Регион: <span className="font-semibold uppercase">{data?.state}</span>
       </span>
     </div>
   );

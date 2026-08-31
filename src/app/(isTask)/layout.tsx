@@ -10,6 +10,7 @@ import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
 import HeaderLayout from "@/entityes/components/HeaderLayout";
 import FooterLayout from "@/entityes/components/FooterLayout";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
+import GetCity from "@/entityes/manager/GetCity";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -62,6 +63,7 @@ export default function RootLayout({
           <ThisThemeProvider>
             <HeaderLayout />
             <main className="w-full lg:max-w-240 lg:mx-auto flex-1">
+              <GetCity />
               {children}
             </main>
             <FooterLayout />

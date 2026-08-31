@@ -22,7 +22,7 @@ export default function HeaderLayout() {
           </span>
         </div>
       </div>
-      <div className=" max-w-240 md:mx-auto">
+      <div className=" w-fit mx-auto">
         <BreadCrambs />
       </div>
 

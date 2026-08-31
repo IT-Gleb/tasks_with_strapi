@@ -17,6 +17,7 @@ import { type TShopPageSEO } from "@/shared/types/main_types";
 import { Toast } from "@heroui/react";
 import ManagerButton from "@/entityes/components/ui/buttons/ManagerButton";
 import BreadCrambs from "@/entityes/components/ui/BreadCrambs";
+import GetCity from "@/entityes/manager/GetCity";
 
 //import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
 
@@ -62,7 +63,7 @@ export default function RootLayout({
                   <ThemeButton />
                 </div>
               </div>
-              <div className="max-w-240 md:ml-[15%] xl:ml-[30%]">
+              <div className="w-fit mx-auto">
                 <BreadCrambs />
               </div>
               <GradientLine />
@@ -70,6 +71,7 @@ export default function RootLayout({
             <div className="mt-(--minHeaderH) w-full flex flex-row flex-nowrap flex-1">
               <aside className="hidden sm:block"></aside>
               <main className="w-full lg:max-w-220 lg:mx-auto flex-1 px-2 bg-white dark:bg-green-900/20">
+                <GetCity />
                 {children}
               </main>
               <aside className="hidden sm:block"></aside>
