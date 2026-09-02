@@ -15,6 +15,7 @@ import {
   useState,
   useMemo,
   useRef,
+  ChangeEvent,
 } from "react";
 
 const gifBack = "/images/form_manager/back_with_mafon.gif";
@@ -129,6 +130,8 @@ const ComponentMayjor = () => {
   const [formError, setFormError] = useState<string>("");
   const formRef = useRef<HTMLFormElement | null>(null);
   const router = useRouter();
+  const [isRu, setIsRu] = useState<string>("Неизвестно");
+  const [eMail, setEmail] = useState<string>("");
 
   useMemo(() => {
     switch (currentState.status) {
@@ -166,6 +169,19 @@ const ComponentMayjor = () => {
   if (!isMounted) {
     return null;
   }
+  const handlerEmail = (evt: ChangeEvent<HTMLInputElement>) => {
+    const text = evt.target.value;
+
+    setEmail(text);
+
+    const hasRu = /[а-яё]/.test(text);
+
+    if (hasRu) {
+      setIsRu("RU");
+    } else {
+      setIsRu("EN");
+    }
+  };
 
   return (
     <article className="w-full min-h-80 max-w-sm mx-auto flex flex-col ">
@@ -226,6 +242,8 @@ const ComponentMayjor = () => {
                 placeholder="e-mail ..."
                 minLength={6}
                 disabled={isPending}
+                value={eMail}
+                onChange={handlerEmail}
                 onBlur={() => dispath({ type: "wait" })}
                 onFocus={() => {
                   dispath({ type: "hired" });
@@ -297,7 +315,9 @@ const ComponentMayjor = () => {
           </fieldset>
         </form>
       </main>
-      <footer></footer>
+      <footer className="p-2 place-content-center text-xs text-right">
+        <span className="font-semibold">{isRu}</span>
+      </footer>
     </article>
   );
 };

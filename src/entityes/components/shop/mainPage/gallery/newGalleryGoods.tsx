@@ -63,10 +63,10 @@ const NewGalleryGoods = memo(
         <Button
           isIconOnly
           variant="outline"
-          size="sm"
+          size="lg"
           onPress={() => handlerActiveIndex(-1)}
           className={
-            "absolute z-20 top-[45%] left-2 scale-80 bg-slate-500/60 dark:bg-green-800 active:bg-red-400 active:scale-70 "
+            "absolute z-20 top-[45%] w-10 h-10 rounded-md left-2 scale-80 bg-slate-500/60 dark:bg-green-800/60 active:bg-red-400 active:scale-70 "
           }
         >
           <ChevronLeft size={18} />
@@ -95,10 +95,10 @@ const NewGalleryGoods = memo(
         <Button
           isIconOnly
           variant="outline"
-          size="sm"
+          size="lg"
           onPress={() => handlerActiveIndex(1)}
           className={
-            "absolute z-20 top-[45%] right-2 scale-80 bg-slate-500/60 dark:bg-green-800 active:bg-red-400 active:scale-70 "
+            "absolute z-20 top-[45%] w-10 h-10 rounded-md right-2 scale-80 bg-slate-500/60 dark:bg-green-800/60 active:bg-red-400 active:scale-70 "
           }
         >
           <ChevronRight size={18} />
