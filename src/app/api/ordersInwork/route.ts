@@ -38,6 +38,15 @@ export async function POST(request: Request) {
       meta: { pagination: { page: 1, pageSize: itemsOnPage, pageCount: 1 } },
     });
   }
+  //конвертируем данные
+  //Конверт s_status в status & id присваеваем documentId
+  const t_data = res.data.map((item: any) => {
+    const { s_status: status, documentId, ...other } = item;
+    const t_item = { ...other, status };
+    t_item["id"] = documentId;
 
-  return NextResponse.json({ orders: res.data, meta: res.meta });
+    return t_item;
+  });
+
+  return NextResponse.json({ orders: t_data, meta: res.meta });
 }

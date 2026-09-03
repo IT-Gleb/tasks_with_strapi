@@ -313,15 +313,10 @@ const OrdersWithTabs = ({
     //console.log(data);
 
     if (data) {
-      if (isWork && !("status" in data)) {
+      //console.log(data);
+      if (isWork) {
         if (sectionKey === tabsList[0].docId) {
-          //Конверт s_status в status
-          const t_data = data.orders.map((item: any) => {
-            const { s_status: status, ...other } = item;
-            return { ...other, status };
-          });
-          const converted_data = { orders: t_data, meta: data.meta };
-          setOrdersData(converted_data as TDashBoardProps);
+          setOrdersData(data as TDashBoardProps);
           //console.log(data);
         }
       }
@@ -343,6 +338,8 @@ const OrdersWithTabs = ({
       </div>
     );
   }
+
+  //console.log(ordersData);
 
   return (
     <div className="w-full lg:-ml-2 py-2 px-1">

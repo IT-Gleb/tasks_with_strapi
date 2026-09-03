@@ -47,13 +47,13 @@ export async function POST(request: Request) {
           }
         }),
       )
-      .catch((err) =>
+      .catch((err) => {
         console.log(
           "Error update status - ",
           (err as Error).cause,
           (err as Error).message,
-        ),
-      );
+        );
+      });
   }
 
   isError = errorItems.length > 0;
