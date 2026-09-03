@@ -2,7 +2,7 @@
 
 import { handlerUserWithCookie } from "@/app/lib/actions";
 import { gifImages, managerInitRequest } from "@/shared/utils/consts";
-import { Wait } from "@/shared/utils/functions";
+import { convertText, Wait } from "@/shared/utils/functions";
 import { Button, cn } from "@heroui/react";
 import { Loader, Server } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -169,18 +169,20 @@ const ComponentMayjor = () => {
   if (!isMounted) {
     return null;
   }
+
   const handlerEmail = (evt: ChangeEvent<HTMLInputElement>) => {
-    const text = evt.target.value;
+    let text = evt.target.value;
 
-    setEmail(text);
-
-    const hasRu = /[а-яё]/.test(text);
+    const hasRu = /[а-яёА-ЯЁ]/.test(text);
 
     if (hasRu) {
       setIsRu("RU");
+      text = convertText(text, "en");
     } else {
       setIsRu("EN");
     }
+
+    setEmail(text);
   };
 
   return (
@@ -233,7 +235,10 @@ const ComponentMayjor = () => {
             >
               &nbsp;Авторизация&nbsp;{" "}
             </legend>
-            <label htmlFor="emailinput">
+            <label
+              htmlFor="emailinput"
+              className="flex gap-x-2 items-center justify-baseline"
+            >
               <input
                 type="email"
                 name="emailinput"
@@ -251,8 +256,12 @@ const ComponentMayjor = () => {
                   currentState.status = "null";
                 }}
               />
+              <span className="font-semibold">{isRu}</span>
             </label>
-            <label htmlFor="pass1">
+            <label
+              htmlFor="pass1"
+              className="flex gap-x-2 items-center justify-baseline"
+            >
               <input
                 type="password"
                 name="pass1"
@@ -268,6 +277,7 @@ const ComponentMayjor = () => {
                   currentState.status = "null";
                 }}
               />
+              <span className=" font-semibold">{isRu}</span>
             </label>
             <label htmlFor="afeId" className=" hidden">
               <input
@@ -315,9 +325,7 @@ const ComponentMayjor = () => {
           </fieldset>
         </form>
       </main>
-      <footer className="p-2 place-content-center text-xs text-right">
-        <span className="font-semibold">{isRu}</span>
-      </footer>
+      <footer className="p-2 place-content-center text-xs text-right"></footer>
     </article>
   );
 };

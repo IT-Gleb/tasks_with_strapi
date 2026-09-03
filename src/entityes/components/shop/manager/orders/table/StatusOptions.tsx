@@ -49,6 +49,8 @@ const StatusOptions = ({
     return tmp.slice(indx, orderStatus.length);
   }, []);
 
+  //console.log(selected, ordStatus);
+
   return (
     <select
       name={`status-${paramId}`}

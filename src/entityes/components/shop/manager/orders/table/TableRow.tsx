@@ -37,6 +37,7 @@ const TblOrderRow = memo(
 
       setCurrentStatus(paramStatus);
     };
+    //console.log("---FROM TableROW---", status);
 
     return (
       <div className="relative z-1 ">

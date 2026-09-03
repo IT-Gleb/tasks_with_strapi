@@ -445,3 +445,92 @@ export function CompareArraysAddValue<T extends Object>(
 
   return Array.from(data_s).map((item) => item[1]);
 }
+
+// Карты соответствия клавиш для обеих раскладок
+const EN_TO_RU: Record<string, string> = {
+  q: "й",
+  w: "ц",
+  e: "у",
+  r: "к",
+  t: "e",
+  y: "н",
+  u: "г",
+  i: "ш",
+  o: "щ",
+  p: "з",
+  "[": "х",
+  "]": "ъ",
+  a: "ф",
+  s: "ы",
+  d: "в",
+  f: "а",
+  g: "п",
+  h: "р",
+  j: "о",
+  k: "л",
+  l: "д",
+  ";": "ж",
+  "'": "э",
+  z: "я",
+  x: "ч",
+  c: "с",
+  v: "м",
+  b: "и",
+  n: "т",
+  m: "ь",
+  ",": "б",
+  ".": "ю",
+  "/": ".",
+  Q: "Й",
+  W: "Ц",
+  E: "У",
+  R: "К",
+  T: "Е",
+  Y: "Н",
+  U: "Г",
+  I: "Ш",
+  O: "Щ",
+  P: "З",
+  "{": "Х",
+  "}": "Ъ",
+  A: "Ф",
+  S: "Ы",
+  D: "В",
+  F: "А",
+  G: "П",
+  H: "Р",
+  J: "О",
+  K: "Л",
+  L: "Д",
+  ":": "Ж",
+  '"': "Э",
+  Z: "Я",
+  X: "Ч",
+  C: "С",
+  V: "М",
+  B: "И",
+  N: "Т",
+  M: "Ь",
+  "<": "Б",
+  ">": "Ю",
+  "?": ",",
+  "&": "?",
+  "@": "@",
+};
+
+// Создаем обратную карту (из RU в EN) автоматически
+const RU_TO_EN: Record<string, string> = Object.fromEntries(
+  Object.entries(EN_TO_RU).map(([en, ru]) => [ru, en]),
+);
+
+interface ConverterProps {
+  convertTo: "ru" | "en"; // В какую раскладку нужно принудительно переводить
+}
+
+export function convertText(text: string, targetLang: "ru" | "en"): string {
+  const map = targetLang === "ru" ? EN_TO_RU : RU_TO_EN;
+  return text
+    .split("")
+    .map((char) => map[char] || char) // Если символ есть в карте — меняем, если нет — оставляем
+    .join("");
+}

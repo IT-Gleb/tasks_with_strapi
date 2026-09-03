@@ -146,6 +146,8 @@ const TabContent = ({
     setRazmer(size);
   }, [size]);
 
+  //console.log("--FROM TABContent---", sortedOrders);
+
   return (
     <Tabs.Panel id={paramId}>
       <div className="w-full md:max-w-full">
@@ -261,6 +263,9 @@ const OrdersWithTabs = ({
   //------Рендер на клиенте------
   useLayoutEffect(() => {
     setMounted(true);
+    return () => {
+      setMounted(false);
+    };
   }, []);
   //----------------------------
 
@@ -310,7 +315,14 @@ const OrdersWithTabs = ({
     if (data) {
       if (isWork && !("status" in data)) {
         if (sectionKey === tabsList[0].docId) {
-          setOrdersData(data as TDashBoardProps);
+          //Конверт s_status в status
+          const t_data = data.orders.map((item: any) => {
+            const { s_status: status, ...other } = item;
+            return { ...other, status };
+          });
+          const converted_data = { orders: t_data, meta: data.meta };
+          setOrdersData(converted_data as TDashBoardProps);
+          //console.log(data);
         }
       }
     }
@@ -318,7 +330,7 @@ const OrdersWithTabs = ({
     return () => {
       isWork = false;
     };
-  }, [data, sectionKey]);
+  }, [data]);
 
   if (!Mounted) {
     return null;

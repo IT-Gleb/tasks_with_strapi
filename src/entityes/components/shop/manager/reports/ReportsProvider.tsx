@@ -135,7 +135,9 @@ const ReportsProvider = () => {
           <Tabs.List aria-label="Overflow options">
             {items.map((item) => (
               <Tabs.Tab key={item.id} id={item.itemId}>
-                {item.label}
+                <span className="max-w-22 whitespace-nowrap line-clamp-1 ">
+                  {item.label}
+                </span>
                 <Tabs.Indicator />
               </Tabs.Tab>
             ))}

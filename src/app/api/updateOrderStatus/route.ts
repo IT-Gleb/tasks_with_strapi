@@ -38,14 +38,22 @@ export async function POST(request: Request) {
     let fetchedItems = fetchArray.slice(i, i + chunckSize);
     //console.log(fetchedItems);
 
-    await Promise.allSettled(fetchedItems).then((data) =>
-      data.forEach((item) => {
-        if (item.status === "rejected") {
-          // console.log(item.value.ok);
-          errorItems.push(item.status);
-        }
-      }),
-    );
+    await Promise.allSettled(fetchedItems)
+      .then((data) =>
+        data.forEach((item) => {
+          if (item.status === "rejected") {
+            // console.log(item.value.ok);
+            errorItems.push(item.status);
+          }
+        }),
+      )
+      .catch((err) =>
+        console.log(
+          "Error update status - ",
+          (err as Error).cause,
+          (err as Error).message,
+        ),
+      );
   }
 
   isError = errorItems.length > 0;
