@@ -11,6 +11,7 @@ import {
   ListEnd,
   ListOrdered,
   Repeat,
+  Search,
   SearchCheck,
   ShoppingBag,
   User2,
@@ -149,6 +150,13 @@ const BreadCrambs: FC = () => {
             id: getRandomId(),
             title: "Отчеты",
             Icon: <Repeat size={14} />,
+          });
+          break;
+        case "goodsearch":
+          tmp.push({
+            id: getRandomId(),
+            title: "Поиск товаров",
+            Icon: <Search size={14} />,
           });
           break;
         default:

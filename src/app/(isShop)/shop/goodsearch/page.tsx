@@ -1,5 +1,7 @@
 import TitleComponent from "@/entityes/components/shop/mainPage/TitleComponent";
 import SearchGoodsItems from "@/entityes/components/shop/searchgoods/searchGoodsItems";
+import { bgGradients } from "@/shared/utils/consts";
+import { randomArrayValue } from "@/shared/utils/functions";
 import { Loader } from "lucide-react";
 import { Suspense } from "react";
 
@@ -19,11 +21,13 @@ export default async function GoodSearchPage({
     pgSize: par1.pgSize as unknown as number,
   };
 
+  const bgItem = randomArrayValue(bgGradients);
+  const bgColor: string = `${bgItem.light} dark:${bgItem.dark}`;
   //console.log(params);
 
   return (
     <section className="w-fit mx-auto p-1">
-      <TitleComponent title={par1.q as string} className="bg-green-400/25" />
+      <TitleComponent title={par1.q as string} className={bgColor} />
       <Suspense fallback={<Loader size={38} className=" animate-spin" />}>
         <SearchGoodsItems params={sPar} />
       </Suspense>
