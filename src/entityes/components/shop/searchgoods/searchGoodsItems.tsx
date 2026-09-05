@@ -18,12 +18,13 @@ const SearchGoodsItems = ({ params }: { params: TSearchParams }) => {
   const [goods, setGoods] = useState<TGoodItem[]>([]);
   const goodsRef = useRef<HTMLDivElement[]>([]);
   const [selIndex, setSelIndex] = useState<number>(0);
+  const [page, setPage] = useState<number>(params.page as number);
 
-  const url = `${API_URL}/${goodsSearchQuery.replace("%1", params.q).replace("%2", String(params.page)).replace("%3", String(params.pgSize))}`;
+  const url = `${API_URL}/${goodsSearchQuery.replace("%1", params.q).replace("%2", String(page)).replace("%3", String(params.pgSize))}`;
   //console.log(url);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["searchGoods", params.q],
+    queryKey: ["searchGoods", page],
     queryFn: async () => {
       return await fetch(url, {
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -81,6 +82,11 @@ const SearchGoodsItems = ({ params }: { params: TSearchParams }) => {
     //setInView(index);
   };
 
+  const handlerPage = (paramPage: number) => {
+    setPage(paramPage);
+    setSelIndex(0);
+  };
+
   if (isLoading) {
     return (
       <div className="w-fit mx-auto">
@@ -110,7 +116,10 @@ const SearchGoodsItems = ({ params }: { params: TSearchParams }) => {
   return (
     <article className="flex flex-col">
       <header className="p-1 border-b">
-        <TablePagination paramMeta={data.meta as TPageMeta} />
+        <TablePagination
+          paramMeta={data.meta as TPageMeta}
+          handlerPage={handlerPage}
+        />
       </header>
       <main className="mt-2 p-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {goods &&
@@ -127,7 +136,10 @@ const SearchGoodsItems = ({ params }: { params: TSearchParams }) => {
           ))}
       </main>
       <footer className="p-1 border-t">
-        <TablePagination paramMeta={data.meta as TPageMeta} />
+        <TablePagination
+          paramMeta={data.meta as TPageMeta}
+          handlerPage={handlerPage}
+        />
       </footer>
     </article>
   );

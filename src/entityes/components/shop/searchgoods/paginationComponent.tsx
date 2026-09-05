@@ -4,8 +4,14 @@ import { TPageMeta } from "@/shared/types/main_types";
 import { Pagination } from "@heroui/react";
 import { useMemo, useState } from "react";
 
-function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
-  const [Page, setPage] = useState<number>(1);
+function TablePagination({
+  paramMeta,
+  handlerPage,
+}: {
+  paramMeta: TPageMeta;
+  handlerPage: (paramPage: number) => void;
+}) {
+  const [Page, setPage] = useState<number>(paramMeta.pagination.page as number);
   //const setPage = useSearchPage((state) => state.setPage);
 
   const Pages = useMemo(() => {
@@ -40,7 +46,14 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
     };
 
     return getPageNumbers();
-  }, [paramMeta]);
+  }, [Page, paramMeta]);
+
+  const handlerSetPage = (paramPage: number) => {
+    setPage(paramPage);
+    handlerPage(paramPage);
+  };
+
+  //console.log(paramMeta.pagination.page);
 
   return (
     <Pagination size="sm" className="w-full">
@@ -53,7 +66,7 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
         <Pagination.Item>
           <Pagination.Previous
             isDisabled={Page === 1}
-            onPress={() => setPage(Page - 1)}
+            onPress={() => handlerSetPage(Page - 1)}
           >
             <Pagination.PreviousIcon />
             <span>Предыдущая</span>
@@ -69,7 +82,7 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
             <Pagination.Item key={item + item * Math.random()}>
               <Pagination.Link
                 isActive={item === Page}
-                onPress={() => setPage(item as number)}
+                onPress={() => handlerSetPage(item as number)}
               >
                 {item}
               </Pagination.Link>
@@ -80,7 +93,7 @@ function TablePagination({ paramMeta }: { paramMeta: TPageMeta }) {
         <Pagination.Item>
           <Pagination.Next
             isDisabled={Page === paramMeta.pagination.pageCount}
-            onPress={() => setPage(Page + 1)}
+            onPress={() => handlerSetPage(Page + 1)}
           >
             <span>Следующая</span>
             <Pagination.NextIcon />
