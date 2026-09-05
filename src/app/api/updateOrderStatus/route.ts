@@ -53,6 +53,7 @@ export async function POST(request: Request) {
           (err as Error).cause,
           (err as Error).message,
         );
+        errorItems.push((err as Error).message);
       });
   }
 

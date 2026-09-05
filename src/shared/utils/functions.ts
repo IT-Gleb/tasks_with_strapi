@@ -225,7 +225,7 @@ export function isGoodItemType(entity: unknown): entity is TGoodItem {
     entity !== null &&
     "documentId" in entity &&
     "initialprice" in entity &&
-    "duscount" in entity &&
+    "discount" in entity &&
     "title" in entity
   );
 }

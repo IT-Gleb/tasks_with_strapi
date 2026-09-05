@@ -17,7 +17,9 @@ const TitleComponent = memo(
             className={`p-2 bg-linear-to-r from-0% ${className} to-transparent to-65% flex gap-x-3 items-center`}
           >
             <Info size={24} strokeWidth={2} />
-            <Typography type="h3">{title}</Typography>
+            <Typography type="h3" className=" first-letter:uppercase">
+              {title}
+            </Typography>
           </div>
         </div>
       </div>

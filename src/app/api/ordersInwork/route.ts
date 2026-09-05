@@ -35,7 +35,9 @@ export async function POST(request: Request) {
   if (res.data === null) {
     return NextResponse.json({
       orders: [],
-      meta: { pagination: { page: 1, pageSize: itemsOnPage, pageCount: 1 } },
+      meta: {
+        pagination: { page: 1, pageSize: itemsOnPage, pageCount: 1, total: 0 },
+      },
     });
   }
   //конвертируем данные
