@@ -24,7 +24,7 @@ const SearchGoodsItems = ({ params }: { params: TSearchParams }) => {
   //console.log(url);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["searchGoods", page],
+    queryKey: ["searchGoods-" + params.q, page],
     queryFn: async () => {
       return await fetch(url, {
         headers: { "Content-Type": "application/json; charset=utf-8" },

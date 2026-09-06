@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
   try {
     manager = await res.json();
-    console.log(manager);
+    //console.log(manager);
     if (!("user" in manager)) {
       throw new Error("Данные по пользователю - не получены!");
     }
