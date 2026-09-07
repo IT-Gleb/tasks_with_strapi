@@ -6,18 +6,26 @@ import { Label, NumberField } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
+const Step = 1;
+
 const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
   const [value, setValue] = useState<number>(
     isTBasketItem(goodItem) ? (goodItem as TBasketItem).count : 0,
   );
-  const { setItem, deleteItem, inBasket } = useBasket(
-    useShallow((state) => state),
-  );
+  const { setItem, deleteItem } = useBasket(useShallow((state) => state));
 
   useEffect(() => {
     const unsubscribe = useBasket.subscribe((state) => {
       const hasItem = state.getItem(goodItem.documentId);
-      hasItem !== null ? setValue(hasItem.count) : setValue(0);
+      //console.log("hasItem - ", hasItem);
+
+      if (hasItem !== null && hasItem !== undefined) {
+        value !== hasItem.count
+          ? setValue(hasItem.count)
+          : value !== 0
+            ? setValue(value)
+            : setValue(0);
+      }
     });
 
     return () => {
@@ -25,9 +33,8 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
     };
   }, []);
 
-  useEffect(() => {
-    let isWork: boolean = true;
-
+  const handlerValue = () => {
+    // setValue((prev) => (prev = prev + Step));
     const goodInBasket: TBasketItem = {
       documentId: goodItem.documentId,
       title: goodItem.title,
@@ -35,23 +42,35 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
       count: value,
       inOrder: false,
     };
-    if (isWork) {
-      //если есть в корзине
-      if (
-        useBasket.getState().inBasket(goodInBasket.documentId) &&
-        value === 0
-      ) {
-        deleteItem(goodInBasket);
-      }
-      //Установить количество в корзине
-      if (value > 0) {
-        setItem(goodInBasket);
-      }
+
+    //Установить количество в корзине
+    if (value > 0) {
+      setItem(goodInBasket);
     }
-    return () => {
-      isWork = false;
+  };
+
+  const handlerValueChange = (newValue: number) => {
+    setValue(newValue);
+
+    const goodInBasket: TBasketItem = {
+      documentId: goodItem.documentId,
+      title: goodItem.title,
+      price: goodItem.price,
+      count: newValue,
+      inOrder: false,
     };
-  }, [value]);
+
+    // Проверяем, равен ли новый результат нулю
+    if (newValue === 0) {
+      //console.log("Значение опустилось до 0!");
+      if (newValue < 1) {
+        //console.log("---From del---");
+
+        deleteItem(goodInBasket.documentId);
+      }
+      // Здесь ваш код (например, триггер события, алерт или удаление товара из корзины)
+    }
+  };
 
   return (
     <Label>
@@ -61,17 +80,17 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
       <NumberField
         aria-label="Item in basket"
         value={value}
-        onChange={setValue}
-        step={1}
+        onChange={handlerValueChange}
+        step={Step}
         minValue={0}
         maxValue={50}
         defaultValue={value}
         className={"scale-80"}
       >
         <NumberField.Group>
-          <NumberField.DecrementButton />
+          <NumberField.DecrementButton onPress={handlerValue} />
           <NumberField.Input />
-          <NumberField.IncrementButton />
+          <NumberField.IncrementButton onPress={handlerValue} />
         </NumberField.Group>
       </NumberField>
     </Label>

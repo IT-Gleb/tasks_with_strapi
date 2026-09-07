@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 const ToOrderButton = () => {
-  const { inOrder, mapToArray, totalOrderPrice, deleteItem, saveToBase } =
-    useBasket(useShallow((state) => state));
+  const { inOrder, getItems, totalOrderPrice, deleteItem } = useBasket(
+    useShallow((state) => state),
+  );
   const [disabled, setDisabled] = useState<boolean>(!inOrder());
   const ordersSt = useOrdersStorage();
 
@@ -16,7 +17,7 @@ const ToOrderButton = () => {
     setDisabled(true);
     const manageOrder = async (): Promise<boolean> => {
       try {
-        const baskets: TBasketItem[] = mapToArray().filter(
+        const baskets: TBasketItem[] = getItems().filter(
           (filtered) => filtered.inOrder === true,
         );
         const newOrder: TOrder = {
@@ -31,9 +32,7 @@ const ToOrderButton = () => {
         //Записать в заказ данные из корзины. Обновить данные в корзине.
         ordersSt.addOrder(newOrder);
         //Удалить из корзины товары, добавленные в заказ
-        baskets.forEach((item) => deleteItem(item));
-        //Записать в базу изменения
-        saveToBase();
+        baskets.forEach((item) => deleteItem(item.documentId));
 
         //Показать сообщение
         // toast("Заказ успешно создан", {

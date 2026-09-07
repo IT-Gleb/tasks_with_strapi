@@ -3,58 +3,34 @@
 import { useBasket } from "@/shared/store/basketStore";
 import { Badge, Button, Drawer, Typography } from "@heroui/react";
 import { Cross, Loader2, ShoppingBasket } from "lucide-react";
-import { MouseEvent, ReactNode, useEffect, useState } from "react";
+import {
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
-import useBasketHydration from "@/shared/store/HydrationStore";
+//import useBasketHydration from "@/shared/store/HydrationStore";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ToOrderButton from "./ToOrderButton";
 import UpdateStatusInDB from "@/shared/store/UpdateStatusOrder";
 
-export const BasketHydrated = ({ children }: { children: ReactNode }) => {
-  const hydrate = useBasketHydration();
-
-  if (!hydrate) {
-    return <Loader2 size={18} className=" animate-spin" />;
-  }
-  return <>{children}</>;
-};
-
 const HydrateBasket = ({ children }: { children: ReactNode }) => {
-  const { _hasHydrated, setData } = useBasket((state) => state);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { _hasHydrated, setHasHydrated } = useBasket((state) => state);
 
   useEffect(() => {
-    useBasket.persist.rehydrate();
+    const hydrate = async () => {
+      // Принудительно поднимаем данные из IndexedDB в память
+      await useBasket.persist.rehydrate();
+      setHasHydrated(true);
+    };
+    hydrate();
   }, []);
 
-  useEffect(() => {
-    let isWork: boolean = true;
-    setIsLoading(true);
-    //console.log(isHydrated);
-
-    if (_hasHydrated) {
-      useBasket
-        .getState()
-        .loadFromBase()
-        .then((data) => {
-          if (data !== null) {
-            if (isWork) {
-              setData(data);
-              setIsLoading(false);
-            }
-          }
-        });
-
-      setIsLoading(false);
-      return () => {
-        isWork = false;
-      };
-    }
-  }, [_hasHydrated]);
-
-  if (isLoading) {
+  if (!_hasHydrated) {
     return <Loader2 size={14} className=" animate-spin" />;
   }
 
@@ -62,12 +38,13 @@ const HydrateBasket = ({ children }: { children: ReactNode }) => {
 };
 
 const BasketDrawer = () => {
-  const { length, saveToBase } = useBasket(useShallow((state) => state));
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { length, goods } = useBasket(useShallow((state) => state));
 
   const [animation, setAnimation] = useState<string>("animate-From-left");
   const [basketCount, setBasketCount] = useState<number>(length);
   const [showButton, setShowButton] = useState<boolean>(true);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   //const hydrate = useBasketHydration();
 
   const handlerTabs = (param: boolean) => {
@@ -89,21 +66,26 @@ const BasketDrawer = () => {
   const handlerOpen = (evt: MouseEvent<Element>) => {
     evt.preventDefault();
 
-    saveToBase();
     setIsOpen(true);
   };
 
-  useEffect(() => {
-    let isWork: boolean = true;
-
-    if (isWork && length >= 0) {
-      setBasketCount(length);
-    }
-
+  useLayoutEffect(() => {
+    setIsMounted(true);
     return () => {
-      isWork = false;
+      setIsMounted(false);
     };
-  }, [length]);
+  }, []);
+
+  useEffect(() => {
+    const c_tmp = length();
+    // console.log(c_tmp);
+
+    setBasketCount(c_tmp);
+  }, [goods, length]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <HydrateBasket>
@@ -114,6 +96,7 @@ const BasketDrawer = () => {
           variant="outline"
           onClick={handlerOpen}
           aria-label="Ваша корзина"
+          className={"w-13 h-7 rounded-full"}
         >
           {basketCount > 0 && (
             <Badge variant="primary" size="sm" placement="top-right">

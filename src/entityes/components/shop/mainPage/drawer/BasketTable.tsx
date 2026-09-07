@@ -7,7 +7,7 @@ import { useShallow } from "zustand/shallow";
 //import InBasket from "../gallery/InBasket";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 import type { TBasketItem } from "@/shared/types/main_types";
-//import TotalOrderPrice from "./TotalOrderPrice";
+import TotalOrderPrice from "./TotalOrderPrice";
 
 const CheckItem = ({
   name,
@@ -42,14 +42,14 @@ const CheckItem = ({
 };
 
 const BasketTable = () => {
-  const { mapToArray, setItem } = useBasket(useShallow((state) => state));
+  const { getItems, setItem } = useBasket(useShallow((state) => state));
   //const [totalPrice, setTotalPrice] = useState<number>(0);
   const isMobile = useIsMobile();
 
   const handlerSelect = (param: boolean, index: number) => {
     //console.log(param, index);
 
-    const t_array = mapToArray();
+    const t_array = getItems();
     const selectedItem: TBasketItem = t_array[index];
     selectedItem.inOrder = param;
     setItem(selectedItem);
@@ -70,7 +70,7 @@ const BasketTable = () => {
         <div className="text-center">{isMobile ? "Кол-во" : "Количество"}</div>
         <div className="text-center">Итог</div>
       </div>
-      {mapToArray().map((item, index) => {
+      {getItems().map((item, index) => {
         return (
           <div
             key={item.documentId}
