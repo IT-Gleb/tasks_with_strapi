@@ -1,10 +1,25 @@
 "use client";
 
-import { isTBasketItem, useBasket } from "@/shared/store/basketStore";
+import {
+  isTBasketItem,
+  TBasketStore,
+  useBasket,
+} from "@/shared/store/basketStore";
 import type { TBasketItem, TGoodItem } from "@/shared/types/main_types";
 import { Label, NumberField } from "@heroui/react";
 import { memo, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
+
+// const hasItem = state.getItem(goodItem.documentId);
+//       //console.log("hasItem - ", hasItem);
+
+//       if (hasItem !== null && hasItem !== undefined) {
+//         value !== hasItem.count
+//           ? setValue(hasItem.count)
+//           : value !== 0
+//             ? setValue(value)
+//             : deleteItem(goodItem.documentId);
+//       }
 
 const Step = 1;
 
@@ -15,16 +30,18 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
   const { setItem, deleteItem } = useBasket(useShallow((state) => state));
 
   useEffect(() => {
-    const unsubscribe = useBasket.subscribe((state) => {
-      const hasItem = state.getItem(goodItem.documentId);
-      //console.log("hasItem - ", hasItem);
+    const unsubscribe = useBasket.subscribe((state: TBasketStore) => {
+      const goodId = goodItem.documentId;
+      const inBasket = state.inBasket(goodId);
+      const hasItem = state.getItem(goodId);
 
-      if (hasItem !== null && hasItem !== undefined) {
-        value !== hasItem.count
-          ? setValue(hasItem.count)
-          : value !== 0
-            ? setValue(value)
-            : setValue(0);
+      if (hasItem && inBasket) {
+        //console.log(hasItem?.documentId);
+
+        setValue(hasItem.count);
+      } else {
+        value !== 0 ? null : setValue(0);
+        //deleteItem(goodId);
       }
     });
 
@@ -63,12 +80,10 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
     // Проверяем, равен ли новый результат нулю
     if (newValue === 0) {
       //console.log("Значение опустилось до 0!");
-      if (newValue < 1) {
-        //console.log("---From del---");
 
-        deleteItem(goodInBasket.documentId);
-      }
+      //console.log("---From del---");
       // Здесь ваш код (например, триггер события, алерт или удаление товара из корзины)
+      deleteItem(goodInBasket.documentId);
     }
   };
 

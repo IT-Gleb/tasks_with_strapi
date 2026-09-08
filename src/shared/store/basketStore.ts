@@ -5,7 +5,23 @@ import type { TBasketItem } from "../types/main_types";
 import { createStore, get, set, del } from "idb-keyval";
 import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
 
-const nameInBase = "goods";
+const syncName = "sync_Basket_store";
+
+const syncBrowserTabs =
+  typeof window !== "undefined" ? new BroadcastChannel(syncName) : null;
+
+const handlerMessage = () => {
+  if (syncBrowserTabs) {
+    syncBrowserTabs.onmessage = (event: MessageEvent<TBasketGoods>) => {
+      //console.log(event.data);
+      useBasket.getState().checkTabUpdate(event.data);
+    };
+  }
+};
+
+if (syncBrowserTabs) {
+  syncBrowserTabs.addEventListener("message", handlerMessage);
+}
 
 const basketStore = createStore("basketDB", "basketStore");
 
@@ -48,10 +64,12 @@ interface IBasketActions {
   getItems: () => TBasketItem[];
   totalOrderPrice: () => number;
   inOrder: () => boolean;
+  clearItems: () => void;
+  checkTabUpdate: (param: TBasketGoods) => void;
   // saveToBase: () => void;
 }
 
-type TBasketStore = TBasketState & IBasketActions;
+export type TBasketStore = TBasketState & IBasketActions;
 
 export const useBasket = create<TBasketStore>()(
   persist(
@@ -65,9 +83,10 @@ export const useBasket = create<TBasketStore>()(
         });
       },
 
-      setItem: (param: TBasketItem) =>
+      setItem: (param: TBasketItem) => {
         set((state) => {
           const tmp = state.goods[param.documentId];
+
           return {
             goods: {
               ...state.goods,
@@ -77,12 +96,21 @@ export const useBasket = create<TBasketStore>()(
               },
             },
           };
-        }),
-      deleteItem: (paramId: string) => {
-        //console.log("---Удаляю---", paramId);
-        const { [paramId]: deledtI, ...other } = get().goods;
-        return set({ goods: { ...other } });
+        });
+        syncBrowserTabs?.postMessage(get().goods);
       },
+
+      deleteItem: async (paramId: string) => {
+        //console.log("---Удаляю---", paramId);
+        const delId = async () => {
+          //console.log("---Удаляю---", paramId);
+          const { [paramId]: deledtI, ...other } = get().goods;
+          return await set({ goods: { ...other } });
+        };
+        await delId();
+        syncBrowserTabs?.postMessage(get().goods);
+      },
+
       inBasket: (paramId: string) => {
         return paramId in get().goods;
       },
@@ -132,6 +160,10 @@ export const useBasket = create<TBasketStore>()(
           return false;
         }
       },
+      clearItems: () => set({ goods: {} }),
+      checkTabUpdate: (param: TBasketGoods) => {
+        set({ goods: param });
+      },
       // saveToBase: () => {
       //   return 0;
       // },
@@ -142,6 +174,7 @@ export const useBasket = create<TBasketStore>()(
       storage: createJSONStorage(() => MyStorage),
       partialize: (state) => ({ goods: state.goods }),
       skipHydration: true,
+
       // onRehydrateStorage: (state) => {
       //   state.setHasHydrated(false);
       //   return (hydrateState, error) => {
