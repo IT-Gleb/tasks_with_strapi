@@ -40,8 +40,7 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
 
         setValue(hasItem.count);
       } else {
-        value !== 0 ? null : setValue(0);
-        //deleteItem(goodId);
+        setValue(0);
       }
     });
 

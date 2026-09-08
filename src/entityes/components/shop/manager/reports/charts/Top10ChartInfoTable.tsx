@@ -9,7 +9,7 @@ const Top10ChartInfoTable = ({ data }: { data: TTop10Data }) => {
   return (
     <div className="w-fit p-2 rounded-2xl overflow-x-hidden bg-yellow-200/25 shadow-lg my-2 mx-auto">
       {data.map((item, index) => (
-        <ul key={item.id} className="w-full max-w-sm text-sm ">
+        <ul key={item.id + "-" + index} className="w-full max-w-sm text-sm ">
           <li className="grid grid-cols-[35px_24px_35px] gap-x-2 items-start border-b">
             <span className="text-[0.5rem]/[0.65rem] place-self-center">
               {index + 1}.

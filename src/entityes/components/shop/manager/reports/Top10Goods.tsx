@@ -3,7 +3,7 @@
 import { useReportsURLParamsContext } from "@/shared/hooks/custom/UseReportsParamsContext";
 import { Button } from "@heroui/react";
 import { ChartBar } from "lucide-react";
-import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Top10Chart from "./charts/Top10chart";
 import { TTop10Data } from "@/shared/types/main_types";
 import Top10ChartInfoTable from "./charts/Top10ChartInfoTable";

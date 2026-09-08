@@ -92,7 +92,7 @@ export const useBasket = create<TBasketStore>()(
               ...state.goods,
               [param.documentId]: {
                 ...param,
-                count: tmp ? param.count : 0,
+                count: tmp ? param.count : 1,
               },
             },
           };
