@@ -2,44 +2,44 @@
 
 import { Description, Link } from "@heroui/react";
 import { ListCheck, ShoppingBag } from "lucide-react";
-import { useBasket } from "@/shared/store/basketStore";
+//import { useBasket } from "@/shared/store/basketStore";
 
-import { memo, MouseEvent, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { memo } from "react";
+//import { useRouter } from "next/navigation";
 
-const DbLink = ({
-  href,
-  className,
-  children,
-}: {
-  href: string;
-  className: string;
-  children: ReactNode;
-}) => {
-  const router = useRouter();
-  const loadFromBase = useBasket((state) => state.loadFromBase);
+// const DbLink = ({
+//   href,
+//   className,
+//   children,
+// }: {
+//   href: string;
+//   className: string;
+//   children: ReactNode;
+// }) => {
+//   const router = useRouter();
+//   //const loadFromBase = useBasket((state) => state.loadFromBase);
 
-  const handlerDB = (evt: MouseEvent<Element>) => {
-    evt.preventDefault();
-    try {
-      //console.log("Начинаю загрузку из базы...");
+//   const handlerDB = (evt: MouseEvent<Element>) => {
+//     evt.preventDefault();
+//     try {
+//       //console.log("Начинаю загрузку из базы...");
 
-      (async function () {
-        await loadFromBase();
-      })();
-    } catch (err: unknown) {
-      console.log((err as Error).message);
-    } finally {
-      router.push(href);
-    }
-  };
+//       (async function () {
+//         await loadFromBase();
+//       })();
+//     } catch (err: unknown) {
+//       console.log((err as Error).message);
+//     } finally {
+//       router.push(href);
+//     }
+//   };
 
-  return (
-    <Link href={href} className={className} onClick={(ev) => handlerDB(ev)}>
-      {children}
-    </Link>
-  );
-};
+//   return (
+//     <Link href={href} className={className} onClick={(ev) => handlerDB(ev)}>
+//       {children}
+//     </Link>
+//   );
+// };
 
 const NavigationMain = memo(({ className = "" }: { className?: string }) => {
   return (

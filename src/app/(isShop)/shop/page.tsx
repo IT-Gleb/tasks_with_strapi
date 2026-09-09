@@ -17,26 +17,31 @@ export default async function ShopPage() {
     },
   });
 
-  if ((result && "error" in result) || result === null) {
-    return (
-      <div className="mt-5 w-fit mx-auto text-lg indent-2">
-        Ошибка (или отсутствие данных) получения данных. Попробуйте
-        перезагрузить страницу позднее.
-      </div>
-    );
-  }
+  //console.log(result);
+
+  // if ((result && "error" in result) || result === null) {
+  //   return (
+  //     <div className="mt-5 w-fit mx-auto text-lg indent-2">
+  //       Ошибка (или отсутствие данных) получения данных. Попробуйте
+  //       перезагрузить страницу позднее.
+  //     </div>
+  //   );
+  // }
 
   //console.log(result);
 
   return (
     <>
-      <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
-        <HeroComp
-          text={result?.data.HelloText as string}
-          paramTopImages={result?.data.topImages as THeroImage[]}
-          paramBottomImages={result?.data.bottomImages as THeroImage[]}
-        />
-      </Suspense>
+      {result !== null && !("error" in result) && (
+        <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
+          <HeroComp
+            text={result?.data.HelloText as string}
+            paramTopImages={result?.data.topImages as THeroImage[]}
+            paramBottomImages={result?.data.bottomImages as THeroImage[]}
+          />
+        </Suspense>
+      )}
+
       <Suspense fallback={<Loader size={36} className=" animate-spin" />}>
         <MainPageShopProvider />
       </Suspense>

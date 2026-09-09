@@ -30,34 +30,34 @@ const useBasketHydration = () => {
   return hydrated;
 };
 
-export const HydrationBasketStore = () => {
-  const hydrate = useBasketHydration();
-  //const _hasHydrated = useBasket((state) => state._hasHydrated);
-  const setData = useBasket((state) => state.setData);
+// export const HydrationBasketStore = () => {
+//   const hydrate = useBasketHydration();
+//   //const _hasHydrated = useBasket((state) => state._hasHydrated);
+//   const setData = useBasket((state) => state.setData);
 
-  useEffect(() => {
-    useBasket.persist.rehydrate();
-  }, []);
+//   useEffect(() => {
+//     useBasket.persist.rehydrate();
+//   }, []);
 
-  useEffect(() => {
-    //console.log(hydrate, _hasHydrated);
+//   useEffect(() => {
+//     //console.log(hydrate, _hasHydrated);
 
-    if (hydrate) {
-      useBasket
-        .getState()
-        .loadFromBase()
-        .then((data) => {
-          if (data !== null) {
-            setData(data);
-          }
-        });
+//     if (hydrate) {
+//       useBasket
+//         .getState()
+//         .loadFromBase()
+//         .then((data) => {
+//           if (data !== null) {
+//             setData(data);
+//           }
+//         });
 
-      //console.log(useBasket.getState().length);
-    }
-  }, [hydrate]);
+//       //console.log(useBasket.getState().length);
+//     }
+//   }, [hydrate]);
 
-  return null;
-};
+//   return null;
+// };
 
 function useBasketHydrated<T>(selector: (state: any) => T): T | undefined {
   const storeData = useBasket(selector);

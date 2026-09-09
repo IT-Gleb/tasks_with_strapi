@@ -13,7 +13,6 @@ import {
 import { useShallow } from "zustand/shallow";
 import BasketContentTabs from "./BasketContentTabs";
 
-//import useBasketHydration from "@/shared/store/HydrationStore";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ToOrderButton from "./ToOrderButton";
 import UpdateStatusInDB from "@/shared/store/UpdateStatusOrder";
