@@ -16,6 +16,7 @@ export default async function ShopPage() {
       return await fetchGet<THero | THeroError>(url);
     },
   });
+  console.log(url);
 
   //console.log(result);
 

@@ -45,7 +45,7 @@ export async function proxy(request: NextRequest) {
   //   token,
   // );
 
-  if (pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/reports")) {
     if (token === "" || userRole === null || userRole === "user") {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
@@ -59,5 +59,5 @@ export async function proxy(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/dashboard/:path*",
+  matcher: ["/dashboard/:path*", "/reports/:path*"],
 };

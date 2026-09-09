@@ -55,7 +55,9 @@ COPY --from=builder /app/public ./public
 
 # Автоматически создаваемая папка standalone содержит минимальный код сервера
 COPY --from=builder --chown=myappjs:nodejs /app/.next/standalone ./
+#COPY --from=builder --chown=myappjs:nodejs /app/.next ./next
 COPY --from=builder --chown=myappjs:nodejs /app/.next/static ./.next/static
+# COPY --from=builder --chown=myappjs:nodejs /app/package.json ./
 
 USER myappjs
 
@@ -65,3 +67,5 @@ ENV HOSTNAME="0.0.0.0"
 
 # Запуск приложения через встроенный сервер node
 CMD ["node", "server.js"]
+# CMD ["npm", "run", "start"]
+#CMD ["node", "node_modules/.bin/next", "start"]

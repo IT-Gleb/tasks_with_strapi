@@ -10,7 +10,8 @@
     "postdev": "dockerdown.cmd",
     "build": "next build",
     "start": "next start -p 3001",
-    "lint": "eslint"
+    "lint": "eslint",
+    "alone": "port=3001 node .next/standalone/server.js"
   },
   "dependencies": {
     "@heroui/react": "^3.0.5",
