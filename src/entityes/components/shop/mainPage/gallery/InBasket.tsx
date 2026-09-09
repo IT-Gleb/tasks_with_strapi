@@ -49,22 +49,6 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
     };
   }, []);
 
-  const handlerValue = () => {
-    // setValue((prev) => (prev = prev + Step));
-    const goodInBasket: TBasketItem = {
-      documentId: goodItem.documentId,
-      title: goodItem.title,
-      price: goodItem.price,
-      count: value,
-      inOrder: false,
-    };
-
-    //Установить количество в корзине
-    if (value > 0) {
-      setItem(goodInBasket);
-    }
-  };
-
   const handlerValueChange = (newValue: number) => {
     setValue(newValue);
 
@@ -76,6 +60,10 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
       inOrder: false,
     };
 
+    //Установить количество в корзине
+    if (newValue > 0) {
+      setItem(goodInBasket);
+    }
     // Проверяем, равен ли новый результат нулю
     if (newValue === 0) {
       //console.log("Значение опустилось до 0!");
@@ -102,9 +90,9 @@ const InBasket = memo(({ goodItem }: { goodItem: TGoodItem | TBasketItem }) => {
         className={"scale-80"}
       >
         <NumberField.Group>
-          <NumberField.DecrementButton onPress={handlerValue} />
+          <NumberField.DecrementButton />
           <NumberField.Input />
-          <NumberField.IncrementButton onPress={handlerValue} />
+          <NumberField.IncrementButton />
         </NumberField.Group>
       </NumberField>
     </Label>
