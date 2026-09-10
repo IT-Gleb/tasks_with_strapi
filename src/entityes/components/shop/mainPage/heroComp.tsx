@@ -1,18 +1,18 @@
 "use client";
 
-import { stagger } from "motion";
+//import { stagger } from "motion";
 import * as motion from "motion/react-client";
 import { useLayoutEffect, useMemo, useState } from "react";
 import { THeroImage } from "@/shared/types/main_types";
-import { SERVER_URL } from "@/shared/utils/consts";
+import { GetSERVER_URL } from "@/shared/utils/consts";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 
-const ImageAnimo = {
-  active: {
-    x: [-1200, 120, 0],
-    transition: { delay: stagger(0.35, { startDelay: 0.2 }) },
-  },
-};
+// const ImageAnimo = {
+//   active: {
+//     x: [-1200, 120, 0],
+//     transition: { delay: stagger(0.35, { startDelay: 0.2 }) },
+//   },
+// };
 
 const RoundImage = ({
   url,
@@ -102,7 +102,7 @@ const HeroComp = ({
           {img1.map((item, index) => (
             <RoundImage
               key={item.documentId}
-              url={SERVER_URL + item.url}
+              url={GetSERVER_URL() + item.url}
               borderColor="border-green-400/50 dark:border-blue-400/50"
               index={index}
               direction_animate="right"
@@ -122,7 +122,7 @@ const HeroComp = ({
           {img2.map((item, index) => (
             <RoundImage
               key={item.documentId}
-              url={SERVER_URL + item.url}
+              url={GetSERVER_URL() + item.url}
               borderColor="border-green-400/50 dark:border-blue-400/50"
               index={index}
               direction_animate="top"

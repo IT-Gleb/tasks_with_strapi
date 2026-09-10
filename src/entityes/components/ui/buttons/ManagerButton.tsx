@@ -1,8 +1,8 @@
 "use client";
 
-import { setAuthCookie } from "@/app/lib/actions";
-import getCacheQueryClient from "@/entityes/providers/getQueryCache";
-import { managerInitRequest, SERVER_LOCAL_API } from "@/shared/utils/consts";
+//import { setAuthCookie } from "@/app/lib/actions";
+//import getCacheQueryClient from "@/entityes/providers/getQueryCache";
+import { managerInitRequest } from "@/shared/utils/consts";
 import { Button } from "@heroui/react";
 import { User2 } from "lucide-react";
 import { useRouter } from "next/navigation";

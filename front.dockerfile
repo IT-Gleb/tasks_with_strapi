@@ -4,6 +4,7 @@ FROM node:22-alpine AS base
 FROM base AS deps
 # Для работы некоторых библиотек (например, sharp) может потребоваться libc6-compat
 RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache tzdata
 WORKDIR /app
 
 # Копируем файлы манифестов для установки зависимостей
@@ -24,11 +25,15 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Читаем аргумент из docker-compose и превращаем его в ENV для сборщика Next.js
-ARG NEXT_PUBLIC_STRAPI_CLIENT_API_URL
-ENV NEXT_PUBLIC_STRAPI_CLIENT_API_URL=$NEXT_PUBLIC_STRAPI_CLIENT_API_URL
+# ARG NEXT_PUBLIC_STRAPI_CLIENT_API_URL
+# ENV NEXT_PUBLIC_STRAPI_CLIENT_API_URL=$NEXT_PUBLIC_STRAPI_CLIENT_API_URL
 
 # Отключаем телеметрию Next.js во время сборки
 ENV NEXT_TELEMETRY_DISABLED=1
+
+#Добавляем внешний адрес сайьа смотри в compose
+ARG NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
 RUN \
   if [ -f "package-lock.json" ]; then npm run build; \

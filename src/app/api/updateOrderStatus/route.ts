@@ -1,5 +1,5 @@
 import { TListToModifyStatus } from "@/shared/store/ordersToModifyStore";
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
   const body = (await request.json()) as TListToModifyStatus[];
 
-  const url = `${API_URL}/orders/`;
+  const url = `${GetAPI_URL()}/orders/`;
   const fetchArray = body.map((item) =>
     fetch(url + item.id, {
       headers: {

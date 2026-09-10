@@ -1,4 +1,4 @@
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -16,10 +16,10 @@ export async function GET(request: Request) {
   }
 
   const urls = [
-    `${API_URL}/orders?pagination[pageSize]=1&pagination[page]=1`,
-    `${API_URL}/orders?filters[s_status][$notIn][0]=success&filters[s_status][$notIn][1]=cancelled&pagination[pageSize]=1&pagination[page]=1`,
-    `${API_URL}/orders?filters[s_status][$eq]=success&pagination[pageSize]=1&pagination[page]=1`,
-    `${API_URL}/orders?filters[s_status][$eq]=cancelled&pagination[pageSize]=1&pagination[page]=1`,
+    `${GetAPI_URL()}/orders?pagination[pageSize]=1&pagination[page]=1`,
+    `${GetAPI_URL()}/orders?filters[s_status][$notIn][0]=success&filters[s_status][$notIn][1]=cancelled&pagination[pageSize]=1&pagination[page]=1`,
+    `${GetAPI_URL()}/orders?filters[s_status][$eq]=success&pagination[pageSize]=1&pagination[page]=1`,
+    `${GetAPI_URL()}/orders?filters[s_status][$eq]=cancelled&pagination[pageSize]=1&pagination[page]=1`,
   ];
   const getUrls = urls.map((url) =>
     fetch(url, {

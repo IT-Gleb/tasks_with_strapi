@@ -1,6 +1,6 @@
 import { TOrder } from "../types/main_types";
 import { get, set, del, createStore, keys } from "idb-keyval";
-import { SERVER_LOCAL_API } from "../utils/consts";
+import { GetServer_LOCAL_API } from "../utils/consts";
 
 const ordersStore = "ordersStore";
 const ordersField = "ordersIds";
@@ -148,7 +148,7 @@ export const useOrdersStorage = () => {
 };
 
 export async function orderToServer(paramNewOrder: TOrder) {
-  const url: string = `${SERVER_LOCAL_API}/addOrder`;
+  const url: string = `${GetServer_LOCAL_API()}/addOrder`;
   try {
     //Получение данных
     const res = await fetch(url, {

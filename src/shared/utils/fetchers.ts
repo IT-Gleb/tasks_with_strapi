@@ -5,7 +5,7 @@ import {
   TServerOrder,
   TUserRole,
 } from "../types/main_types";
-import { API_URL, SERVER_LOCAL_API, TodosMax_prefix } from "./consts";
+import { GetAPI_URL, TodosMax_prefix } from "./consts";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 
 export async function fetchGet<T>(url: string): Promise<T | null> {
@@ -120,7 +120,7 @@ export async function UpdateOrdersStatus(paramData: TListToModifyStatus[]) {
 export async function getUserRole(
   paramToken: string,
 ): Promise<TUserRole | null> {
-  const url = `${API_URL}/users/me?fields[0]=username`;
+  const url = `${GetAPI_URL()}/users/me?fields[0]=username`;
   // const url = `${API_URL}/users/me?populate=*`;
   const query = getCacheQueryClient();
   //console.log(url);

@@ -1,5 +1,5 @@
 import {
-  API_URL,
+  GetAPI_URL,
   itemsOnPage,
   ordersInWorkRequest,
 } from "@/shared/utils/consts";
@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const paramData = await request.json();
   const page = (paramData.page as string) ?? "1";
-  const url = `${API_URL}/${ordersInWorkRequest.replace("%1", page).replace("%2", String(itemsOnPage))}`;
+  const url = `${GetAPI_URL()}/${ordersInWorkRequest.replace("%1", page).replace("%2", String(itemsOnPage))}`;
 
   const cookieStore = await cookies();
   let token = "";

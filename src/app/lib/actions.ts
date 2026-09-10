@@ -1,7 +1,7 @@
 "use server";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import { TGeoData } from "@/shared/types/main_types";
-import { SERVER_LOCAL_API } from "@/shared/utils/consts";
+import { GetServer_LOCAL_API } from "@/shared/utils/consts";
 import * as z from "zod";
 //Server actions
 
@@ -54,7 +54,7 @@ export async function getLocalIp(): Promise<TGeoData> {
   const data: TGeoData = await query.fetchQuery({
     queryKey: ["geoFromIp", localIp],
     queryFn: async () => {
-      const res = await fetch(SERVER_LOCAL_API + "/geobyip", {
+      const res = await fetch(GetServer_LOCAL_API() + "/geobyip", {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         signal: AbortSignal.timeout(5000),
@@ -93,7 +93,7 @@ export async function handlerUserWithCookie(data: {
   }
 
   const query = getCacheQueryClient();
-  const url = SERVER_LOCAL_API + "/checkuser";
+  const url = GetServer_LOCAL_API() + "/checkuser";
   //console.log(url);
 
   const isToken = await query.fetchQuery({

@@ -5,7 +5,7 @@ import SearchOrderInput from "@/entityes/manager/SearchOrderComponent";
 import { PaginationProvider } from "@/shared/hooks/custom/UsePaginationContext";
 import { TOrdersState } from "@/shared/types/main_types";
 import {
-  API_URL,
+  GetAPI_URL,
   itemsOnPage,
   managerSearchRequest,
   ordersCancelledRequest,
@@ -36,19 +36,19 @@ export default async function DashBoard({
 
   switch (ordersState) {
     case "inwork":
-      url = `${API_URL}/${ordersInWorkRequest}`
+      url = `${GetAPI_URL()}/${ordersInWorkRequest}`
         .replace("%1", page as string)
         .replace("%2", `${itemsOnPage}`);
       queryKey = "ordersInWork";
       break;
     case "cancelled":
-      url = `${API_URL}/${ordersCancelledRequest}`
+      url = `${GetAPI_URL()}/${ordersCancelledRequest}`
         .replace("%1", page as string)
         .replace("%2", `${itemsOnPage}`);
       queryKey = "ordersCancelled";
       break;
     case "successed":
-      url = `${API_URL}/${orderSuccessedRequest}`
+      url = `${GetAPI_URL()}/${orderSuccessedRequest}`
         .replace("%1", page as string)
         .replace("%2", `${itemsOnPage}`);
       queryKey = "ordersSuccessed";
@@ -58,14 +58,14 @@ export default async function DashBoard({
         typeof searchQuery === "boolean" ? "" : (searchQuery as string);
       search === "" ? "*" : search;
 
-      url = `${API_URL}${managerSearchRequest}`
+      url = `${GetAPI_URL()}${managerSearchRequest}`
         .replace("%1", search)
         .replace("%2", page as string)
         .replace("%3", `${itemsOnPage}`);
       queryKey = "ordersSearch-" + search;
       break;
     default:
-      url = `${API_URL}/${ordersInWorkRequest}`
+      url = `${GetAPI_URL()}/${ordersInWorkRequest}`
         .replace("%1", page as string)
         .replace("%2", `${itemsOnPage}`);
       queryKey = "ordersInWork";

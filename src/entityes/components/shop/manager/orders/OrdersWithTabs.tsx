@@ -28,11 +28,11 @@ import { usePaginationContext } from "@/shared/hooks/custom/UsePaginationContext
 import { useRouter } from "next/navigation";
 import TblOrderRow from "./table/TableRow";
 import { useQuery } from "@tanstack/react-query";
-import {
-  API_URL,
-  itemsOnPage,
-  ordersInWorkRequest,
-} from "@/shared/utils/consts";
+// import {
+//   API_URL,
+//   itemsOnPage,
+//   ordersInWorkRequest,
+// } from "@/shared/utils/consts";
 
 const tabsList = [
   {

@@ -1,10 +1,10 @@
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const params = await request.json();
-  const url = `${API_URL}/orders-statistic?${params.query}`;
+  const url = `${GetAPI_URL()}/orders-statistic?${params.query}`;
 
   const cookieStore = await cookies();
   const t_data = cookieStore.get("auth_token")?.value ?? null;

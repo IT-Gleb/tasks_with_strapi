@@ -1,9 +1,9 @@
 import type { TOrder, TOrderStatus } from "@/shared/types/main_types";
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { isOrderType } from "@/shared/utils/functions";
 
 export async function POST(request: Request) {
-  const url = `${API_URL}/orders`;
+  const url = `${GetAPI_URL()}/orders`;
   const body = await request.json();
   //console.log(body);
   const oldId = body.id;

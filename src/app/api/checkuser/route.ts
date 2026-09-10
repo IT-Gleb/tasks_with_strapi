@@ -1,6 +1,6 @@
 //Проверить пользователя - manager и установить cookies
 
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { NextResponse } from "next/server";
 
 type TUserWithJWT = {
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, token: null });
   }
   let manager: Partial<TUserWithJWT> = {};
-  const url = `${API_URL}/auth/local`;
+  const url = `${GetAPI_URL()}/auth/local`;
 
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json; charset=utf-8" },
