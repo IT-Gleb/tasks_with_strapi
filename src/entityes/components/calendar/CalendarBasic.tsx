@@ -18,7 +18,7 @@ import {
 import { makeDateISOStringFromObject } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosDates } from "@/shared/types/main_types";
-import { API_URL, TodoDatesPath } from "@/shared/utils/consts";
+import { GetAPI_URL, TodoDatesPath } from "@/shared/utils/consts";
 import Loading from "@/app/(isTask)/loading";
 import useDateStore from "@/shared/store/dateStore";
 
@@ -43,7 +43,7 @@ const CalendarBasic = memo(() => {
   const thisMonth = focusedDate.month;
   //console.log(dateFromFocusedDate);
 
-  const url: string = `${API_URL}/${TodoDatesPath.replace("%1", dateFromFocusedDate)}`;
+  const url: string = `${GetAPI_URL()}/${TodoDatesPath.replace("%1", dateFromFocusedDate)}`;
 
   const { data, isLoading } = useGetData<TTodosDates>({
     dataKey: "todosDates-" + dateFromFocusedDate,

@@ -7,6 +7,7 @@ import {
   API_URL,
   DatePage_Prefix,
   DatePagePath_Max200,
+  GetAPI_URL,
 } from "@/shared/utils/consts";
 import {
   extractMonthName,
@@ -171,7 +172,7 @@ export default function ChartMonthProvider() {
 
   //const [chartValue, setChartValue] = useState<TChartData | null>(null);
 
-  const url = `${API_URL}/${DatePagePath_Max200.replace("%1", nowDt)}`;
+  const url = `${GetAPI_URL()}/${DatePagePath_Max200.replace("%1", nowDt)}`;
   const queryKey = DatePage_Prefix.replace("%1", nowDt);
   const { data: todos } = useGetData<TTodosData>({
     dataKey: queryKey,

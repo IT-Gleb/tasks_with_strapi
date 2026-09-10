@@ -7,14 +7,14 @@ import { firstLastMonthDayLastCurrentMonthDay } from "@/shared/utils/functions";
 import useGetData from "@/shared/hooks/tanstack/useGetData";
 import { TTodosData } from "@/shared/types/main_types";
 import {
-  API_URL,
+  GetAPI_URL,
   TodosLast20,
   TodosLast20_prefix,
 } from "@/shared/utils/consts";
 import useDateStore from "@/shared/store/dateStore";
 import { memo, useMemo } from "react";
 import * as motion from "motion/react-client";
-import { AnimatePresence } from "motion/react";
+//import { AnimatePresence } from "motion/react";
 
 const LastTodos = memo(() => {
   const currentDate = useDateStore((state) => state.currentDate);
@@ -23,7 +23,7 @@ const LastTodos = memo(() => {
   }, [currentDate]);
   //console.log(dates);
 
-  const url = `${API_URL}/${TodosLast20.replace("%1", dates.firstDate).replace("%2", dates.currentDate)}`;
+  const url = `${GetAPI_URL()}/${TodosLast20.replace("%1", dates.firstDate).replace("%2", dates.currentDate)}`;
   //console.log(url);
 
   const { data: todos, isError } = useGetData<TTodosData>({

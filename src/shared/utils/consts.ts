@@ -1,5 +1,5 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
-export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+//export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 export const LOCAL_SERVER_URL = process.env.NEXT_PUBLIC_LOCAL_SERVER;
 export const MainPageSeo_Prefix = "MainPageSEO";
 export const MainPageSEOPath = "page-seo";
@@ -20,6 +20,24 @@ export const TodosLast20 =
   "todos?filters[updated][$between][0]=%1&filters[updated][$between][1]=%2&filters[isCompleted][$eq]=0&sort[0]=updated:asc&pagination[limit]=20";
 
 export const LimitSearch = 15;
+
+export function GetAPI_URL() {
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    return "http://strapi:1337/api";
+  } else {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+}
+
+export function GetSERVER_URL() {
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    return "http://strapi:1337";
+  } else {
+    return "http://localhost:1337";
+  }
+}
 
 //Магазин
 export const SERVER_LOCAL_API = process.env.NEXT_PUBLIC_LOCAL_API_URL;

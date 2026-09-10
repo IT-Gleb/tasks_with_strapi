@@ -9,7 +9,12 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 //import TodosTable from "@/entityes/components/Todos/todosTable";
 
 import type { TDateISOString, TTodosData } from "@/shared/types/main_types";
-import { DatePage_Prefix, DatePagePath_Max200 } from "@/shared/utils/consts";
+import {
+  API_URL,
+  DatePage_Prefix,
+  DatePagePath_Max200,
+  GetAPI_URL,
+} from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { Loader2 } from "lucide-react";
@@ -24,11 +29,11 @@ const AddNewTodoDyn = dynamic(
 
 type Props = {
   params: Promise<{ date: string[] }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  SearchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { params, SearchParams }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { date } = await params;
@@ -73,7 +78,7 @@ export default async function TodoOnDate({
   //-------------------------------------------
   //const queryClient = new QueryClient();
   const queryClient = getCacheQueryClient();
-  const api_url = process.env.API_URL ?? "no_api";
+  const api_url = GetAPI_URL() ?? "no_api";
   const url = `${api_url}/${DatePagePath_Max200.replace("%1", date[0])}`;
   //console.log(url);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { API_URL, bgGradients } from "@/shared/utils/consts";
+import { API_URL, bgGradients, GetAPI_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +12,7 @@ import type { TCategories } from "@/shared/types/main_types";
 import { randomArrayValue } from "@/shared/utils/functions";
 import NewGalleryGoods from "./gallery/newGalleryGoods";
 
-const url: string = `${API_URL}/main-page-shop`;
+const url: string = `${GetAPI_URL()}/main-page-shop`;
 
 const MainPageShopProvider = () => {
   const { data, isLoading, isError } = useQuery({

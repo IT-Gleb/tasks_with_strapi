@@ -3,7 +3,7 @@
 import Loading from "@/app/(isTask)/loading";
 import { useSearchPage } from "@/shared/store/searchPageStore";
 import { TPageMeta, TTodo } from "@/shared/types/main_types";
-import { API_URL } from "@/shared/utils/consts";
+import { GetAPI_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 import {
   cn,
@@ -301,7 +301,7 @@ export default function SearchedTableProvider() {
     //    setPage((sParams.get("page") as unknown as number) ?? 1);
     sParams.set("page", String(Page));
     //    console.log(sParams.toString());
-    return `${API_URL}/todo-search?${sParams.toString()}`;
+    return `${GetAPI_URL()}/todo-search?${sParams.toString()}`;
   }, [srch_params.get("word0"), Page]);
 
   //console.log(url);

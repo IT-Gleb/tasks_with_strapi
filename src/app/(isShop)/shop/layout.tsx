@@ -1,18 +1,12 @@
-import type { Metadata } from "next";
-
 import "@/accets/css/globals.css";
 import TanstaqProvider from "@/entityes/providers/TanstackProvider";
 
-import { fetchGet } from "@/shared/utils/fetchers";
-
-import { shopPageSEO } from "@/shared/utils/consts";
 import ThisThemeProvider from "@/entityes/providers/ThisThemeProvider";
-import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 import NavigationMain from "@/entityes/components/ui/NavigationMain";
 import FooterLayout from "@/entityes/components/FooterLayout";
 import GradientLine from "@/entityes/components/ui/gradients/GradientLine";
 import ThemeButton from "@/entityes/components/ui/buttons/ThemeButton";
-import { type TShopPageSEO } from "@/shared/types/main_types";
+
 import { Toast } from "@heroui/react";
 import ManagerButton from "@/entityes/components/ui/buttons/ManagerButton";
 import BreadCrambs from "@/entityes/components/ui/BreadCrambs";
@@ -21,24 +15,6 @@ import SearchGoodsInput from "@/entityes/components/shop/searchgoods/searchGoodI
 import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
 
 //import BasketDrawer from "@/entityes/components/shop/mainPage/drawer/BasketDrawer";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const query = getCacheQueryClient();
-  const api_url = process.env.API_URL ?? "no_api";
-  const result = await query.fetchQuery({
-    queryKey: ["shopPageSEO", 1],
-    queryFn: async () => {
-      return await fetchGet<TShopPageSEO>(`${api_url}/${shopPageSEO}`);
-    },
-  });
-
-  return {
-    title: result?.data.title,
-    description: result?.data.description,
-    authors: [{ name: result?.data.author }],
-    creator: result?.data.creator,
-  };
-}
 
 export default function RootLayout({
   children,

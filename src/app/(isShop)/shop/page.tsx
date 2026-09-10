@@ -1,22 +1,45 @@
 import HeroComp from "@/entityes/components/shop/mainPage/heroComp";
 import MainPageShopProvider from "@/entityes/components/shop/mainPage/MainPageShopProvider";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
-import type { THero, THeroError, THeroImage } from "@/shared/types/main_types";
-import { API_URL } from "@/shared/utils/consts";
+import type {
+  THero,
+  THeroError,
+  THeroImage,
+  TShopPageSEO,
+} from "@/shared/types/main_types";
+import { GetAPI_URL, shopPageSEO } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 import { Loader } from "lucide-react";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const query = getCacheQueryClient();
+  const api_url = GetAPI_URL() ?? "no_api";
+  const result = await query.fetchQuery({
+    queryKey: ["shopPageSEO", 1],
+    queryFn: async () => {
+      return await fetchGet<TShopPageSEO>(`${api_url}/${shopPageSEO}`);
+    },
+  });
+
+  return {
+    title: result?.data.title,
+    description: result?.data.description,
+    authors: [{ name: result?.data.author }],
+    creator: result?.data.creator,
+  };
+}
 
 export default async function ShopPage() {
   const query = getCacheQueryClient();
-  const url = `${API_URL}/main-page-shop?hero=1`;
+  const url = `${GetAPI_URL()}/main-page-shop?hero=1`;
   const result = await query.fetchQuery({
     queryKey: ["HeroComp", 1],
     queryFn: async () => {
       return await fetchGet<THero | THeroError>(url);
     },
   });
-  console.log(url);
 
   //console.log(result);
 

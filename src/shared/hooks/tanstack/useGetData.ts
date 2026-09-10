@@ -9,7 +9,7 @@ const useGetData = <T>(param: {
   return useQuery({
     queryKey: [param.dataKey],
     queryFn: async () => await fetchGet<T>(param.paramUrl),
-    refetchInterval: 10000,
+    refetchInterval: 20000,
     refetchIntervalInBackground: true,
     enabled: param.enabled !== undefined ? param.enabled : true,
   });

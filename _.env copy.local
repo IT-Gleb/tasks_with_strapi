@@ -1,0 +1,5 @@
+NEXT_PUBLIC_API_URL=http://localhost:1337/api
+API_URL=http://localhost:1337/api
+NEXT_PUBLIC_SERVER_URL=http://localhost:1337
+NEXT_PUBLIC_LOCAL_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_LOCAL_SERVER=http://localhost:3001

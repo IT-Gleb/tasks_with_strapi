@@ -6,6 +6,7 @@ import type { TDateISOString, TTodosMax } from "@/shared/types/main_types";
 import {
   API_URL,
   DatePage_Prefix,
+  GetAPI_URL,
   TodosMax,
   TodosMax_prefix,
 } from "@/shared/utils/consts";
@@ -50,7 +51,7 @@ export default function AddNewTodo({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [todoOrder, setTodoOrder] = useState<number>(0);
 
-  const maxUrl = `${API_URL}/${TodosMax}`;
+  const maxUrl = `${GetAPI_URL()}/${TodosMax}`;
   const {
     data: max,
     isLoading,
@@ -70,7 +71,7 @@ export default function AddNewTodo({
     mutationFn: async (newTodo: TNewTodoData) => {
       //console.log(JSON.stringify(newTodo));
 
-      return await fetch(API_URL + "/todos", {
+      return await fetch(GetAPI_URL() + "/todos", {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },

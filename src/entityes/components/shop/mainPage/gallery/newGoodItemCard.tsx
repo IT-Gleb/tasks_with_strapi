@@ -3,7 +3,7 @@
 import { TGoodItem } from "@/shared/types/main_types";
 import { forwardRef, MouseEvent, Ref } from "react";
 import { cn } from "@heroui/styles";
-import { SERVER_URL } from "@/shared/utils/consts";
+import { GetSERVER_URL } from "@/shared/utils/consts";
 import InBasket from "./InBasket";
 import { Typography } from "@heroui/react";
 
@@ -43,7 +43,7 @@ const NewGoodItemCard = forwardRef(
         <div className="w-45 h-48 mx-auto rounded-t-3xl object-cover object-center overflow-hidden ">
           <picture>
             <source
-              srcSet={`${SERVER_URL}${picture[0].url}`}
+              srcSet={`${GetSERVER_URL()}${picture[0].url}`}
               className=" w-full h-full transition-discrete duration-200 group-hover:scale-120 group-active:scale-120"
             />
             <img

@@ -11,13 +11,16 @@ import getCacheQueryClient from "@/entityes/providers/getQueryCache";
 export async function fetchGet<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, {
-      headers: { "Content-Type": "application/json;charset=utf-8" },
+      headers: { "Content-Type": "application/json; charset=utf-8" },
       method: "GET",
       signal: AbortSignal.timeout(5000),
+      cache: "no-store",
     });
     if (response.ok) {
       return (await response.json()) as T;
     }
+    //console.log(response.statusText);
+
     throw new Error("Ошибка получения данных!");
   } catch (err) {
     return null;
