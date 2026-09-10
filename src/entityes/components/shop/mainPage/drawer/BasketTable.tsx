@@ -1,14 +1,14 @@
 "use client";
 
 import { useBasket } from "@/shared/store/basketStore";
-import { Button, Checkbox } from "@heroui/react";
+import { Button, Checkbox, cn } from "@heroui/react";
 import { useState } from "react";
 import { shallow, useShallow } from "zustand/shallow";
 //import InBasket from "../gallery/InBasket";
 import { useIsMobile } from "@/shared/hooks/custom/UseIsMobile";
 import type { TBasketItem } from "@/shared/types/main_types";
 import TotalOrderPrice from "./TotalOrderPrice";
-import { Cross } from "lucide-react";
+import { Check, Cross, CrossIcon, SearchX } from "lucide-react";
 
 const CheckItem = ({
   name,
@@ -67,22 +67,38 @@ const BasketTable = () => {
 
   return (
     <div className="px-4 mt-1">
-      <div className="w-full grid grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center rounded-t-2xl font-bold p-3 bg-slate-200 dark:bg-slate-700">
-        <div className="whitespace-nowrap p-1 scale-x-80 -rotate-45">№/№</div>
+      <div
+        className={cn(
+          "w-full grid md:grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-2 items-center rounded-t-2xl font-bold p-1 lg:p-3 bg-slate-200 dark:bg-slate-700",
+          "grid-cols-[minmax(0,20px)_minmax(0,25px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]",
+        )}
+      >
+        <div className="whitespace-nowrap p-1 scale-x-80 -rotate-45">
+          {isMobile ? <SearchX size={12} className="mx-auto" /> : "№/№"}
+        </div>
         <div className=" whitespace-nowrap p-1 scale-x-80 -rotate-45">
-          В заказ
+          {isMobile ? <Check size={12} className="mx-auto" /> : "В заказ"}
         </div>
         <div>{isMobile ? "На-ие" : "Наименование"}</div>
         <div className="text-center">Цена</div>
         <div className="text-center">{isMobile ? "Кол-во" : "Количество"}</div>
         <div className="text-center">Итог</div>
-        <div className="text-center">Удалить</div>
+        <div className="text-center">
+          {isMobile ? (
+            <CrossIcon size={12} className="-rotate-45 mx-auto" />
+          ) : (
+            "Удалить"
+          )}
+        </div>
       </div>
       {getItems().map((item, index) => {
         return (
           <div
             key={item.documentId}
-            className="w-full grid grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center p-2 odd:bg-slate-100/50 dark:odd:bg-slate-700/50"
+            className={cn(
+              "w-full grid md:grid-cols-[minmax(0,40px)_minmax(0,50px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center p-1 lg:p-2 odd:bg-slate-100/50 dark:odd:bg-slate-700/50",
+              "grid-cols-[minmax(0,20px)_minmax(0,25px)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]",
+            )}
           >
             <div className="text-center">{index + 1}.</div>
             <div className="w-fit mx-auto">
@@ -111,11 +127,12 @@ const BasketTable = () => {
               <Button
                 size="sm"
                 variant="danger"
+                isIconOnly={isMobile}
                 className={"text-xs scale-90 active:scale-80"}
                 onPress={() => handlerErase(item.documentId)}
               >
                 <Cross size={10} className="rotate-45" />
-                Удалить
+                {isMobile ? "" : "Удалить"}
               </Button>
             </div>
           </div>
