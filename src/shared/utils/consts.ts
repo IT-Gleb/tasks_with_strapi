@@ -44,7 +44,7 @@ export function GetSERVER_URL() {
 export function GetServer_LOCAL_API() {
   const isServer = typeof window === "undefined";
 
-  return "http://localhost:3001/api";
+  return process.env.NEXT_PUBLIC_LOCAL_API_URL; //"http://localhost:3001/api";
 }
 
 const mainPageCategory =

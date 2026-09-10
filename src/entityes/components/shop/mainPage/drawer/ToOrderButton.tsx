@@ -2,7 +2,7 @@ import { useBasket } from "@/shared/store/basketStore";
 import { orderToServer, useOrdersStorage } from "@/shared/store/orderStore";
 import { TBasketItem, TOrder } from "@/shared/types/main_types";
 import { Button, toast } from "@heroui/react";
-import { LucideListOrdered, SquareCheck } from "lucide-react";
+import { LucideListOrdered } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
@@ -22,7 +22,7 @@ const ToOrderButton = () => {
         );
         const newOrder: TOrder = {
           id: crypto.randomUUID(),
-          title: " new Order",
+          title: "new Order",
           createdAt: Date.now(),
           updatedAt: Date.now(),
           price: totalOrderPrice(),

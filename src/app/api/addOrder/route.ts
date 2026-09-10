@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   const url = `${GetAPI_URL()}/orders`;
   const body = await request.json();
   //console.log(body);
-  const oldId = body.id;
+
   //Проверить на соответствуюший тип
   if (!isOrderType(body)) {
     return Response.json({
@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       message: "Передан объект не типа TOrder",
     });
   }
+  const oldId = body.id;
   //Подготовить данные для заказа на сервер
   // delete body.id;
   // delete body.createAt;

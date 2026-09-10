@@ -1,8 +1,8 @@
 "use client";
 
 import { TOrder } from "../types/main_types";
-import { useOrdersStorage } from "./orderStore";
-import { API_URL } from "../utils/consts";
+import { orderToServer, useOrdersStorage } from "./orderStore";
+import { API_URL, GetAPI_URL } from "../utils/consts";
 import { isOrderType, Wait } from "../utils/functions";
 import { useEffect, useState } from "react";
 import getCacheQueryClient from "@/entityes/providers/getQueryCache";
@@ -55,7 +55,7 @@ async function UpdateStatusOrder(paramId: string) {
     return;
   }
 
-  const url = `${API_URL}/orders/${paramId}`;
+  const url = `${GetAPI_URL()}/orders/${paramId}`;
 
   //console.log(url);
 
@@ -96,6 +96,32 @@ async function UpdateStatusOrder(paramId: string) {
 const UpdateStatusInDB = () => {
   const db = useOrdersStorage();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  //Проверить на не обновленные новые заказы
+  useEffect(() => {
+    let isWork: boolean = true;
+
+    try {
+      setIsLoading(true);
+
+      (async function () {
+        const newOrders = await db.checkNewOrders();
+        if (newOrders) {
+          if (isWork) {
+            newOrders.forEach(async (order) => {
+              await orderToServer(order);
+            });
+          }
+        }
+      })();
+    } finally {
+      setIsLoading(false);
+    }
+
+    return () => {
+      isWork = false;
+    };
+  }, []);
 
   useEffect(() => {
     let isWork: boolean = true;

@@ -1,6 +1,7 @@
 import { TOrder } from "../types/main_types";
-import { get, set, del, createStore, keys } from "idb-keyval";
+import { get, set, del, createStore, keys, values } from "idb-keyval";
 import { GetServer_LOCAL_API } from "../utils/consts";
+import { isOrderType } from "../utils/functions";
 
 const ordersStore = "ordersStore";
 const ordersField = "ordersIds";
@@ -111,17 +112,6 @@ export const useOrdersStorage = () => {
     },
     deleteOrder: async (paramId: string): Promise<void> => {
       try {
-        //Удалить из списка идентификаторов
-        // const ids = await self.getOrdersIds();
-        // if (ids && ids.length > 0) {
-        //   if (ids.includes(paramId)) {
-        //     const idx = ids.indexOf(paramId);
-        //     //console.log(idx);
-
-        //     ids.splice(idx, 1);
-        //     await self.setAllOrdersIds(ids);
-        //   }
-        // }
         //Удалить сам заказ
         const delItem = await self.getOrder(paramId);
         if (delItem) {
@@ -140,6 +130,18 @@ export const useOrdersStorage = () => {
 
       await self.setAllOrdersIds(ids as string[]);
     },
+
+    checkNewOrders: async (): Promise<TOrder[] | null> => {
+      const orders = (await values<TOrder>(ordersDB)).filter(
+        (f) => !Array.isArray(f) && f.title?.trim() === "new Order",
+      );
+      //console.log("--- new Orders---", orders);
+      if (orders && orders.length > 0) {
+        return orders;
+      }
+      return null;
+    },
+
     getMessage: function () {
       console.log("Заказы и сохранение в базе...");
     },

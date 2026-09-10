@@ -1,6 +1,6 @@
 "use client";
 
-import { API_URL, bgGradients, GetAPI_URL } from "@/shared/utils/consts";
+import { bgGradients, GetAPI_URL } from "@/shared/utils/consts";
 import { fetchGet } from "@/shared/utils/fetchers";
 
 import { useQuery } from "@tanstack/react-query";
